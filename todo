@@ -2,8 +2,8 @@
 - einfaches oop einfügen
 	- funktionen anhängen können
 	- normale procedures überschreiben
-	- klassen instanz erstellen
-	- methoden der klassen aufrufen können
+	- klassen instanz erstellen, wenn klasse in den Workspace gezogen wird
+	- methoden der klassen aufrufen können, dropdown menü???
 	- constructor?????
 
 - in PP implementieren
