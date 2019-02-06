@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <script src="blockly_compressed.js"></script>
+  <script src="blocks/logic.js"></script>
+  <script src="blocks/loops.js"></script>
+  <script src="blocks/math.js"></script>
+  <script src="blocks/text.js"></script>
+  <script src="blocks/lists.js"></script>
+  <script src="blocks/colour.js"></script>
+  <script src="blocks/variables.js"></script>
+  <script src="blocks/procedures.js"></script>
+  <script src="blocks/oop.js"></script>
+  <script src="msg/js/en.js"></script>
+<h1>Building awesome blockly OOP</h1>
+
+<div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+<xml id="toolbox" style="display: none">
+  <!-- <category name="Logic" colour="210">...</category>
+  <category name="Loops" colour="120">...</category>
+  <category name="Math" colour="230">...</category>
+  <category name="Colour" colour="20">...</category>
+  <category name="Variables" colour="330" custom="VARIABLE"></category>
+  <category name="Functions" colour="290" custom="PROCEDURE"></category> -->
+
+  <block type = "control_class"></block>
+
+  <!-- <block type="controls_if"></block>
+  <block type="controls_repeat_ext"></block>
+  <block type="logic_compare"></block>
+  <block type="math_number"></block>
+  <block type="math_arithmetic"></block>
+  <block type="text"></block>
+  <block type="text_print"></block> -->
+</xml>
+<script>
+var workspace = Blockly.inject("blocklyDiv", { toolbox: document.getElementById("toolbox") });
+</script>
+
+</body>
+</html>
