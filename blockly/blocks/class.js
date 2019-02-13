@@ -1,4 +1,4 @@
-goog.provide("Blockly.Constants.Oop");
+goog.provide("Blockly.Constants.Class");
 
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
@@ -21,6 +21,22 @@ Blockly.Blocks["control_class"] = {
     this.setColour(230);
     this.attributeCount = 0;
     this.methodCount = 0;
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+  getClassDef: function() {
+    return [this.getFieldValue("class_name"), true];
+  }
+};
+Blockly.Blocks["class"] = {
+  init: function() {
+    //  this.appendDummyInput().appendField("Klasse", "NAME");
+    this.appendDummyInput().appendField(new Blockly.FieldTextInput("Name der Instanz"), "NAME");
+    this.appendValueInput("Data")
+      .setCheck(null)
+      .appendField(new Blockly.FieldDropdown([["option", "OPTIONNAME"]]));
+    this.setInputsInline(true);
+    this.setColour(230);
     this.setTooltip("");
     this.setHelpUrl("");
   }

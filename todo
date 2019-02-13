@@ -1,8 +1,10 @@
 - reines Blockly ans laufen bringen /done
 - einfaches oop einfügen
-	- funktionen anhängen können
-	- normale procedures überschreiben
-	- klassen instanz erstellen, wenn klasse in den Workspace gezogen wird
+
+	- funktionen anhängen können / done
+	- normale procedures überschreiben / done
+	- klassen instanz erstellen, wenn klasse in den Workspace gezogen wird / done
+	- mehrere Instanzen einer Klasse erstellen
 	- methoden der klassen aufrufen können, dropdown menü???
 	- constructor?????
 	- klassen funktionen richtig einfügen / (neue Category mit name der Klasse einfügen) oder Klasse mit dropdown menu
