@@ -7,7 +7,7 @@ Blockly.Blocks["control_class"] = {
   init: function() {
     this.appendDummyInput()
       .appendField("class")
-      .appendField(new Blockly.FieldTextInput("Name der Klasse"), "class_name");
+      .appendField(new Blockly.FieldTextInput("Name der Klasse"), "NAME");
     this.appendStatementInput("Constructor")
       .setCheck("Methode")
       .appendField("Constructor");
@@ -25,12 +25,12 @@ Blockly.Blocks["control_class"] = {
     this.setHelpUrl("");
   },
   getClassDef: function() {
-    return [this.getFieldValue("class_name"), true];
+    return [this.getFieldValue("NAME"), true];
   }
 };
 Blockly.Blocks["class"] = {
   init: function() {
-    //  this.appendDummyInput().appendField("Klasse", "NAME");
+    //this.appendDummyInput().appendField("new ");
     this.appendDummyInput().appendField(new Blockly.FieldTextInput("Name der Instanz"), "NAME");
     this.appendValueInput("Data")
       .setCheck(null)
