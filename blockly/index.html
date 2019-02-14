@@ -2,6 +2,19 @@
 <html>
 <body>
   <script src="blockly_uncompressed.js"></script>
+
+  <script src="generators/javascript.js"></script>
+  <script src="generators/javascript/logic.js"></script>
+  <script src="generators/javascript/loops.js"></script>
+  <script src="generators/javascript/math.js"></script>
+  <script src="generators/javascript/text.js"></script>
+  <script src="generators/javascript/lists.js"></script>
+  <script src="generators/javascript/colour.js"></script>
+  <script src="generators/javascript/variables.js"></script>
+  <script src="generators/javascript/procedures.js"></script>
+  <script src="generators/javascript/class.js"></script>
+
+  <script src="acorn_interpreter.js"></script>
   <script src="blocks/logic.js"></script>
   <script src="blocks/loops.js"></script>
   <script src="blocks/math.js"></script>
@@ -22,11 +35,14 @@
   <category name="Colour" colour="20">...</category>
   <category name="Variables" colour="330" custom="VARIABLE"></category>
   <category name="Functions" colour="290" custom="PROCEDURE"></category> -->
-  <category name="Klasse" colour="370" custom ="CLASS">
-  <!-- <block type = "control_class"></block>
-  <block type = "class_function_return"></block>
-  <block type = "class_function_noreturn"></block> -->
-  </category>
+  <category name="Klasse" colour="370" custom ="CLASS"></category>
+  <category name="Logic" colour="210"><block type="controls_if"></block>
+  <block type="controls_repeat_ext"></block>
+  <block type="logic_compare"></block>
+  <block type="math_number"></block>
+  <block type="math_arithmetic"></block>
+  <block type="text"></block>
+  <block type="text_print"></block>s</category>
   <category name="Variables" colour="330" custom="VARIABLE"></category>
   <category name="Functions" colour="290" custom ="PROCEDURE"></category>
 
@@ -41,6 +57,20 @@
 <script>
 var workspace = Blockly.inject("blocklyDiv", { toolbox: document.getElementById("toolbox") });
 </script>
-
+<div>
+  <button onclick = "run()"> Run Me</button>
+  <script>
+  var run = function() {
+  Blockly.JavaScript.addReservedWords("code");
+  var code = Blockly.JavaScript.workspaceToCode(workspace);
+  console.log(code);
+  try {
+    eval(code);
+  } catch (e) {
+    alert(e);
+  }
+};
+</script>
+</div>
 </body>
 </html>

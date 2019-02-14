@@ -14,7 +14,7 @@ Blockly.Blocks["control_class"] = {
     this.appendValueInput("Attribute")
       .setCheck(null)
       .appendField("Attribute");
-    this.appendStatementInput("Methode")
+    this.appendStatementInput("METHODS")
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
     //this.setInputsInline(false);

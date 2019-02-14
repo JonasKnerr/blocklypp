@@ -1995,7 +1995,6 @@ Blockly.WorkspaceSvg.prototype.removeButtonCallback = function(key) {
  *     call when the given toolbox category is opened.
  */
 Blockly.WorkspaceSvg.prototype.registerToolboxCategoryCallback = function(key, func) {
-  console.log(func);
   if (typeof func != "function") {
     throw TypeError("Toolbox category callbacks must be functions.");
   }

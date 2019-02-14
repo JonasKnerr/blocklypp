@@ -70,7 +70,6 @@ Blockly.Class.flyoutCategory = function(workspace) {
     /**TODO: Blockly Message einfügen*/
     nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i][0]));
     block.appendChild(nameField);
-    console.log(xmlList);
     xmlList.push(block);
   }
   return xmlList;
