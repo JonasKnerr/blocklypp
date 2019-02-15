@@ -4,8 +4,9 @@
 	- funktionen anhängen können / done
 	- normale procedures überschreiben / done
 	- klassen instanz erstellen, wenn klasse in den Workspace gezogen wird / done
-	- Methoden con Funktionen separieren
+	- methoden namen in XML an die Instanz übergeben
 	- methoden der klassen aufrufen können, dropdown menü
+	- Methoden von Funktionen separieren
 	- mehrere Instanzen einer Klasse erstellen
 	- constructor!!!
 	- klassen funktionen richtig einfügen / (neue Category mit name der Klasse einfügen) oder Klasse mit dropdown menu

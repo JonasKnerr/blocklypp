@@ -26,6 +26,9 @@ Blockly.Blocks["control_class"] = {
   },
   getClassDef: function() {
     return [this.getFieldValue("NAME"), true];
+  },
+  getStatement: function() {
+    return this.getInputTargetBlock("METHODS");
   }
 };
 Blockly.Blocks["class"] = {
