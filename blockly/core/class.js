@@ -26,23 +26,27 @@ Blockly.Class.allUsedClasses = function(workspace) {
 };
 
 //TODO: Methoden für spezifische Klassen zurückgeben
-Blockly.Class.getMethods = function(workspace) {
+Blockly.Class.getMethods = function(workspace, classname) {
   var methods = [];
   var blocks = workspace.getAllBlocks(false);
   for (var i = 0; i < blocks.length; i++) {
     if (blocks[i].getStatement) {
-      var currentBlock;
-      var nextBlock;
-      currentBlock = blocks[i].getStatement();
-      if (currentBlock) {
-        methods.push(currentBlock.getFieldValue("NAME"));
-        while (currentBlock.getNextBlock()) {
-          nextBlock = currentBlock.getNextBlock();
-          methods.push(nextBlock.getFieldValue("NAME"));
-          currentBlock = nextBlock;
+      if (classname == blocks[i].getClassDef()) {
+        var currentBlock;
+        var nextBlock;
+        currentBlock = blocks[i].getStatement();
+        if (currentBlock) {
+          methods.push([currentBlock.getFieldValue("NAME"), "FUNCTION_" + currentBlock.getFieldValue("NAME")]);
+          console.log(currentBlock);
+          while (currentBlock.getNextBlock()) {
+            nextBlock = currentBlock.getNextBlock();
+            methods.push([nextBlock.getFieldValue("NAME"), "FUNCTION_" + nextBlock.getFieldValue("NAME")]);
+            currentBlock = nextBlock;
+          }
         }
       }
     }
+    break;
   }
   return methods;
 };
@@ -56,7 +60,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
     /**TODO: Blockly Message einfügen*/
-    nameField.appendChild(Blockly.Xml.utils.createTextNode("Klasse Klasse"));
+    nameField.appendChild(Blockly.Xml.utils.createTextNode("Klasse"));
     block.appendChild(nameField);
     xmlList.push(block);
   }
@@ -67,7 +71,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
     /**TODO: Blockly Message einfügen*/
-    nameField.appendChild(Blockly.Xml.utils.createTextNode("Klasse Funktion"));
+    nameField.appendChild(Blockly.Xml.utils.createTextNode("Funktion"));
     block.appendChild(nameField);
     xmlList.push(block);
   }
@@ -78,13 +82,11 @@ Blockly.Class.flyoutCategory = function(workspace) {
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
     /**TODO: Blockly Message einfügen*/
-    nameField.appendChild(Blockly.Xml.utils.createTextNode("Klasse Funktion"));
+    nameField.appendChild(Blockly.Xml.utils.createTextNode("Funktion"));
     block.appendChild(nameField);
     xmlList.push(block);
   }
   var usedClasses = Blockly.Class.allUsedClasses(workspace);
-  var methods = Blockly.Class.getMethods(workspace);
-  console.log(methods);
   for (var i = 0; i < usedClasses.length; i++) {
     var block = Blockly.Xml.utils.createElement("block");
     block.setAttribute("type", "class");
@@ -92,15 +94,16 @@ Blockly.Class.flyoutCategory = function(workspace) {
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
     /**TODO: Blockly Message einfügen*/
-    nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i][0]));
+    console.log(usedClasses[i]);
+    nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
     block.appendChild(nameField);
-    var methods = Blockly.Xml.utils.createElement("statement");
-    for (var i = 0; i < methods.length; i++) {
-      methods.appendChild(Blockly.Xml.utils.createTextNode(methods[i]));
-    }
-    block.appendChild(methods);
-    console.log(block);
     xmlList.push(block);
+    // var methods = Blockly.Xml.utils.createElement("statement");
+    // for (var i = 0; i < methods.length; i++) {
+    //   methods.appendChild(Blockly.Xml.utils.createTextNode(methods[i]));
+    // }
+    // block.appendChild(methods);
+    // console.log(block);
   }
   return xmlList;
 };
