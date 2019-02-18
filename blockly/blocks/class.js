@@ -41,14 +41,13 @@ Blockly.Blocks["class"] = {
       var dropdown = new Blockly.FieldDropdown(methods);
       this.appendValueInput("Data").appendField(dropdown, "METHODS");
     }
-    // this.appendValueInput("Data")
-    //   .setCheck(null)
-    //   .appendField(new Blockly.FieldDropdown([["option", "OPTIONNAME"]]));
     this.setInputsInline(true);
     this.setColour(230);
     this.setTooltip("");
     this.setHelpUrl("");
-  }
+  },
+  mutationToDom: function(opt_paramIds) {},
+  domToMutation: function(xmlElement) {}
   // dynamicDropdown: function(workspace, classname) {
   //   var methods = Blockly.Class.getMethods(workspace, classname);
   // }

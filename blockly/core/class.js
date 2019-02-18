@@ -25,7 +25,15 @@ Blockly.Class.allUsedClasses = function(workspace) {
   return classes;
 };
 
-//TODO: Methoden für spezifische Klassen zurückgeben
+/**
+ *   Returns an two dimensional array with the name of all Methods form a specific classname
+ *   first part fo the array is the function name, second part is "FUNCTION_" + functionname
+ *   to get the dropdown menus going
+ *   @param {BLOCKLY.Workspace} workspace  workspace to search for usedClasses
+ *   @param {string} classname name of the class to search for
+ *   @return {array} 2-dim array
+ *
+ */
 Blockly.Class.getMethods = function(workspace, classname) {
   var methods = [];
   var blocks = workspace.getAllBlocks(false);
@@ -98,12 +106,6 @@ Blockly.Class.flyoutCategory = function(workspace) {
     nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
     block.appendChild(nameField);
     xmlList.push(block);
-    // var methods = Blockly.Xml.utils.createElement("statement");
-    // for (var i = 0; i < methods.length; i++) {
-    //   methods.appendChild(Blockly.Xml.utils.createTextNode(methods[i]));
-    // }
-    // block.appendChild(methods);
-    // console.log(block);
   }
   return xmlList;
 };
