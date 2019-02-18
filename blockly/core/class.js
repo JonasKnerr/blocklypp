@@ -45,7 +45,6 @@ Blockly.Class.getMethods = function(workspace, classname) {
         currentBlock = blocks[i].getStatement();
         if (currentBlock) {
           methods.push([currentBlock.getFieldValue("NAME"), "FUNCTION_" + currentBlock.getFieldValue("NAME")]);
-          console.log(currentBlock);
           while (currentBlock.getNextBlock()) {
             nextBlock = currentBlock.getNextBlock();
             methods.push([nextBlock.getFieldValue("NAME"), "FUNCTION_" + nextBlock.getFieldValue("NAME")]);
@@ -96,13 +95,20 @@ Blockly.Class.flyoutCategory = function(workspace) {
   }
   var usedClasses = Blockly.Class.allUsedClasses(workspace);
   for (var i = 0; i < usedClasses.length; i++) {
+    var methods = Blockly.Class.getMethods(workspace, usedClasses[i]);
+
     var block = Blockly.Xml.utils.createElement("block");
     block.setAttribute("type", "class");
     block.setAttribute("gap", 16);
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
     /**TODO: Blockly Message einfügen*/
-    console.log(usedClasses[i]);
+    // var mutation = Blockly.Xml.utils.createElement("mutation");
+    // for (var i = 0; i < methods.length; i++) {
+    //   var arg = Blockly.Xml.utils.createElement("arg");
+    //   arg.setAttribute("name", methods[i]);
+    //   mutation.appendChild(arg);
+    // }
     nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
     block.appendChild(nameField);
     xmlList.push(block);

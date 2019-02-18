@@ -35,18 +35,40 @@ Blockly.Blocks["class"] = {
     //TODO: Change "NAme dynamically", look at procedures how to do it
     this.appendDummyInput().appendField("Klasse", "NAME");
     this.appendDummyInput().appendField(new Blockly.FieldTextInput("Name der Instanz"), "INSTANCE");
-    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getFieldValue("NAME"));
-    console.log(methods);
-    if (!(methods.length == 0)) {
-      var dropdown = new Blockly.FieldDropdown(methods);
-      this.appendValueInput("Data").appendField(dropdown, "METHODS");
-    }
+    // var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getFieldValue("NAME"));
+    // console.log(methods);
+    // if (!(methods.length == 0)) {
+    //   var dropdown = new Blockly.FieldDropdown(methods);
+    //   this.appendValueInput("Data").appendField(dropdown, "METHODS");
+    // }
     this.setInputsInline(true);
     this.setColour(230);
     this.setTooltip("");
     this.setHelpUrl("");
   },
-  mutationToDom: function(opt_paramIds) {},
+  //TODO: get procedure_callreturn
+  renameClass: function(newName) {
+    this.setFieldValue(newName, "NAME");
+  },
+  mutationToDom: function() {
+    if (this.getInput("METHODS")) {
+      this.removeInput("METHODS");
+    }
+    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getFieldValue("NAME"));
+    if (!(methods.length == 0)) {
+      console.log(methods);
+      var dropdown = new Blockly.FieldDropdown(methods);
+      this.appendValueInput("Data").appendField(dropdown, "METHODS");
+    }
+    // var container = document.createElement("mutation");
+    // container.setAttribute("name", this.getFieldValue("NAME"));
+    // for (var i = 0; i < this.arguments_.length; i++) {
+    //   var parameter = document.createElement("arg");
+    //   parameter.setAttribute("name", this.arguments_[i]);
+    //   container.appendChild(parameter);
+    // }
+    // return container;
+  },
   domToMutation: function(xmlElement) {}
   // dynamicDropdown: function(workspace, classname) {
   //   var methods = Blockly.Class.getMethods(workspace, classname);
