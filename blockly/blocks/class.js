@@ -5,9 +5,10 @@ goog.require("Blockly");
 
 Blockly.Blocks["control_class"] = {
   init: function() {
+    var nameField = new Blockly.FieldTextInput("", Blockly.Class.rename);
     this.appendDummyInput()
       .appendField("class")
-      .appendField(new Blockly.FieldTextInput("Name der Klasse"), "NAME");
+      .appendField(nameField, "NAME");
     this.appendStatementInput("Constructor")
       .setCheck("Methode")
       .appendField("Constructor");
@@ -28,13 +29,22 @@ Blockly.Blocks["control_class"] = {
   },
   getStatement: function() {
     return this.getInputTargetBlock("METHODS");
+  },
+  compose: function() {
+    console.log("compose");
+  },
+  decompose: function() {
+    console.log("decompose");
   }
 };
 Blockly.Blocks["class"] = {
   init: function() {
-    //TODO: Change "NAme dynamically", look at procedures how to do it
-    this.appendDummyInput().appendField("Klasse", "NAME");
+    this.appendDummyInput().appendField("", "NAME");
     this.appendDummyInput().appendField(new Blockly.FieldTextInput("Name der Instanz"), "INSTANCE");
+    this.name = "Klasse";
+    console.log(this);
+    this.getDropDown();
+
     // var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getFieldValue("NAME"));
     // console.log(methods);
     // if (!(methods.length == 0)) {
@@ -46,30 +56,32 @@ Blockly.Blocks["class"] = {
     this.setTooltip("");
     this.setHelpUrl("");
   },
+
   //TODO: get procedure_callreturn
   renameClass: function(newName) {
+    console.log(this.name);
+    this.name = newName;
     this.setFieldValue(newName, "NAME");
   },
-  mutationToDom: function() {
+  getDropDown: function() {
     if (this.getInput("METHODS")) {
       this.removeInput("METHODS");
     }
-    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getFieldValue("NAME"));
+    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
+    console.log(this.name);
     if (!(methods.length == 0)) {
-      console.log(methods);
-      var dropdown = new Blockly.FieldDropdown(methods);
+      var options = [];
+      for (var i = 0; i < methods.length; i++) {
+        options.push([methods[i].getFieldValue("NAME"), "FUNCTION_" + methods[i].getFieldValue("NAME")]);
+      }
+      var dropdown = new Blockly.FieldDropdown(options);
       this.appendValueInput("Data").appendField(dropdown, "METHODS");
     }
-    // var container = document.createElement("mutation");
-    // container.setAttribute("name", this.getFieldValue("NAME"));
-    // for (var i = 0; i < this.arguments_.length; i++) {
-    //   var parameter = document.createElement("arg");
-    //   parameter.setAttribute("name", this.arguments_[i]);
-    //   container.appendChild(parameter);
-    // }
-    // return container;
   },
-  domToMutation: function(xmlElement) {}
+  mutationToDom: function() {},
+  domToMutation: function(xmlElement) {
+    console.log(xmlElement);
+  }
   // dynamicDropdown: function(workspace, classname) {
   //   var methods = Blockly.Class.getMethods(workspace, classname);
   // }

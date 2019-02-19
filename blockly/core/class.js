@@ -44,10 +44,12 @@ Blockly.Class.getMethods = function(workspace, classname) {
         var nextBlock;
         currentBlock = blocks[i].getStatement();
         if (currentBlock) {
-          methods.push([currentBlock.getFieldValue("NAME"), "FUNCTION_" + currentBlock.getFieldValue("NAME")]);
+          //methods.push([currentBlock.getFieldValue("NAME"), "FUNCTION_" + currentBlock.getFieldValue("NAME")]);
+          methods.push(currentBlock);
           while (currentBlock.getNextBlock()) {
             nextBlock = currentBlock.getNextBlock();
-            methods.push([nextBlock.getFieldValue("NAME"), "FUNCTION_" + nextBlock.getFieldValue("NAME")]);
+            //methods.push([nextBlock.getFieldValue("NAME"), "FUNCTION_" + nextBlock.getFieldValue("NAME")]);
+            methods.push(nextBlock);
             currentBlock = nextBlock;
           }
         }
@@ -56,6 +58,16 @@ Blockly.Class.getMethods = function(workspace, classname) {
     break;
   }
   return methods;
+};
+
+Blockly.Class.rename = function(name) {
+  name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
+  var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].renameClass) {
+      blocks[i].renameClass(name);
+    }
+  }
 };
 
 Blockly.Class.flyoutCategory = function(workspace) {
@@ -94,6 +106,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
     xmlList.push(block);
   }
   var usedClasses = Blockly.Class.allUsedClasses(workspace);
+  console.log(usedClasses);
   for (var i = 0; i < usedClasses.length; i++) {
     var methods = Blockly.Class.getMethods(workspace, usedClasses[i]);
 
@@ -111,6 +124,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
     // }
     nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
     block.appendChild(nameField);
+    console.log(block);
     xmlList.push(block);
   }
   return xmlList;
