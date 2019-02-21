@@ -60,6 +60,27 @@ Blockly.Class.getMethods = function(workspace, classname) {
   return methods;
 };
 
+Blockly.Class.getCallers = function(name, workspace) {
+  var callers = [];
+  var blocks = workspace.getAllBlocks(false);
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getClassCall) {
+      var className = blocks[i].getClassCall();
+      if (className && Blockly.Names.equals(className, name)) {
+        callers.push(blocks[i]);
+      }
+    }
+  }
+  return callers;
+};
+
+Blockly.Class.mutateCallers = function(block) {
+  callers = Blockly.Class.getCallers(block.getClassDef(), block.workspace);
+  for (var i = 0; i < callers.length; i++) {
+    callers[i].update();
+  }
+};
+
 Blockly.Class.rename = function(name) {
   name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
   var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
@@ -106,7 +127,6 @@ Blockly.Class.flyoutCategory = function(workspace) {
     xmlList.push(block);
   }
   var usedClasses = Blockly.Class.allUsedClasses(workspace);
-  console.log(usedClasses);
   for (var i = 0; i < usedClasses.length; i++) {
     var methods = Blockly.Class.getMethods(workspace, usedClasses[i]);
 
@@ -124,7 +144,6 @@ Blockly.Class.flyoutCategory = function(workspace) {
     // }
     nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
     block.appendChild(nameField);
-    console.log(block);
     xmlList.push(block);
   }
   return xmlList;

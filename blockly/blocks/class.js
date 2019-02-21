@@ -30,18 +30,17 @@ Blockly.Blocks["control_class"] = {
   getStatement: function() {
     return this.getInputTargetBlock("METHODS");
   },
-  compose: function() {
-    console.log("compose");
-  },
-  decompose: function() {
-    console.log("decompose");
+  onchange: function() {
+    Blockly.Class.mutateCallers(this);
   }
 };
+
 Blockly.Blocks["class"] = {
   init: function() {
     this.appendDummyInput().appendField("", "NAME");
     this.appendDummyInput().appendField(new Blockly.FieldTextInput("Name der Instanz"), "INSTANCE");
     this.name = "Klasse";
+    this.methods = [];
     console.log(this);
     this.getDropDown();
 
@@ -57,25 +56,35 @@ Blockly.Blocks["class"] = {
     this.setHelpUrl("");
   },
 
+  getClassCall: function() {
+    return this.name;
+  },
   //TODO: get procedure_callreturn
   renameClass: function(newName) {
     console.log(this.name);
     this.name = newName;
     this.setFieldValue(newName, "NAME");
   },
+  update: function() {
+    this.getDropDown();
+  },
   getDropDown: function() {
+    console.log(this.getInput("METHODS"));
     if (this.getInput("METHODS")) {
+      console.log("MEthODS");
       this.removeInput("METHODS");
     }
     var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
-    console.log(this.name);
-    if (!(methods.length == 0)) {
-      var options = [];
-      for (var i = 0; i < methods.length; i++) {
-        options.push([methods[i].getFieldValue("NAME"), "FUNCTION_" + methods[i].getFieldValue("NAME")]);
+    if (this.methods.length != methods.length) {
+      this.methods = methods;
+      if (!(this.methods.length == 0)) {
+        var options = [];
+        for (var i = 0; i < this.methods.length; i++) {
+          options.push([this.methods[i].getFieldValue("NAME"), "FUNCTION_" + this.methods[i].getFieldValue("NAME")]);
+        }
+        var dropdown = new Blockly.FieldDropdown(options);
+        this.appendValueInput("Data").appendField(dropdown, "METHODS");
       }
-      var dropdown = new Blockly.FieldDropdown(options);
-      this.appendValueInput("Data").appendField(dropdown, "METHODS");
     }
   },
   mutationToDom: function() {},
