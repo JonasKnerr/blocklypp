@@ -69,13 +69,11 @@ Blockly.Blocks["class"] = {
     this.getDropDown();
   },
   getDropDown: function() {
-    console.log(this.getInput("METHODS"));
-    if (this.getInput("METHODS")) {
-      console.log("MEthODS");
-      this.removeInput("METHODS");
-    }
     var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
     if (this.methods.length != methods.length) {
+      if (this.getInput("Data")) {
+        this.removeInput("Data");
+      }
       this.methods = methods;
       if (!(this.methods.length == 0)) {
         var options = [];
