@@ -25,6 +25,16 @@ Blockly.Class.allUsedClasses = function(workspace) {
   return classes;
 };
 
+Blockly.Class.getInstances = function(workspace) {
+  var blocks = workspace.getAllBlocks(false);
+  var instances = [];
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getInstanceDef) {
+      instances.push(blocks[i].getInstanceDef());
+    }
+  }
+  return instances;
+};
 /**
  *   Returns an two dimensional array with the name of all Methods form a specific classname
  *   first part fo the array is the function name, second part is "FUNCTION_" + functionname
@@ -135,16 +145,27 @@ Blockly.Class.flyoutCategory = function(workspace) {
     block.setAttribute("gap", 16);
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
-    /**TODO: Blockly Message einfügen*/
-    // var mutation = Blockly.Xml.utils.createElement("mutation");
-    // for (var i = 0; i < methods.length; i++) {
-    //   var arg = Blockly.Xml.utils.createElement("arg");
-    //   arg.setAttribute("name", methods[i]);
-    //   mutation.appendChild(arg);
-    // }
     nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
     block.appendChild(nameField);
     xmlList.push(block);
   }
+  var instances = Blockly.Class.getInstances(workspace);
+  for (var i = 0; i < usedClasses.length; i++) {
+    var block = Blockly.Xml.utils.createElement("block");
+    block.setAttribute("type", "instance");
+    block.setAttribute("gap", 16);
+
+    if (instances.length > 0) {
+      // var nameField = Blockly.Xml.utils.createElement("field");
+      // nameField.setAttribute("name", "NAME");
+      // nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][0]));
+      var instanceField = Blockly.Xml.utils.createElement("field");
+      nameField.setAttribute("name", "INSTANCE");
+      nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][1]));
+      block.appendChild(nameField);
+    }
+    xmlList.push(block);
+  }
+
   return xmlList;
 };
