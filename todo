@@ -5,13 +5,15 @@
 	- normale procedures überschreiben / done
 	- klassen instanz erstellen, wenn klasse in den Workspace gezogen wird / done
 	- methoden  an die Instanz übergeben  / done
-	- methoden sowie Klassen namen dynamisch darstellen
-		- mutation to DOM einfügen, ähnlich wie procedures
-		-
-
-	- Methoden von Funktionen separieren
+	- methoden sowie Klassen namen dynamisch darstellen / done
+		- TODO: methoden namen direkt/ on the fly ändern
+	
 	- constructor!!!
+		- atribute einfügen / done
+		- mit new operator neue Instanzen erstellen
+
 	- logische Blöcke nicht mehr an methoden anhängen
+	- Methoden von Funktionen separieren
 
 - in PP implementieren
 

@@ -9,7 +9,7 @@ Blockly.Blocks["control_class"] = {
     this.appendDummyInput()
       .appendField("class")
       .appendField(nameField, "NAME");
-    this.appendValueInput("Attribute")
+    this.appendValueInput("ATTRIBUTE")
       .setCheck(null)
       .appendField("Attribute");
     this.appendStatementInput("Constructor")
@@ -19,10 +19,60 @@ Blockly.Blocks["control_class"] = {
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
     this.setColour(230);
+    this.setMutator(new Blockly.Mutator(["class_attribute"]));
     this.attributeCount = 0;
     this.methodCount = 0;
     this.setTooltip("");
     this.setHelpUrl("");
+  },
+  decompose: function(workspace) {
+    var topBlock = Blockly.Block.obtain(workspace, "class_mutator");
+    topBlock.initSvg();
+    var connection = topBlock.getInput("STACK").connection;
+    for (var j = 1; j <= this.attributeCount; j++) {
+      //TODO: should be use in newer blocky versions
+      //var attributeBlock = workspace.newBlock("class_attribute");
+      var attributeBlock = workspace.newBlock("class_attribute");
+      attributeBlock.initSvg();
+      connection.connect(attributeBlock.previousConnection);
+      connection = attributeBlock.nextConnection;
+    }
+    return topBlock;
+  },
+  compose: function(containerBlock) {
+    for (var i = this.attributeCount; i > 0; i--) {
+      this.removeInput("attribute" + i);
+    }
+    this.attributeCount = 0;
+    var itemBlock = containerBlock.getInputTargetBlock("STACK");
+    while (itemBlock) {
+      if (itemBlock.type == "class_attribute") {
+        this.attributeCount++;
+        var attributeInput = this.appendValueInput("attribute" + this.attributeCount)
+          .setCheck(null)
+          .appendField("Attribute");
+        if (itemBlock.valueConnection_) attributeInput.connection.connect(itemBlock.valueConnection_);
+      }
+      itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
+    }
+  },
+  mutationToDom: function() {
+    if (!this.atrributeCount && !this.methodCount) {
+      return null;
+    }
+    var container = document.createElement("mutation");
+    if (this.attributeCount) {
+      container.setAttribute("attribute", this.attributeCount);
+    }
+    return container;
+  },
+  domToMutation: function(xmlElement) {
+    this.atrributeCount = parseInt(xmlElement.getAttribute("attribute"), 10) || 0;
+    for (var i = 1; i < this.attributeCount; i++) {
+      this.appendValueInput("attribute" + i)
+        .setCheck(null)
+        .appendField("Attribute");
+    }
   },
   getClassDef: function() {
     return this.getFieldValue("NAME");
@@ -194,4 +244,28 @@ Blockly.Blocks["class_function_noreturn"] = {
   displayRenamedVar_: Blockly.Blocks["procedures_defnoreturn"].displayRenamedVar_,
   customContextMenu: Blockly.Blocks["procedures_defnoreturn"].customContextMenu,
   callType_: "procedures_callreturn"
+};
+Blockly.Blocks["class_attribute"] = {
+  init: function() {
+    this.appendValueInput("NAME")
+      .setCheck(null)
+      .appendField("attribute");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+    this.contextMenu = false;
+  }
+};
+Blockly.Blocks["class_mutator"] = {
+  init: function() {
+    this.appendDummyInput().appendField("class");
+    this.appendStatementInput("STACK");
+    //  this.appendStatementInput("STACK");
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+    this.contextMenu = false;
+  }
 };
