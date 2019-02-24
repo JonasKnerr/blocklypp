@@ -154,15 +154,14 @@ Blockly.Class.flyoutCategory = function(workspace) {
     var block = Blockly.Xml.utils.createElement("block");
     block.setAttribute("type", "instance");
     block.setAttribute("gap", 16);
-
     if (instances.length > 0) {
       // var nameField = Blockly.Xml.utils.createElement("field");
       // nameField.setAttribute("name", "NAME");
       // nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][0]));
       var instanceField = Blockly.Xml.utils.createElement("field");
-      nameField.setAttribute("name", "INSTANCE");
-      nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][1]));
-      block.appendChild(nameField);
+      instanceField.setAttribute("name", "INSTANCE");
+      instanceField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][1]));
+      block.appendChild(instanceField);
     }
     xmlList.push(block);
   }

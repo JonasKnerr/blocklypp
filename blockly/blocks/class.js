@@ -3,15 +3,85 @@ goog.provide("Blockly.Constants.Class");
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
 
+Blockly.Blocks["class"] = {
+  init: function() {
+    this.appendDummyInput().appendField("new");
+    this.appendDummyInput().appendField("", "NAME");
+    var nameField = new Blockly.FieldTextInput("", Blockly.Class.rename);
+    this.appendDummyInput()
+      .appendField("Instance")
+      .appendField(nameField, "INSTANCE");
+    this.name = "Klasse";
+    this.setInputsInline(true);
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+  //TODO: get procedure_callreturn
+  getInstanceDef: function() {
+    return [this.name, this.getFieldValue("INSTANCE")];
+  },
+  renameClass: function(newName) {
+    console.log(this.name);
+    this.name = newName;
+    this.setFieldValue(newName, "NAME");
+  }
+};
+Blockly.Blocks["instance"] = {
+  init: function() {
+    this.appendDummyInput().appendField("", "INSTANCE");
+    this.methods = [];
+    this.getDropDown();
+    this.setInputsInline(true);
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+
+  getClassCall: function() {
+    return this.name;
+  },
+  //TODO: get procedure_callreturn
+  renameClass: function(newName) {
+    console.log(this.name);
+    this.name = newName;
+    this.setFieldValue(newName, "INSTANCE");
+  },
+  update: function() {
+    this.getDropDown();
+  },
+  /**
+   * Intialize a dropdown with all methods for a class
+   */
+  getDropDown: function() {
+    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
+    if (this.methods.length != methods.length) {
+      //remove previous Dropdown
+      if (this.getInput("Data")) {
+        this.removeInput("Data");
+      }
+      this.methods = methods;
+      if (!(this.methods.length == 0)) {
+        var options = [];
+        for (var i = 0; i < this.methods.length; i++) {
+          options.push([this.methods[i].getFieldValue("NAME"), "FUNCTION_" + this.methods[i].getFieldValue("NAME")]);
+        }
+        var dropdown = new Blockly.FieldDropdown(options);
+        this.appendValueInput("Data").appendField(dropdown, "METHODS");
+      }
+    }
+  }
+};
+/**
+ * Class to create a new Class with instances
+ */
 Blockly.Blocks["control_class"] = {
   init: function() {
     var nameField = new Blockly.FieldTextInput("", Blockly.Class.rename);
     this.appendDummyInput()
       .appendField("class")
       .appendField(nameField, "NAME");
-    this.appendValueInput("ATTRIBUTE")
-      .setCheck(null)
-      .appendField("Attribute");
+    this.setMutator(new Blockly.Mutator(["class_attribute"]));
     this.appendStatementInput("Constructor")
       .setCheck("Methode")
       .appendField("Constructor");
@@ -19,19 +89,16 @@ Blockly.Blocks["control_class"] = {
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
     this.setColour(230);
-    this.setMutator(new Blockly.Mutator(["class_attribute"]));
     this.attributeCount = 0;
     this.methodCount = 0;
     this.setTooltip("");
     this.setHelpUrl("");
   },
   decompose: function(workspace) {
-    var topBlock = Blockly.Block.obtain(workspace, "class_mutator");
+    var topBlock = workspace.newBlock("class_mutator");
     topBlock.initSvg();
     var connection = topBlock.getInput("STACK").connection;
     for (var j = 1; j <= this.attributeCount; j++) {
-      //TODO: should be use in newer blocky versions
-      //var attributeBlock = workspace.newBlock("class_attribute");
       var attributeBlock = workspace.newBlock("class_attribute");
       attributeBlock.initSvg();
       connection.connect(attributeBlock.previousConnection);
@@ -85,76 +152,6 @@ Blockly.Blocks["control_class"] = {
   }
 };
 
-Blockly.Blocks["class"] = {
-  init: function() {
-    this.appendDummyInput().appendField("new");
-    this.appendDummyInput().appendField("", "NAME");
-    this.appendDummyInput().appendField(new Blockly.FieldTextInput("Name der Instanz"), "INSTANCE");
-    this.name = "Klasse";
-    this.setInputsInline(true);
-    this.setColour(230);
-    this.setTooltip("");
-    this.setHelpUrl("");
-  },
-  //TODO: get procedure_callreturn
-  getInstanceDef: function() {
-    console.log(this.name);
-    console.log(this.getFieldValue("INSTANCE"));
-    return [this.name, this.getFieldValue("INSTANCE")];
-  },
-  renameClass: function(newName) {
-    console.log(this.name);
-    this.name = newName;
-    this.setFieldValue(newName, "NAME");
-  }
-};
-Blockly.Blocks["instance"] = {
-  init: function() {
-    // this.appendDummyInput().appendField("", "NAME");
-    this.appendDummyInput().appendField("", "INSTANCE");
-    this.name = "Klasse";
-    this.methods = [];
-    this.getDropDown();
-    this.setInputsInline(true);
-    this.setColour(230);
-    this.setTooltip("");
-    this.setHelpUrl("");
-  },
-
-  getClassCall: function() {
-    return this.name;
-  },
-  //TODO: get procedure_callreturn
-  renameClass: function(newName) {
-    console.log(this.name);
-    this.name = newName;
-    this.setFieldValue(newName, "NAME");
-  },
-  update: function() {
-    this.getDropDown();
-  },
-  /**
-   * Intialize a dropdown with all methods for a class
-   */
-  getDropDown: function() {
-    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
-    if (this.methods.length != methods.length) {
-      //remove previous Dropdown
-      if (this.getInput("Data")) {
-        this.removeInput("Data");
-      }
-      this.methods = methods;
-      if (!(this.methods.length == 0)) {
-        var options = [];
-        for (var i = 0; i < this.methods.length; i++) {
-          options.push([this.methods[i].getFieldValue("NAME"), "FUNCTION_" + this.methods[i].getFieldValue("NAME")]);
-        }
-        var dropdown = new Blockly.FieldDropdown(options);
-        this.appendValueInput("Data").appendField(dropdown, "METHODS");
-      }
-    }
-  }
-};
 Blockly.Blocks["class_function_return"] = {
   init: function() {
     var nameField = new Blockly.FieldTextInput("", Blockly.Procedures.rename);
