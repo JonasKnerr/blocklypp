@@ -6,7 +6,7 @@ goog.require("Blockly");
 Blockly.Blocks["class"] = {
   init: function() {
     this.appendDummyInput().appendField("new");
-    this.appendDummyInput().appendField("", "NAME");
+    this.appendDummyInput().appendField("Klasse", "NAME");
     var nameField = new Blockly.FieldTextInput("", Blockly.Class.rename);
     this.appendDummyInput()
       .appendField("Instance")
@@ -21,14 +21,18 @@ Blockly.Blocks["class"] = {
   getInstanceDef: function() {
     return [this.name, this.getFieldValue("INSTANCE")];
   },
-  renameClass: function(newName) {
-    console.log(this.name);
-    this.name = newName;
-    this.setFieldValue(newName, "NAME");
+  renameClass: function(oldName, newName) {
+    console.log(oldName);
+    console.log(this.getFieldValue("NAME"));
+    if (Blockly.Names.equals(oldName, this.getFieldValue("NAME"))) {
+      this.name = newName;
+      this.setFieldValue(newName, "NAME");
+    }
   }
 };
 Blockly.Blocks["instance"] = {
   init: function() {
+    this.appendDummyInput().appendField("", "CLASS");
     this.appendDummyInput().appendField("", "INSTANCE");
     this.methods = [];
     this.getDropDown();
@@ -42,11 +46,10 @@ Blockly.Blocks["instance"] = {
     return this.name;
   },
   //TODO: get procedure_callreturn
-  renameClass: function(newName) {
-    console.log(this.name);
-    this.name = newName;
-    this.setFieldValue(newName, "INSTANCE");
-  },
+  // renameClass: function(oldName, newName) {
+  //   this.name = newName;
+  //   this.setFieldValue(newName, "INSTANCE");
+  // },
   update: function() {
     this.getDropDown();
   },
@@ -77,7 +80,7 @@ Blockly.Blocks["instance"] = {
  */
 Blockly.Blocks["control_class"] = {
   init: function() {
-    var nameField = new Blockly.FieldTextInput("", Blockly.Class.rename);
+    var nameField = new Blockly.FieldTextInput("", Blockly.Class.renameClass);
     this.appendDummyInput()
       .appendField("class")
       .appendField(nameField, "NAME");

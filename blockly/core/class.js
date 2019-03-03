@@ -91,12 +91,17 @@ Blockly.Class.mutateCallers = function(block) {
   }
 };
 
-Blockly.Class.rename = function(name) {
+Blockly.Class.renameClass = function(name) {
+  // console.log(this);
+  // console.log(this.text_);
+  var oldName = this.text_;
   name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
-  var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
-  for (var i = 0; i < blocks.length; i++) {
-    if (blocks[i].renameClass) {
-      blocks[i].renameClass(name);
+  if (oldName != name) {
+    var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
+    for (var i = 0; i < blocks.length; i++) {
+      if (blocks[i].renameClass) {
+        blocks[i].renameClass(oldName, name);
+      }
     }
   }
 };
@@ -150,6 +155,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
     xmlList.push(block);
   }
   var instances = Blockly.Class.getInstances(workspace);
+  console.log(instances);
   for (var i = 0; i < usedClasses.length; i++) {
     var block = Blockly.Xml.utils.createElement("block");
     block.setAttribute("type", "instance");
