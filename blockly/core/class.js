@@ -91,21 +91,99 @@ Blockly.Class.mutateCallers = function(block) {
   }
 };
 
+/**
+ * Ensure two identically-named classes don't exist.
+ * @param {string} name Proposed procedure name.
+ * @param {!Blockly.Block} block Block to disambiguate.
+ * @return {string} Non-colliding name.
+ */
+
+Blockly.Class.findLegalName = function(name, block) {
+  if (block.isInFlyout) {
+    // Flyouts can have multiple procedures called 'do something'.
+    return name;
+  }
+  while (!Blockly.Class.isLegalName_(name, block.workspace, block)) {
+    // Collision with another procedure.
+    var r = name.match(/^(.*?)(\d+)$/);
+    if (!r) {
+      name += "2";
+      console.log("!R" + name);
+    } else {
+      console.log("R");
+      name = r[1] + (parseInt(r[2], 10) + 1);
+    }
+  }
+  return name;
+};
+
+/**
+ * Does this class have a legal name?  Illegal names include names of
+ * classes already defined.
+ * @param {string} name The questionable name.
+ * @param {!Blockly.Workspace} workspace The workspace to scan for collisions.
+ * @param {Blockly.Block=} opt_exclude Optional block to exclude from
+ *     comparisons (one doesn't want to collide with oneself).
+ * @return {boolean} True if the name is legal.
+ * @private
+ */
+Blockly.Class.isLegalName_ = function(name, workspace, opt_exclude) {
+  return !Blockly.Class.isNameUsed(name, workspace, opt_exclude);
+};
+/**
+ * Return if the given name is already a procedure name.
+ * @param {string} name The questionable name.
+ * @param {!Blockly.Workspace} workspace The workspace to scan for collisions.
+ * @param {Blockly.Block=} opt_exclude Optional block to exclude from
+ *     comparisons (one doesn't want to collide with oneself).
+ * @return {boolean} True if the name is used, otherwise return false.
+ */
+Blockly.Class.isNameUsed = function(name, workspace, opt_exclude) {
+  var blocks = workspace.getAllBlocks(false);
+  // Iterate through every block and check the name.
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i] == opt_exclude) {
+      continue;
+    }
+    if (blocks[i].getClassDef) {
+      var procName = blocks[i].getClassDef();
+      if (Blockly.Names.equals(procName, name)) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
 Blockly.Class.renameClass = function(name) {
-  // console.log(this);
-  // console.log(this.text_);
-  var oldName = this.text_;
   name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
-  if (oldName != name) {
+  var legalName = Blockly.Class.findLegalName(name, this.sourceBlock_);
+  var oldName = this.text_;
+  // console.log(oldName);
+  // console.log(typeof oldName);
+  if (oldName != name && oldName != legalName) {
     var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
     for (var i = 0; i < blocks.length; i++) {
       if (blocks[i].renameClass) {
-        blocks[i].renameClass(oldName, name);
+        blocks[i].renameClass(oldName, legalName);
+      }
+    }
+  }
+  return legalName;
+};
+
+Blockly.Class.renameInstance = function(name) {
+  var oldName = this.text_;
+  ame = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
+  if (oldName != name) {
+    var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
+    for (var i = 0; i < blocks.length; i++) {
+      if (blocks[i].renameInstance) {
+        blocks[i].renameInstance(oldName, name);
       }
     }
   }
 };
-
 Blockly.Class.flyoutCategory = function(workspace) {
   var xmlList = [];
   if (Blockly.Blocks["control_class"]) {
@@ -141,36 +219,57 @@ Blockly.Class.flyoutCategory = function(workspace) {
     block.appendChild(nameField);
     xmlList.push(block);
   }
-  var usedClasses = Blockly.Class.allUsedClasses(workspace);
-  for (var i = 0; i < usedClasses.length; i++) {
-    var methods = Blockly.Class.getMethods(workspace, usedClasses[i]);
 
-    var block = Blockly.Xml.utils.createElement("block");
-    block.setAttribute("type", "class");
-    block.setAttribute("gap", 16);
-    var nameField = Blockly.Xml.utils.createElement("field");
-    nameField.setAttribute("name", "NAME");
-    nameField.appendChild(Blockly.Xml.utils.createTextNode(usedClasses[i]));
-    block.appendChild(nameField);
-    xmlList.push(block);
-  }
-  var instances = Blockly.Class.getInstances(workspace);
-  console.log(instances);
-  for (var i = 0; i < usedClasses.length; i++) {
-    var block = Blockly.Xml.utils.createElement("block");
-    block.setAttribute("type", "instance");
-    block.setAttribute("gap", 16);
-    if (instances.length > 0) {
-      // var nameField = Blockly.Xml.utils.createElement("field");
-      // nameField.setAttribute("name", "NAME");
-      // nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][0]));
-      var instanceField = Blockly.Xml.utils.createElement("field");
-      instanceField.setAttribute("name", "INSTANCE");
-      instanceField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][1]));
-      block.appendChild(instanceField);
+  // for (var i = 0; i < instances.length; i++) {
+  //   var block = Blockly.Xml.utils.createElement("block");
+  //   block.setAttribute("type", "instance");
+  //   block.setAttribute("gap", 16);
+  //   if (instances.length > 0) {
+  //     console.log(instances);
+  //     // var nameField = Blockly.Xml.utils.createElement("field");
+  //     // nameField.setAttribute("name", "NAME");
+  //     // nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][0]));
+  //     var instanceField = Blockly.Xml.utils.createElement("field");
+  //     instanceField.setAttribute("name", "INSTANCE");
+  //     instanceField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][1]));
+  //     block.appendChild(instanceField);
+  //   }
+  //   xmlList.push(block);
+  // }
+  function populateClasses(classList) {
+    for (var i = 0; i < classList.length; i++) {
+      var name = classList[i];
+
+      var block = Blockly.Xml.utils.createElement("block");
+      block.setAttribute("type", "class");
+      block.setAttribute("gap", 16);
+      var mutation = Blockly.Xml.utils.createElement("mutation");
+      mutation.setAttribute("name", name);
+      block.appendChild(mutation);
+      xmlList.push(block);
     }
-    xmlList.push(block);
   }
+
+  function populateInstances(instanceList) {
+    for (var i = 0; i < instanceList.length; i++) {
+      var name = instanceList[i][1];
+      var className = instanceList[i][0];
+      var block = Blockly.Xml.utils.createElement("block");
+      block.setAttribute("type", "instance");
+      block.setAttribute("gap", 16);
+      var mutation = Blockly.Xml.utils.createElement("mutation");
+      mutation.setAttribute("name", name);
+      mutation.setAttribute("class", className);
+      block.appendChild(mutation);
+      console.log(block);
+      xmlList.push(block);
+    }
+  }
+
+  var instances = Blockly.Class.getInstances(workspace);
+  var classes = Blockly.Class.allUsedClasses(workspace);
+  populateInstances(instances);
+  populateClasses(classes);
 
   return xmlList;
 };

@@ -8,6 +8,9 @@
 	- methoden sowie Klassen namen dynamisch darstellen / done
 		- TODO: methoden namen direkt/ on the fly ändern
 	
+	-renameClass/renameInstance
+	-classFindLegalName	
+
 	- constructor!!!
 		- atribute einfügen / done
 		- mit new operator neue Instanzen erstellen
@@ -15,7 +18,9 @@
 	- logische Blöcke nicht mehr an methoden anhängen
 	- Methoden von Funktionen separieren
 
+- extra Workspace für die Klassen einfügen zur besseren Lesbarkeit
+	- Instanzen werden dann in den Orginalen Workspace geschoben
+
 - in PP implementieren
 
-- generator für andere Sprache hinzufügen
 

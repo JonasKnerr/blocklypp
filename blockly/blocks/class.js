@@ -3,37 +3,58 @@ goog.provide("Blockly.Constants.Class");
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
 
+/**
+ *Block to create instances for each class
+ */
+
 Blockly.Blocks["class"] = {
   init: function() {
     this.appendDummyInput().appendField("new");
-    this.appendDummyInput().appendField("Klasse", "NAME");
-    var nameField = new Blockly.FieldTextInput("", Blockly.Class.rename);
+    this.appendDummyInput().appendField(this.id, "NAME");
+    var nameField = new Blockly.FieldTextInput("", Blockly.Class.renameInstance);
     this.appendDummyInput()
       .appendField("Instance")
       .appendField(nameField, "INSTANCE");
-    this.name = "Klasse";
     this.setInputsInline(true);
     this.setColour(230);
     this.setTooltip("");
     this.setHelpUrl("");
   },
+  getClassName() {
+    return this.getFieldValue("NAME");
+  },
   //TODO: get procedure_callreturn
   getInstanceDef: function() {
-    return [this.name, this.getFieldValue("INSTANCE")];
+    return [this.getClassName(), this.getFieldValue("INSTANCE")];
   },
+  /**
+   * renames the class, checks the oldName to only rename
+   * classes with the same name
+   */
   renameClass: function(oldName, newName) {
-    console.log(oldName);
-    console.log(this.getFieldValue("NAME"));
-    if (Blockly.Names.equals(oldName, this.getFieldValue("NAME"))) {
-      this.name = newName;
+    if (Blockly.Names.equals(oldName, this.getClassName())) {
       this.setFieldValue(newName, "NAME");
     }
-  }
+  },
+  mutationToDom: function() {
+    var container = document.createElement("mutation");
+    container.setAttribute("name", this.getClassName());
+    return container;
+  },
+  domToMutation: function(xmlElement) {
+    var name = xmlElement.getAttribute("name");
+    this.renameClass(this.getClassName(), name);
+  },
+  defType_: "class"
 };
+
+/**
+ *TODO Block for a instance of a specific class, an object of the class????
+ */
 Blockly.Blocks["instance"] = {
   init: function() {
-    this.appendDummyInput().appendField("", "CLASS");
-    this.appendDummyInput().appendField("", "INSTANCE");
+    this.appendDummyInput().appendField("Klasse", "CLASS");
+    this.appendDummyInput().appendField("Instanz", "INSTANCE");
     this.methods = [];
     this.getDropDown();
     this.setInputsInline(true);
@@ -41,23 +62,55 @@ Blockly.Blocks["instance"] = {
     this.setTooltip("");
     this.setHelpUrl("");
   },
-
-  getClassCall: function() {
-    return this.name;
+  getInstanceName: function() {
+    return this.getFieldValue("INSTANCE");
   },
-  //TODO: get procedure_callreturn
-  // renameClass: function(oldName, newName) {
-  //   this.name = newName;
-  //   this.setFieldValue(newName, "INSTANCE");
-  // },
+  getClassName: function() {
+    return this.getFieldValue("CLASS");
+  },
+  /**
+   * Renames the classname of the instance
+   */
+  renameClass: function(oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getClassName())) {
+      this.setFieldValue(newName, "CLASS");
+    }
+  },
+  /**
+   * Renames the instancename of the instance
+   */
+  renameInstance: function(oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getInstanceName())) {
+      this.setFieldValue(newName, "INSTANCE");
+    }
+  },
   update: function() {
     this.getDropDown();
+  },
+  /**
+   * Create XML to represent the argumens and names
+   */
+  mutationToDom: function() {
+    var container = document.createElement("mutation");
+    container.setAttribute("name", this.getInstanceName());
+    container.setAttribute("class", this.getClassName());
+    return container;
+  },
+  /**
+   *Parse XML to restore the arguments and names
+   */
+  domToMutation: function(xmlElement) {
+    var name = xmlElement.getAttribute("name");
+    this.renameInstance(this.getInstanceName(), name);
+    var className = xmlElement.getAttribute("class");
+    this.renameClass(this.getClassName(), className);
   },
   /**
    * Intialize a dropdown with all methods for a class
    */
   getDropDown: function() {
     var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
+    console.log(methods);
     if (this.methods.length != methods.length) {
       //remove previous Dropdown
       if (this.getInput("Data")) {
@@ -77,10 +130,13 @@ Blockly.Blocks["instance"] = {
 };
 /**
  * Class to create a new Class with instances
+ * add atrributes with decompose and compose functions
  */
+
 Blockly.Blocks["control_class"] = {
   init: function() {
     var nameField = new Blockly.FieldTextInput("", Blockly.Class.renameClass);
+    nameField.setSpellcheck(false);
     this.appendDummyInput()
       .appendField("class")
       .appendField(nameField, "NAME");
@@ -152,7 +208,8 @@ Blockly.Blocks["control_class"] = {
   },
   onchange: function() {
     Blockly.Class.mutateCallers(this);
-  }
+  },
+  callType_: "class"
 };
 
 Blockly.Blocks["class_function_return"] = {

@@ -589,6 +589,7 @@ Blockly.Blocks["procedures_callnoreturn"] = {
    * @this Blockly.Block
    */
   renameProcedure: function(oldName, newName) {
+    console.log(oldName);
     if (Blockly.Names.equals(oldName, this.getProcedureCall())) {
       this.setFieldValue(newName, "NAME");
       var baseMsg = this.outputConnection
