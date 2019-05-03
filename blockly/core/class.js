@@ -74,8 +74,8 @@ Blockly.Class.getCallers = function(name, workspace) {
   var callers = [];
   var blocks = workspace.getAllBlocks(false);
   for (var i = 0; i < blocks.length; i++) {
-    if (blocks[i].getClassCall) {
-      var className = blocks[i].getClassCall();
+    if (blocks[i].getClassName) {
+      var className = blocks[i].getClassName();
       if (className && Blockly.Names.equals(className, name)) {
         callers.push(blocks[i]);
       }
@@ -83,7 +83,9 @@ Blockly.Class.getCallers = function(name, workspace) {
   }
   return callers;
 };
-
+/*
+ * Mutates all calling blocks if something changes in a control_class block
+ */
 Blockly.Class.mutateCallers = function(block) {
   callers = Blockly.Class.getCallers(block.getClassDef(), block.workspace);
   for (var i = 0; i < callers.length; i++) {
@@ -108,7 +110,6 @@ Blockly.Class.findLegalName = function(name, block) {
     var r = name.match(/^(.*?)(\d+)$/);
     if (!r) {
       name += "2";
-      console.log("!R" + name);
     } else {
       console.log("R");
       name = r[1] + (parseInt(r[2], 10) + 1);
@@ -220,22 +221,6 @@ Blockly.Class.flyoutCategory = function(workspace) {
     xmlList.push(block);
   }
 
-  // for (var i = 0; i < instances.length; i++) {
-  //   var block = Blockly.Xml.utils.createElement("block");
-  //   block.setAttribute("type", "instance");
-  //   block.setAttribute("gap", 16);
-  //   if (instances.length > 0) {
-  //     console.log(instances);
-  //     // var nameField = Blockly.Xml.utils.createElement("field");
-  //     // nameField.setAttribute("name", "NAME");
-  //     // nameField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][0]));
-  //     var instanceField = Blockly.Xml.utils.createElement("field");
-  //     instanceField.setAttribute("name", "INSTANCE");
-  //     instanceField.appendChild(Blockly.Xml.utils.createTextNode(instances[i][1]));
-  //     block.appendChild(instanceField);
-  //   }
-  //   xmlList.push(block);
-  // }
   function populateClasses(classList) {
     for (var i = 0; i < classList.length; i++) {
       var name = classList[i];
@@ -261,7 +246,6 @@ Blockly.Class.flyoutCategory = function(workspace) {
       mutation.setAttribute("name", name);
       mutation.setAttribute("class", className);
       block.appendChild(mutation);
-      console.log(block);
       xmlList.push(block);
     }
   }

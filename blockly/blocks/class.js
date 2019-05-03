@@ -27,6 +27,10 @@ Blockly.Blocks["class"] = {
   getInstanceDef: function() {
     return [this.getClassName(), this.getFieldValue("INSTANCE")];
   },
+  /*
+   *TODO: Upates if control_class gets changed
+   */
+  update: function() {},
   /**
    * renames the class, checks the oldName to only rename
    * classes with the same name
@@ -109,8 +113,7 @@ Blockly.Blocks["instance"] = {
    * Intialize a dropdown with all methods for a class
    */
   getDropDown: function() {
-    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.name);
-    console.log(methods);
+    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getClassName());
     if (this.methods.length != methods.length) {
       //remove previous Dropdown
       if (this.getInput("Data")) {
