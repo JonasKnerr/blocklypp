@@ -100,18 +100,17 @@ Blockly.Class.mutateCallers = function(block) {
  * @return {string} Non-colliding name.
  */
 
-Blockly.Class.findLegalName = function(name, block) {
+Blockly.Class.findLegalName = function(name, block, type) {
   if (block.isInFlyout) {
     // Flyouts can have multiple procedures called 'do something'.
     return name;
   }
-  while (!Blockly.Class.isLegalName_(name, block.workspace, block)) {
+  while (!Blockly.Class.isLegalName_(name, block.workspace, block, type)) {
     // Collision with another procedure.
     var r = name.match(/^(.*?)(\d+)$/);
     if (!r) {
       name += "2";
     } else {
-      console.log("R");
       name = r[1] + (parseInt(r[2], 10) + 1);
     }
   }
@@ -128,8 +127,8 @@ Blockly.Class.findLegalName = function(name, block) {
  * @return {boolean} True if the name is legal.
  * @private
  */
-Blockly.Class.isLegalName_ = function(name, workspace, opt_exclude) {
-  return !Blockly.Class.isNameUsed(name, workspace, opt_exclude);
+Blockly.Class.isLegalName_ = function(name, workspace, opt_exclude, type) {
+  return !Blockly.Class.isNameUsed(name, workspace, opt_exclude, type);
 };
 /**
  * Return if the given name is already a procedure name.
@@ -139,26 +138,42 @@ Blockly.Class.isLegalName_ = function(name, workspace, opt_exclude) {
  *     comparisons (one doesn't want to collide with oneself).
  * @return {boolean} True if the name is used, otherwise return false.
  */
-Blockly.Class.isNameUsed = function(name, workspace, opt_exclude) {
+Blockly.Class.isNameUsed = function(name, workspace, opt_exclude, type) {
   var blocks = workspace.getAllBlocks(false);
   // Iterate through every block and check the name.
   for (var i = 0; i < blocks.length; i++) {
     if (blocks[i] == opt_exclude) {
       continue;
     }
-    if (blocks[i].getClassDef) {
-      var procName = blocks[i].getClassDef();
-      if (Blockly.Names.equals(procName, name)) {
-        return true;
+    if (type == "class") {
+      if (blocks[i].getClassDef) {
+        var procName = blocks[i].getClassDef();
+        if (Blockly.Names.equals(procName, name)) {
+          return true;
+        }
+      }
+    }
+    if (type == "instance") {
+      if (blocks[i].getInstanceDef) {
+        var procName = blocks[i].getInstanceDef()[1];
+        if (Blockly.Names.equals(procName, name)) {
+          return true;
+        }
       }
     }
   }
   return false;
 };
 
+/*
+ *Function to rename classes, checks for duplicatet classes and renames
+ *all attached classes
+ *@param {string} name The class name
+ *@return {string} legalName
+ */
 Blockly.Class.renameClass = function(name) {
   name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
-  var legalName = Blockly.Class.findLegalName(name, this.sourceBlock_);
+  var legalName = Blockly.Class.findLegalName(name, this.sourceBlock_, "class");
   var oldName = this.text_;
   if (oldName != name && oldName != legalName) {
     var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
@@ -173,15 +188,19 @@ Blockly.Class.renameClass = function(name) {
 
 Blockly.Class.renameInstance = function(name) {
   var oldName = this.text_;
-  ame = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
-  if (oldName != name) {
+  console.log(oldName);
+  name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
+  var legalName = Blockly.Class.findLegalName(name, this.sourceBlock_, "instance");
+  if (oldName != name && oldName != legalName) {
     var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
     for (var i = 0; i < blocks.length; i++) {
       if (blocks[i].renameInstance) {
-        blocks[i].renameInstance(oldName, name);
+        console.log("rename");
+        blocks[i].renameInstance(oldName, legalName);
       }
     }
   }
+  return legalName;
 };
 
 Blockly.Class.getConstructor = function(workspace, className) {

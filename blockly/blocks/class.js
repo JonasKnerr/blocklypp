@@ -11,10 +11,8 @@ Blockly.Blocks["class"] = {
   init: function() {
     this.appendDummyInput().appendField("new");
     this.appendDummyInput().appendField(this.id, "NAME");
-    var nameField = new Blockly.FieldTextInput("", Blockly.Class.renameInstance);
-    this.appendDummyInput()
-      .appendField("Instance")
-      .appendField(nameField, "INSTANCE");
+    var nameField = new Blockly.FieldTextInput("InstanzName", Blockly.Class.renameInstance);
+    this.appendDummyInput().appendField(nameField, "INSTANCE");
     this.setInputsInline(true);
     this.setColour(230);
     this.setTooltip("");
@@ -23,12 +21,12 @@ Blockly.Blocks["class"] = {
   getClassName() {
     return this.getFieldValue("NAME");
   },
-  //TODO: get procedure_callreturn
+
   getInstanceDef: function() {
     return [this.getClassName(), this.getFieldValue("INSTANCE")];
   },
   /*
-   *TODO: Upates if control_class gets changed
+   * Upates constructor attributes if control_class gets changed
    */
   update: function() {
     var constr = Blockly.Class.getConstructor(this.workspace, this.getClassName());
@@ -64,12 +62,12 @@ Blockly.Blocks["class"] = {
 };
 
 /**
- *TODO Block for a instance of a specific class, an object of the class????
+ *TODO Block for a instance of a specific class
  */
 Blockly.Blocks["instance"] = {
   init: function() {
     this.appendDummyInput().appendField("Klasse", "CLASS");
-    this.appendDummyInput().appendField("Instanz", "INSTANCE");
+    this.appendDummyInput().appendField("", "INSTANCE");
     this.methods = [];
     this.getDropDown();
     this.setInputsInline(true);
@@ -95,6 +93,8 @@ Blockly.Blocks["instance"] = {
    * Renames the instancename of the instance
    */
   renameInstance: function(oldName, newName) {
+    // console.log(oldName);
+    // console.log(this.getInstanceName());
     if (Blockly.Names.equals(oldName, this.getInstanceName())) {
       this.setFieldValue(newName, "INSTANCE");
     }
