@@ -5,6 +5,7 @@ goog.require("Blockly");
 
 /**
  *Block to create instances for each class
+ * @Jonas Knerr
  */
 
 Blockly.Blocks["class"] = {
@@ -14,7 +15,7 @@ Blockly.Blocks["class"] = {
     var nameField = new Blockly.FieldTextInput("InstanzName", Blockly.Class.renameInstance);
     this.appendDummyInput().appendField(nameField, "INSTANCE");
     this.setInputsInline(true);
-    this.setColour(230);
+    this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
   },
@@ -69,9 +70,9 @@ Blockly.Blocks["instance"] = {
     this.appendDummyInput().appendField("Klasse", "CLASS");
     this.appendDummyInput().appendField("", "INSTANCE");
     this.methods = [];
-    this.getDropDown();
+    this.curMethod;
     this.setInputsInline(true);
-    this.setColour(230);
+    this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
   },
@@ -99,8 +100,8 @@ Blockly.Blocks["instance"] = {
       this.setFieldValue(newName, "INSTANCE");
     }
   },
-  update: function() {
-    this.getDropDown();
+  update: function(oldName, legalName) {
+    this.getDropDown(oldName, legalName);
   },
   /**
    * Create XML to represent the argumens and names
@@ -123,9 +124,9 @@ Blockly.Blocks["instance"] = {
   /**
    * Intialize a dropdown with all methods for a class
    */
-  getDropDown: function() {
+  getDropDown: function(oldName, newName) {
     var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getClassName());
-    if (this.methods.length != methods.length) {
+    if (this.methods.length != methods.length || oldName) {
       //remove previous Dropdown
       if (this.getInput("Data")) {
         this.removeInput("Data");
@@ -133,11 +134,44 @@ Blockly.Blocks["instance"] = {
       this.methods = methods;
       if (!(this.methods.length == 0)) {
         var options = [];
+
+        //pushes the current Method as the first item into the array
+        if (this.curMethod) {
+          if (this.curMethod == oldName) {
+            this.curMethod = newName;
+          }
+          options.push([this.curMethod, this.curMethod]);
+        }
+
         for (var i = 0; i < this.methods.length; i++) {
-          options.push([this.methods[i].getFieldValue("NAME"), "FUNCTION_" + this.methods[i].getFieldValue("NAME")]);
+          /*if a function gets renamed we ne to adjust the oldName to
+           * newName of the function, because we need to update in
+           * Blockly.Procedures.Rename before the return s
+           */
+          if (this.methods[i] == this.curMethod) {
+            continue;
+          }
+          if (this.methods[i] == oldName) {
+            options.push([newName, newName]);
+          } else {
+            options.push([this.methods[i], this.methods[i]]);
+          }
         }
         var dropdown = new Blockly.FieldDropdown(options);
-        this.appendValueInput("Data").appendField(dropdown, "METHODS");
+        this.appendDummyInput("Data").appendField(dropdown, "METHODS");
+      }
+    }
+  },
+  onchange: function() {
+    if (this.getFieldValue("METHODS")) {
+      var method = this.getFieldValue("METHODS");
+      this.curMethod = method;
+      var attributes = Blockly.Class.getMethodAttributes(this.workspace, method);
+      while (this.getInput("ATTRIBUTES")) {
+        this.removeInput("ATTRIBUTES");
+      }
+      for (var i = 0; i < attributes.length; i++) {
+        this.appendValueInput("ATTRIBUTES");
       }
     }
   }
@@ -161,7 +195,7 @@ Blockly.Blocks["control_class"] = {
     this.appendStatementInput("METHODS")
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
-    this.setColour(230);
+    this.setColour(20);
     this.attributeCount = 0;
     this.methodCount = 0;
     this.setTooltip("");
@@ -369,7 +403,7 @@ Blockly.Blocks["class_attribute"] = {
       .appendField("attribute");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
     this.contextMenu = false;
@@ -380,7 +414,7 @@ Blockly.Blocks["class_mutator"] = {
     this.appendDummyInput().appendField("class");
     this.appendStatementInput("STACK");
     //  this.appendStatementInput("STACK");
-    this.setColour(230);
+    this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
     this.contextMenu = false;

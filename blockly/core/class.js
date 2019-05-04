@@ -1,3 +1,6 @@
+/*
+ *@Jonas Knerr
+ */
 goog.provide("Blockly.Class");
 
 goog.require("Blockly.Blocks");
@@ -9,7 +12,7 @@ goog.require("Blockly.Workspace");
 goog.require("Blockly.Xml");
 goog.require("Blockly.Xml.utils");
 
-/**
+/*
  * Find all user created classes in a workspace
  *@param workspace root workspace
  *@return classes a list of all classes
@@ -55,11 +58,11 @@ Blockly.Class.getMethods = function(workspace, classname) {
         currentBlock = blocks[i].getStatement();
         if (currentBlock) {
           //methods.push([currentBlock.getFieldValue("NAME"), "FUNCTION_" + currentBlock.getFieldValue("NAME")]);
-          methods.push(currentBlock);
+          methods.push(currentBlock.getFieldValue("NAME"));
           while (currentBlock.getNextBlock()) {
             nextBlock = currentBlock.getNextBlock();
             //methods.push([nextBlock.getFieldValue("NAME"), "FUNCTION_" + nextBlock.getFieldValue("NAME")]);
-            methods.push(nextBlock);
+            methods.push(nextBlock.getFieldValue("NAME"));
             currentBlock = nextBlock;
           }
         }
@@ -188,7 +191,6 @@ Blockly.Class.renameClass = function(name) {
 
 Blockly.Class.renameInstance = function(name) {
   var oldName = this.text_;
-  console.log(oldName);
   name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
   var legalName = Blockly.Class.findLegalName(name, this.sourceBlock_, "instance");
   if (oldName != name && oldName != legalName) {
@@ -209,6 +211,19 @@ Blockly.Class.getConstructor = function(workspace, className) {
     if (blocks[i].getConstructor) {
       if (blocks[i].getClassDef() == className) {
         return blocks[i].getConstructor();
+      }
+    }
+  }
+  return false;
+};
+
+Blockly.Class.getMethodAttributes = function(workspace, methodName) {
+  var blocks = workspace.getAllBlocks(false);
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getProcedureDef) {
+      if (blocks[i].getProcedureDef()[0] == methodName) {
+        //getProcedureDef()[1] is a array with all arguments_
+        return blocks[i].getProcedureDef()[1];
       }
     }
   }
