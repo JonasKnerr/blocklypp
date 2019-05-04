@@ -30,7 +30,18 @@ Blockly.Blocks["class"] = {
   /*
    *TODO: Upates if control_class gets changed
    */
-  update: function() {},
+  update: function() {
+    var constr = Blockly.Class.getConstructor(this.workspace, this.getClassName());
+    if (constr) {
+      var attributes = constr.getVars();
+      while (this.getInput("ATTRIBUTES")) {
+        this.removeInput("ATTRIBUTES");
+      }
+      for (var i = 0; i < attributes.length; i++) {
+        this.appendValueInput("ATTRIBUTES");
+      }
+    }
+  },
   /**
    * renames the class, checks the oldName to only rename
    * classes with the same name
@@ -141,12 +152,12 @@ Blockly.Blocks["control_class"] = {
     var nameField = new Blockly.FieldTextInput("", Blockly.Class.renameClass);
     nameField.setSpellcheck(false);
     this.appendDummyInput()
-      .appendField("class")
+      .appendField("Klasse")
       .appendField(nameField, "NAME");
     this.setMutator(new Blockly.Mutator(["class_attribute"]));
-    this.appendStatementInput("Constructor")
-      .setCheck("Methode")
-      .appendField("Constructor");
+    this.appendStatementInput("CONSTRUCTOR")
+      .setCheck(["class_constructor"])
+      .appendField("Konstruktoren");
     this.appendStatementInput("METHODS")
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
@@ -209,10 +220,56 @@ Blockly.Blocks["control_class"] = {
   getStatement: function() {
     return this.getInputTargetBlock("METHODS");
   },
+  getConstructor: function() {
+    return this.getInputTargetBlock("CONSTRUCTOR");
+  },
   onchange: function() {
     Blockly.Class.mutateCallers(this);
   },
   callType_: "class"
+};
+
+Blockly.Blocks["class_constructor"] = {
+  init: function() {
+    var nameField = new Blockly.FieldTextInput("", Blockly.Procedures.rename);
+    nameField.setSpellcheck(false);
+    this.appendDummyInput()
+      .appendField("Konstruktor")
+      .appendField("", "PARAMS");
+    this.setMutator(new Blockly.Mutator(["procedures_mutatorarg"]));
+    if (
+      (this.workspace.options.comments ||
+        (this.workspace.options.parentWorkspace && this.workspace.options.parentWorkspace.options.comments)) &&
+      Blockly.Msg["PROCEDURES_DEFNORETURN_COMMENT"]
+    ) {
+      this.setCommentText(Blockly.Msg["PROCEDURES_DEFNORETURN_COMMENT"]);
+    }
+    this.setNextStatement(true, ["class_constructor"]);
+    this.setPreviousStatement(true, ["class_constructor"]);
+    this.setColour(Blockly.Msg["PROCEDURES_HUE"]);
+    this.setTooltip(Blockly.Msg["PROCEDURES_DEFNORETURN_TOOLTIP"]);
+    this.setHelpUrl(Blockly.Msg["PROCEDURES_DEFNORETURN_HELPURL"]);
+    this.arguments_ = [];
+    this.argumentVarModels_ = [];
+    this.setStatements_(true);
+    this.statementConnection_ = null;
+  },
+  setStatements_: Blockly.Blocks["procedures_defnoreturn"].setStatements_,
+  updateParams_: Blockly.Blocks["procedures_defnoreturn"].updateParams_,
+  mutationToDom: Blockly.Blocks["procedures_defnoreturn"].mutationToDom,
+  domToMutation: Blockly.Blocks["procedures_defnoreturn"].domToMutation,
+  decompose: Blockly.Blocks["procedures_defnoreturn"].decompose,
+  compose: Blockly.Blocks["procedures_defnoreturn"].compose,
+  getVars: Blockly.Blocks["procedures_defnoreturn"].getVars,
+  getProcedureDef: function() {
+    return [this.getFieldValue("NAME"), this.arguments_, false];
+  },
+  getVarModels: Blockly.Blocks["procedures_defnoreturn"].getVarModels,
+  renameVarById: Blockly.Blocks["procedures_defnoreturn"].renameVarById,
+  updateVarName: Blockly.Blocks["procedures_defnoreturn"].updateVarName,
+  displayRenamedVar_: Blockly.Blocks["procedures_defnoreturn"].displayRenamedVar_,
+  customContextMenu: Blockly.Blocks["procedures_defnoreturn"].customContextMenu,
+  callType_: "procedures_callreturn"
 };
 
 Blockly.Blocks["class_function_return"] = {
@@ -220,7 +277,7 @@ Blockly.Blocks["class_function_return"] = {
     var nameField = new Blockly.FieldTextInput("", Blockly.Procedures.rename);
     nameField.setSpellcheck(false);
     this.appendDummyInput()
-      .appendField(Blockly.Msg["PROCEDURES_DEFRETURN_TITLE"])
+      .appendField("Methode")
       .appendField(nameField, "NAME")
       .appendField("", "PARAMS");
     this.appendValueInput("RETURN")
@@ -267,7 +324,7 @@ Blockly.Blocks["class_function_noreturn"] = {
     var nameField = new Blockly.FieldTextInput("", Blockly.Procedures.rename);
     nameField.setSpellcheck(false);
     this.appendDummyInput()
-      .appendField(Blockly.Msg["PROCEDURES_DEFNORETURN_TITLE"])
+      .appendField("Methode")
       .appendField(nameField, "NAME")
       .appendField("", "PARAMS");
     this.setMutator(new Blockly.Mutator(["procedures_mutatorarg"]));

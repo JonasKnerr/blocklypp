@@ -160,8 +160,6 @@ Blockly.Class.renameClass = function(name) {
   name = name.replace(/^[\s\xa0]+|[\s\xa0]+$/g, "");
   var legalName = Blockly.Class.findLegalName(name, this.sourceBlock_);
   var oldName = this.text_;
-  // console.log(oldName);
-  // console.log(typeof oldName);
   if (oldName != name && oldName != legalName) {
     var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
     for (var i = 0; i < blocks.length; i++) {
@@ -185,6 +183,19 @@ Blockly.Class.renameInstance = function(name) {
     }
   }
 };
+
+Blockly.Class.getConstructor = function(workspace, className) {
+  var blocks = workspace.getAllBlocks(false);
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getConstructor) {
+      if (blocks[i].getClassDef() == className) {
+        return blocks[i].getConstructor();
+      }
+    }
+  }
+  return false;
+};
+
 Blockly.Class.flyoutCategory = function(workspace) {
   var xmlList = [];
   if (Blockly.Blocks["control_class"]) {
@@ -219,6 +230,18 @@ Blockly.Class.flyoutCategory = function(workspace) {
     nameField.appendChild(Blockly.Xml.utils.createTextNode("Funktion"));
     block.appendChild(nameField);
     xmlList.push(block);
+  }
+
+  if (Blockly.Blocks["class_constructor"]) {
+    var block = Blockly.Xml.utils.createElement("block");
+    block.setAttribute("type", "class_constructor");
+    block.setAttribute("gap", 16);
+    xmlList.push(block);
+  }
+
+  if (xmlList.length) {
+    // Add slightly larger gap between system blocks and user calls.
+    xmlList[xmlList.length - 1].setAttribute("gap", 24);
   }
 
   function populateClasses(classList) {
