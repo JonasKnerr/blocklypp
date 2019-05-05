@@ -232,9 +232,9 @@ Blockly.Class.getMethodAttributes = function(workspace, methodName) {
 
 Blockly.Class.flyoutCategory = function(workspace) {
   var xmlList = [];
-  if (Blockly.Blocks["control_class"]) {
+  if (Blockly.Blocks["class_class"]) {
     var block = Blockly.Xml.utils.createElement("block");
-    block.setAttribute("type", "control_class");
+    block.setAttribute("type", "class_class");
     block.setAttribute("gap", 16);
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
@@ -283,7 +283,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
       var name = classList[i];
 
       var block = Blockly.Xml.utils.createElement("block");
-      block.setAttribute("type", "class");
+      block.setAttribute("type", "class_get_instance");
       block.setAttribute("gap", 16);
       var mutation = Blockly.Xml.utils.createElement("mutation");
       mutation.setAttribute("name", name);
@@ -297,7 +297,7 @@ Blockly.Class.flyoutCategory = function(workspace) {
       var name = instanceList[i][1];
       var className = instanceList[i][0];
       var block = Blockly.Xml.utils.createElement("block");
-      block.setAttribute("type", "instance");
+      block.setAttribute("type", "class_instance");
       block.setAttribute("gap", 16);
       var mutation = Blockly.Xml.utils.createElement("mutation");
       mutation.setAttribute("name", name);

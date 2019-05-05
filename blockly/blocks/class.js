@@ -8,7 +8,7 @@ goog.require("Blockly");
  * @Jonas Knerr
  */
 
-Blockly.Blocks["class"] = {
+Blockly.Blocks["class_get_instance"] = {
   init: function() {
     this.appendDummyInput().appendField("new");
     this.appendDummyInput().appendField(this.id, "NAME");
@@ -65,7 +65,7 @@ Blockly.Blocks["class"] = {
 /**
  *TODO Block for a instance of a specific class
  */
-Blockly.Blocks["instance"] = {
+Blockly.Blocks["class_instance"] = {
   init: function() {
     this.appendDummyInput().appendField("Klasse", "CLASS");
     this.appendDummyInput().appendField("", "INSTANCE");
@@ -132,12 +132,14 @@ Blockly.Blocks["instance"] = {
         this.removeInput("Data");
       }
       this.methods = methods;
+      var setName = false;
       if (!(this.methods.length == 0)) {
         var options = [];
 
         //pushes the current Method as the first item into the array
         if (this.curMethod) {
           if (this.curMethod == oldName) {
+            setName = true;
             this.curMethod = newName;
           }
           options.push([this.curMethod, this.curMethod]);
@@ -151,16 +153,21 @@ Blockly.Blocks["instance"] = {
           if (this.methods[i] == this.curMethod) {
             continue;
           }
-          if (this.methods[i] == oldName) {
+          if (this.methods[i] == oldName && setName) {
             options.push([newName, newName]);
           } else {
             options.push([this.methods[i], this.methods[i]]);
           }
         }
+        console.log(options);
         var dropdown = new Blockly.FieldDropdown(options);
         this.appendDummyInput("Data").appendField(dropdown, "METHODS");
       }
     }
+  },
+  //returns the actual method
+  getCurrentMethod: function() {
+    return this.curMethod;
   },
   onchange: function() {
     if (this.getFieldValue("METHODS")) {
@@ -181,7 +188,7 @@ Blockly.Blocks["instance"] = {
  * add atrributes with decompose and compose functions
  */
 
-Blockly.Blocks["control_class"] = {
+Blockly.Blocks["class_class"] = {
   init: function() {
     var nameField = new Blockly.FieldTextInput("", Blockly.Class.renameClass);
     nameField.setSpellcheck(false);
