@@ -58,11 +58,11 @@ Blockly.Class.getMethods = function(workspace, classname) {
         currentBlock = blocks[i].getStatement();
         if (currentBlock) {
           //methods.push([currentBlock.getFieldValue("NAME"), "FUNCTION_" + currentBlock.getFieldValue("NAME")]);
-          methods.push(currentBlock.getFieldValue("NAME"));
+          methods.push(currentBlock);
           while (currentBlock.getNextBlock()) {
             nextBlock = currentBlock.getNextBlock();
             //methods.push([nextBlock.getFieldValue("NAME"), "FUNCTION_" + nextBlock.getFieldValue("NAME")]);
-            methods.push(nextBlock.getFieldValue("NAME"));
+            methods.push(nextBlock);
             currentBlock = nextBlock;
           }
         }
