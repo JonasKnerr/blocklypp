@@ -46,13 +46,20 @@ Blockly.JavaScript["class_class"] = function(block) {
 Blockly.JavaScript["class_get_instance"] = function(block) {
   var instanceName = block.getInstanceDef()[1];
   var className = block.getInstanceDef()[0];
-  var attributes = block.getConstructor().getVars();
+  var attributes = [];
+
+  if (block.getConstructor()) {
+    if (block.getConstructor().getVars) {
+      atrributes = block.getConstructor().getVars();
+    }
+  }
 
   var code = "var " + instanceName + " = new " + className + "(" + attributes.join(", ") + "); \n";
   return code;
 };
 
 Blockly.JavaScript["class_instance"] = function(block) {
+  console.log(Blockly.Xml.workspaceToDom(block.workspace));
   var instanceName = block.getInstanceName();
   var methodName = block.getCurrentMethod();
   var blocks = block.workspace.getAllBlocks(false);
@@ -65,9 +72,11 @@ Blockly.JavaScript["class_instance"] = function(block) {
       }
     }
   }
-
-  var attributes = methodBlock.getVars();
-
-  var code = instanceName + "." + methodName + "(" + atrributes.join(", ") + ")\n";
+  var attributes = [];
+  console.log(attributes);
+  if (methodBlock.getVars) {
+    attributes = methodBlock.getVars();
+  }
+  var code = instanceName + "." + methodName + "(" + attributes.join(", ") + ")\n";
   return code;
 };

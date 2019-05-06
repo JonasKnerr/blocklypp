@@ -15,7 +15,10 @@ Blockly.Blocks["class_get_instance"] = {
     var nameField = new Blockly.FieldTextInput("InstanzName", Blockly.Class.renameInstance);
     this.appendDummyInput().appendField(nameField, "INSTANCE");
     this.constr;
+    this.arguments = 0;
     this.setInputsInline(true);
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -37,12 +40,17 @@ Blockly.Blocks["class_get_instance"] = {
     var constr = Blockly.Class.getConstructor(this.workspace, this.getClassName());
     this.constr = constr;
     if (constr) {
-      var attributes = constr.getVars();
-      while (this.getInput("ATTRIBUTES")) {
-        this.removeInput("ATTRIBUTES");
-      }
-      for (var i = 0; i < attributes.length; i++) {
-        this.appendValueInput("ATTRIBUTES");
+      var arguments = constr.getVars();
+      if (this.arguments != arguments.length) {
+        if (this.arguments > arguments.length) {
+          while (this.arguments > arguments.length) {
+            this.arguments--;
+            this.removeInput("ARGS" + this.arguments);
+          }
+        } else {
+          this.appendValueInput("ARGS" + this.arguments);
+          this.arguments++;
+        }
       }
     }
   },
@@ -75,8 +83,12 @@ Blockly.Blocks["class_instance"] = {
     this.appendDummyInput().appendField("Klasse", "CLASS");
     this.appendDummyInput().appendField("", "INSTANCE");
     this.methods = [];
+    this.arguments = 0;
     this.curMethod;
+    //this.appendValueInput("INPUT");
     this.setInputsInline(true);
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -184,12 +196,18 @@ Blockly.Blocks["class_instance"] = {
     if (this.getFieldValue("METHODS")) {
       var method = this.getFieldValue("METHODS");
       this.curMethod = method;
-      var attributes = Blockly.Class.getMethodAttributes(this.workspace, method);
-      while (this.getInput("ATTRIBUTES")) {
-        this.removeInput("ATTRIBUTES");
-      }
-      for (var i = 0; i < attributes.length; i++) {
-        this.appendValueInput("ATTRIBUTES");
+      var arguments = Blockly.Class.getMethodAttributes(this.workspace, method);
+
+      if (this.arguments != arguments.length) {
+        if (this.arguments > arguments.length) {
+          while (this.arguments > arguments.length) {
+            this.arguments--;
+            this.removeInput("ARGS" + this.arguments);
+          }
+        } else {
+          this.appendValueInput("ARGS" + this.arguments);
+          this.arguments++;
+        }
       }
     }
   }
@@ -243,6 +261,7 @@ Blockly.Blocks["class_class"] = {
         var attributeInput = this.appendValueInput("attribute" + this.attributeCount)
           .setCheck(null)
           .appendField("Attribute");
+        this.moveInputBefore("attribute" + this.attributeCount, "CONSTRUCTOR");
         if (itemBlock.valueConnection_)
           attributeInput.connection.connect(itemBlock.valueConnection_);
       }

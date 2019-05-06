@@ -1,0 +1,36 @@
+<xml>
+  <variables>
+    <variable type="" id="r11e]#UzjsGaAKsgTShH">
+      x
+    </variable>
+  </variables>
+  <block type="class_class" id="F1.=*HybnO}(y;`_tjYV" x="352" y="66">
+    <field name="NAME">Klasse</field>
+    <statement name="CONSTRUCTOR">
+      <block type="class_constructor" id="g[C#hSHZ7stiBPl)Eng_">
+        <comment pinned="false" h="80" w="160">
+          Describe this function...
+        </comment>
+      </block>
+    </statement>
+    <statement name="METHODS">
+      <block type="class_function_noreturn" id="12xn!Gw_rkF27c~S3#j;">
+        <mutation>
+          <arg name="x" varid="r11e]#UzjsGaAKsgTShH" />
+        </mutation>
+        <field name="NAME">Funktion</field>
+        <comment pinned="false" h="80" w="160">
+          Describe this function...
+        </comment>
+      </block>
+    </statement>
+  </block>
+  <block type="class_get_instance" id="?Jmr`w*HP.a72M/k}aE@" x="170" y="327">
+    <mutation name="Klasse" />
+    <field name="INSTANCE">InstanzName</field>
+  </block>
+  <block type="class_instance" id="H-[66cQ%EHj9FGm71h_~" x="177" y="399">
+    <mutation name="InstanzName" class="Klasse" />
+    <field name="METHODS">Funktion</field>
+  </block>
+</xml>;
