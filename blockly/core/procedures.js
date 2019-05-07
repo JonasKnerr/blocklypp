@@ -194,7 +194,9 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     block.setAttribute("gap", 16);
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
-    nameField.appendChild(Blockly.Xml.utils.createTextNode(Blockly.Msg["PROCEDURES_DEFNORETURN_PROCEDURE"]));
+    nameField.appendChild(
+      Blockly.Xml.utils.createTextNode(Blockly.Msg["PROCEDURES_DEFNORETURN_PROCEDURE"])
+    );
     block.appendChild(nameField);
     xmlList.push(block);
   }
@@ -207,7 +209,9 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     block.setAttribute("gap", 16);
     var nameField = Blockly.Xml.utils.createElement("field");
     nameField.setAttribute("name", "NAME");
-    nameField.appendChild(Blockly.Xml.utils.createTextNode(Blockly.Msg["PROCEDURES_DEFRETURN_PROCEDURE"]));
+    nameField.appendChild(
+      Blockly.Xml.utils.createTextNode(Blockly.Msg["PROCEDURES_DEFRETURN_PROCEDURE"])
+    );
     block.appendChild(nameField);
     xmlList.push(block);
   }
@@ -227,7 +231,6 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     for (var i = 0; i < procedureList.length; i++) {
       var name = procedureList[i][0];
       var args = procedureList[i][1];
-      console.log(procedureList);
       // <block type="procedures_callnoreturn" gap="16">
       //   <mutation name="do something">
       //     <arg name="x"></arg>
@@ -245,7 +248,6 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
         mutation.appendChild(arg);
       }
       xmlList.push(block);
-      console.log(block);
     }
   }
 
@@ -298,7 +300,9 @@ Blockly.Procedures.mutateCallers = function(defBlock) {
       // undo action since it is deterministically tied to the procedure's
       // definition mutation.
       Blockly.Events.recordUndo = false;
-      Blockly.Events.fire(new Blockly.Events.BlockChange(caller, "mutation", null, oldMutation, newMutation));
+      Blockly.Events.fire(
+        new Blockly.Events.BlockChange(caller, "mutation", null, oldMutation, newMutation)
+      );
       Blockly.Events.recordUndo = oldRecordUndo;
     }
   }

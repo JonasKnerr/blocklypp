@@ -44,7 +44,8 @@ Blockly.Blocks["procedures_defnoreturn"] = {
     this.setMutator(new Blockly.Mutator(["procedures_mutatorarg"]));
     if (
       (this.workspace.options.comments ||
-        (this.workspace.options.parentWorkspace && this.workspace.options.parentWorkspace.options.comments)) &&
+        (this.workspace.options.parentWorkspace &&
+          this.workspace.options.parentWorkspace.options.comments)) &&
       Blockly.Msg["PROCEDURES_DEFNORETURN_COMMENT"]
     ) {
       this.setCommentText(Blockly.Msg["PROCEDURES_DEFNORETURN_COMMENT"]);
@@ -154,7 +155,12 @@ Blockly.Blocks["procedures_defnoreturn"] = {
         var varName = childNode.getAttribute("name");
         var varId = childNode.getAttribute("varid") || childNode.getAttribute("varId");
         this.arguments_.push(varName);
-        var variable = Blockly.Variables.getOrCreateVariablePackage(this.workspace, varId, varName, "");
+        var variable = Blockly.Variables.getOrCreateVariablePackage(
+          this.workspace,
+          varId,
+          varName,
+          ""
+        );
         if (variable != null) {
           this.argumentVarModels_.push(variable);
         } else {
@@ -343,7 +349,10 @@ Blockly.Blocks["procedures_defnoreturn"] = {
     if (this.mutator.isVisible()) {
       var blocks = this.mutator.workspace_.getAllBlocks(false);
       for (var i = 0, block; (block = blocks[i]); i++) {
-        if (block.type == "procedures_mutatorarg" && Blockly.Names.equals(oldName, block.getFieldValue("NAME"))) {
+        if (
+          block.type == "procedures_mutatorarg" &&
+          Blockly.Names.equals(oldName, block.getFieldValue("NAME"))
+        ) {
           block.setFieldValue(newName, "NAME");
         }
       }
@@ -413,7 +422,8 @@ Blockly.Blocks["procedures_defreturn"] = {
     this.setMutator(new Blockly.Mutator(["procedures_mutatorarg"]));
     if (
       (this.workspace.options.comments ||
-        (this.workspace.options.parentWorkspace && this.workspace.options.parentWorkspace.options.comments)) &&
+        (this.workspace.options.parentWorkspace &&
+          this.workspace.options.parentWorkspace.options.comments)) &&
       Blockly.Msg["PROCEDURES_DEFRETURN_COMMENT"]
     ) {
       this.setCommentText(Blockly.Msg["PROCEDURES_DEFRETURN_COMMENT"]);
@@ -589,7 +599,6 @@ Blockly.Blocks["procedures_callnoreturn"] = {
    * @this Blockly.Block
    */
   renameProcedure: function(oldName, newName) {
-    console.log(oldName);
     if (Blockly.Names.equals(oldName, this.getProcedureCall())) {
       this.setFieldValue(newName, "NAME");
       var baseMsg = this.outputConnection
@@ -664,7 +673,12 @@ Blockly.Blocks["procedures_callnoreturn"] = {
     // And rebuild the argument model list.
     this.argumentVarModels_ = [];
     for (var i = 0; i < this.arguments_.length; i++) {
-      var variable = Blockly.Variables.getOrCreateVariablePackage(this.workspace, null, this.arguments_[i], "");
+      var variable = Blockly.Variables.getOrCreateVariablePackage(
+        this.workspace,
+        null,
+        this.arguments_[i],
+        ""
+      );
       this.argumentVarModels_.push(variable);
     }
 
@@ -798,7 +812,11 @@ Blockly.Blocks["procedures_callnoreturn"] = {
       // an empty definition block with the correct signature.
       var name = this.getProcedureCall();
       var def = Blockly.Procedures.getDefinition(name, this.workspace);
-      if (def && (def.type != this.defType_ || JSON.stringify(def.arguments_) != JSON.stringify(this.arguments_))) {
+      if (
+        def &&
+        (def.type != this.defType_ ||
+          JSON.stringify(def.arguments_) != JSON.stringify(this.arguments_))
+      ) {
         // The signatures don't match.
         def = null;
       }

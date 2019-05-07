@@ -16,6 +16,7 @@ Blockly.Blocks["class_get_instance"] = {
     this.appendDummyInput().appendField(nameField, "INSTANCE");
     this.constr;
     this.arguments = 0;
+    this.argBlocks = [];
     this.setInputsInline(true);
     this.setNextStatement(true);
     this.setPreviousStatement(true);
@@ -33,6 +34,21 @@ Blockly.Blocks["class_get_instance"] = {
   getConstructor: function() {
     return this.constr;
   },
+  // getArgs() {
+  //   console.log(this.getInputTargetBlock("ARGS" + this.arguments));
+  //   var argNames = [];
+  //   console.log(this.arguments);
+  //   var arguments = this.arguments;
+  //   if (arguments > 0) {
+  //     while (arguments > 0) {
+  //       arguments--;
+  //       var block = this.getInputTargetBlock("ARGS" + arguments);
+  //       argNames.push(block);
+  //       console.log(this.workspace.getAllVariables());
+  //       console.log(block.id);
+  //     }
+  //   }
+  // },
   /*
    * Upates constructor attributes if control_class gets changed
    */
@@ -45,10 +61,10 @@ Blockly.Blocks["class_get_instance"] = {
         if (this.arguments > arguments.length) {
           while (this.arguments > arguments.length) {
             this.arguments--;
-            this.removeInput("ARGS" + this.arguments);
+            this.removeInput("ARG" + this.arguments);
           }
         } else {
-          this.appendValueInput("ARGS" + this.arguments);
+          this.appendValueInput("ARG" + this.arguments);
           this.arguments++;
         }
       }
@@ -202,10 +218,10 @@ Blockly.Blocks["class_instance"] = {
         if (this.arguments > arguments.length) {
           while (this.arguments > arguments.length) {
             this.arguments--;
-            this.removeInput("ARGS" + this.arguments);
+            this.removeInput("ARG" + this.arguments);
           }
         } else {
-          this.appendValueInput("ARGS" + this.arguments);
+          this.appendValueInput("ARG" + this.arguments);
           this.arguments++;
         }
       }

@@ -11,7 +11,10 @@ Blockly.JavaScript["class_function_noreturn"] = function(block) {
 };
 /* Generates code for a class */
 Blockly.JavaScript["class_class"] = function(block) {
-  var className = block.getClassDef();
+  var className = Blockly.JavaScript.variableDB_.getName(
+    block.getClassDef(),
+    Blockly.Procedures.NAME_TYPE
+  );
   var constr = block.getConstructor();
   if (constr) {
     var constructor_vars = constr.getVars();
@@ -46,21 +49,22 @@ Blockly.JavaScript["class_class"] = function(block) {
 Blockly.JavaScript["class_get_instance"] = function(block) {
   var instanceName = block.getInstanceDef()[1];
   var className = block.getInstanceDef()[0];
-  var attributes = [];
-
-  if (block.getConstructor()) {
-    if (block.getConstructor().getVars) {
-      atrributes = block.getConstructor().getVars();
-    }
+  var args = [];
+  for (var i = 0; i < block.arguments; i++) {
+    console.log(Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA));
+    args[i] =
+      Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
   }
-
-  var code = "var " + instanceName + " = new " + className + "(" + attributes.join(", ") + "); \n";
+  var code = "var " + instanceName + " = new " + className + "(" + args.join(", ") + "); \n";
   return code;
 };
 
 Blockly.JavaScript["class_instance"] = function(block) {
   console.log(Blockly.Xml.workspaceToDom(block.workspace));
-  var instanceName = block.getInstanceName();
+  var instanceName = Blockly.JavaScript.variableDB_.getName(
+    block.getInstanceName(),
+    Blockly.Procedures.NAME_TYPE
+  );
   var methodName = block.getCurrentMethod();
   var blocks = block.workspace.getAllBlocks(false);
   var methodBlock;
@@ -72,11 +76,11 @@ Blockly.JavaScript["class_instance"] = function(block) {
       }
     }
   }
-  var attributes = [];
-  console.log(attributes);
-  if (methodBlock.getVars) {
-    attributes = methodBlock.getVars();
+  var args = [];
+  for (var i = 0; i < block.arguments; i++) {
+    args[i] =
+      Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
   }
-  var code = instanceName + "." + methodName + "(" + attributes.join(", ") + ")\n";
+  var code = instanceName + "." + methodName + "(" + args.join(", ") + ")\n";
   return code;
 };
