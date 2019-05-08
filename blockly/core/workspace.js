@@ -378,8 +378,9 @@ Blockly.Workspace.prototype.renameVariableById = function(id, newName) {
  *     a UUID.
  * @return {?Blockly.VariableModel} The newly created variable.
  */
-Blockly.Workspace.prototype.createVariable = function(name, opt_type, opt_id) {
-  return this.variableMap_.createVariable(name, opt_type, opt_id);
+Blockly.Workspace.prototype.createVariable = function(name, opt_type, opt_id, opt_scope) {
+  console.log(name, opt_type, opt_id, opt_scope);
+  return this.variableMap_.createVariable(name, opt_type, opt_id, opt_scope);
 };
 
 /**
@@ -574,7 +575,11 @@ Blockly.Workspace.prototype.undo = function(redo) {
   }
   var events = [inputEvent];
   // Do another undo/redo if the next one is of the same group.
-  while (inputStack.length && inputEvent.group && inputEvent.group == inputStack[inputStack.length - 1].group) {
+  while (
+    inputStack.length &&
+    inputEvent.group &&
+    inputEvent.group == inputStack[inputStack.length - 1].group
+  ) {
     events.push(inputStack.pop());
   }
   // Push these popped events on the opposite stack.
@@ -720,4 +725,5 @@ Blockly.Workspace.getById = function(id) {
 Blockly.Workspace.prototype["clear"] = Blockly.Workspace.prototype.clear;
 Blockly.Workspace.prototype["clearUndo"] = Blockly.Workspace.prototype.clearUndo;
 Blockly.Workspace.prototype["addChangeListener"] = Blockly.Workspace.prototype.addChangeListener;
-Blockly.Workspace.prototype["removeChangeListener"] = Blockly.Workspace.prototype.removeChangeListener;
+Blockly.Workspace.prototype["removeChangeListener"] =
+  Blockly.Workspace.prototype.removeChangeListener;

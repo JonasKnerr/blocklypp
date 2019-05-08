@@ -1,7 +1,7 @@
 goog.provide("Blockly.JavaScript.class");
 
 goog.require("Blockly.JavaScript");
-goog.require("Blockly.Class");
+//goog.require("Blockly.Class");
 
 Blockly.JavaScript["class_function_return"] = function(block) {
   //Blockly.JavaScript["procedures_defreturn"];
@@ -15,22 +15,33 @@ Blockly.JavaScript["class_class"] = function(block) {
     block.getClassDef(),
     Blockly.Procedures.NAME_TYPE
   );
+  var code = "class " + className + "{\n";
+  var attributes = [];
+  for (var i = 1; i < block.attributeCount + 1; i++) {
+    attributes[i - 1] =
+      Blockly.JavaScript.valueToCode(block, "attribute" + i, Blockly.JavaScript.ORDER_COMMA) ||
+      "null";
+  }
+
+  console.log(block.workspace.getAllVariables()[0].getScope())
   var constr = block.getConstructor();
   if (constr) {
     var constructor_vars = constr.getVars();
     var branch = Blockly.JavaScript.statementToCode(constr, "STACK");
 
     //generate code for the constructor
-    var code =
-      "class " +
-      className +
-      "{\n constructor (" +
-      constructor_vars.join(", ") +
-      "){\n" +
-      branch +
-      " }\n\n";
+    code += " constructor (" + constructor_vars.join(", ") + "){\n";
+    for (var i = 0; i < attributes.length; i++){
+      code += "this." + attributes[i] + ";\n";
+    }
+    code  += branch + " }\n\n";
   } else {
     /*TODO: Was passiert wenn kein Konstruktor existiert???*/
+    code += " /*default Constructor */\n constructor(){\n"
+    for (var i = 0; i < attributes.length; i++){
+      code += "this." + attributes[i] + ";\n";
+    }
+     code += "}\n\n";
   }
 
   //generates code for all methods
@@ -43,6 +54,7 @@ Blockly.JavaScript["class_class"] = function(block) {
     code += " " + name + "(" + vars.join(", ") + "){\n" + branch + " }\n\n";
   }
   code += "}\n";
+  console.log(code)
   return code;
 };
 
@@ -50,7 +62,7 @@ Blockly.JavaScript["class_get_instance"] = function(block) {
   var instanceName = block.getInstanceDef()[1];
   var className = block.getInstanceDef()[0];
   var args = [];
-  for (var i = 0; i < block.arguments; i++) {
+  for (var i = 0; i < block.args; i++) {
     console.log(Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA));
     args[i] =
       Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
@@ -77,10 +89,10 @@ Blockly.JavaScript["class_instance"] = function(block) {
     }
   }
   var args = [];
-  for (var i = 0; i < block.arguments; i++) {
+  for (var i = 0; i < block.args; i++) {
     args[i] =
       Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
   }
-  var code = instanceName + "." + methodName + "(" + args.join(", ") + ")\n";
+  var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
   return code;
 };

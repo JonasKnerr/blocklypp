@@ -27,14 +27,13 @@
  * exception is end-of-line comments, which the scraper will remove.
  * @author fraser@google.com (Neil Fraser)
  */
-'use strict';
+"use strict";
 
-goog.provide('Blockly.Blocks.variables');  // Deprecated.
-goog.provide('Blockly.Constants.Variables');
+goog.provide("Blockly.Blocks.variables"); // Deprecated.
+goog.provide("Blockly.Constants.Variables");
 
-goog.require('Blockly.Blocks');
-goog.require('Blockly');
-
+goog.require("Blockly.Blocks");
+goog.require("Blockly");
 
 /**
  * Unused constant for the common HSV hue for all blocks in this category.
@@ -42,47 +41,84 @@ goog.require('Blockly');
  */
 Blockly.Constants.Variables.HUE = 330;
 
-Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
+Blockly.defineBlocksWithJsonArray([
+  // BEGIN JSON EXTRACT
   // Block for variable getter.
   {
-    "type": "variables_get",
-    "message0": "%1",
-    "args0": [
+    type: "variables_get",
+    message0: "%1",
+    args0: [
       {
-        "type": "field_variable",
-        "name": "VAR",
-        "variable": "%{BKY_VARIABLES_DEFAULT_NAME}"
+        type: "field_variable",
+        name: "VAR",
+        variable: "%{BKY_VARIABLES_DEFAULT_NAME}"
       }
     ],
-    "output": null,
-    "colour": "%{BKY_VARIABLES_HUE}",
-    "helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
-    "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
-    "extensions": ["contextMenu_variableSetterGetter"]
+    output: null,
+    variable_scope: "global",
+    colour: "%{BKY_VARIABLES_HUE}",
+    helpUrl: "%{BKY_VARIABLES_GET_HELPURL}",
+    tooltip: "%{BKY_VARIABLES_GET_TOOLTIP}",
+    extensions: ["contextMenu_variableSetterGetter"]
   },
   // Block for variable setter.
   {
-    "type": "variables_set",
-    "message0": "%{BKY_VARIABLES_SET}",
-    "args0": [
+    type: "variables_set",
+    message0: "%{BKY_VARIABLES_SET}",
+    args0: [
       {
-        "type": "field_variable",
-        "name": "VAR",
-        "variable": "%{BKY_VARIABLES_DEFAULT_NAME}"
+        type: "field_variable",
+        name: "VAR",
+        variable: "%{BKY_VARIABLES_DEFAULT_NAME}"
       },
       {
-        "type": "input_value",
-        "name": "VALUE"
+        type: "input_value",
+        name: "VALUE"
       }
     ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": "%{BKY_VARIABLES_HUE}",
-    "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
-    "helpUrl": "%{BKY_VARIABLES_SET_HELPURL}",
-    "extensions": ["contextMenu_variableSetterGetter"]
+    variable_scope: "global",
+    previousStatement: null,
+    nextStatement: null,
+    colour: "%{BKY_VARIABLES_HUE}",
+    tooltip: "%{BKY_VARIABLES_SET_TOOLTIP}",
+    helpUrl: "%{BKY_VARIABLES_SET_HELPURL}",
+    extensions: ["contextMenu_variableSetterGetter"]
+  },
+  {
+    type: "variables_get_local",
+    message0: "%1",
+    args0: [
+      {
+        type: "field_variable",
+        name: "VAR",
+        variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+        variableTypes: ["Panda"] // Specifies what types to put in the dropdown
+      }
+    ],
+    output: "Panda" // Returns a value of "Panda"
+  },
+
+  // Block for local variable setter.
+  {
+    type: "variables_set_local",
+    message0: "%{BKY_VARIABLES_SET}",
+    args0: [
+      {
+        type: "field_variable",
+        name: "VAR",
+        variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+        variableTypes: ["Panda"]
+      },
+      {
+        type: "input_value",
+        name: "VALUE",
+        check: "Panda" // Checks that the input value is of type "Panda"
+      }
+    ],
+    previousStatement: null,
+    nextStatement: null
   }
-]);  // END JSON EXTRACT (Do not delete this comment.)
+]); // END JSON EXTRACT (Do not delete this comment.)
 
 /**
  * Mixin to add context menu items to create getter/setter blocks for this
@@ -100,38 +136,38 @@ Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN = {
    * @this Blockly.Block
    */
   customContextMenu: function(options) {
-    if (!this.isInFlyout){
+    if (!this.isInFlyout) {
       // Getter blocks have the option to create a setter block, and vice versa.
-      if (this.type == 'variables_get') {
-        var opposite_type = 'variables_set';
-        var contextMenuMsg = Blockly.Msg['VARIABLES_GET_CREATE_SET'];
+      if (this.type == "variables_get") {
+        var opposite_type = "variables_set";
+        var contextMenuMsg = Blockly.Msg["VARIABLES_GET_CREATE_SET"];
       } else {
-        var opposite_type = 'variables_get';
-        var contextMenuMsg = Blockly.Msg['VARIABLES_SET_CREATE_GET'];
+        var opposite_type = "variables_get";
+        var contextMenuMsg = Blockly.Msg["VARIABLES_SET_CREATE_GET"];
       }
 
-      var option = {enabled: this.workspace.remainingCapacity() > 0};
-      var name = this.getField('VAR').getText();
-      option.text = contextMenuMsg.replace('%1', name);
-      var xmlField = document.createElement('field');
-      xmlField.setAttribute('name', 'VAR');
+      var option = { enabled: this.workspace.remainingCapacity() > 0 };
+      var name = this.getField("VAR").getText();
+      option.text = contextMenuMsg.replace("%1", name);
+      var xmlField = document.createElement("field");
+      xmlField.setAttribute("name", "VAR");
       xmlField.appendChild(document.createTextNode(name));
-      var xmlBlock = document.createElement('block');
-      xmlBlock.setAttribute('type', opposite_type);
+      var xmlBlock = document.createElement("block");
+      xmlBlock.setAttribute("type", opposite_type);
       xmlBlock.appendChild(xmlField);
       option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
       options.push(option);
       // Getter blocks have the option to rename or delete that variable.
     } else {
-      if (this.type == 'variables_get' || this.type == 'variables_get_reporter'){
+      if (this.type == "variables_get" || this.type == "variables_get_reporter") {
         var renameOption = {
           text: Blockly.Msg.RENAME_VARIABLE,
           enabled: true,
           callback: Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY(this)
         };
-        var name = this.getField('VAR').getText();
+        var name = this.getField("VAR").getText();
         var deleteOption = {
-          text: Blockly.Msg.DELETE_VARIABLE.replace('%1', name),
+          text: Blockly.Msg.DELETE_VARIABLE.replace("%1", name),
           enabled: true,
           callback: Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY(this)
         };
@@ -143,15 +179,15 @@ Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN = {
 };
 
 /**
-  * Callback for rename variable dropdown menu option associated with a
-  * variable getter block.
-  * @param {!Blockly.Block} block The block with the variable to rename.
-  * @return {!function()} A function that renames the variable.
-  */
+ * Callback for rename variable dropdown menu option associated with a
+ * variable getter block.
+ * @param {!Blockly.Block} block The block with the variable to rename.
+ * @return {!function()} A function that renames the variable.
+ */
 Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY = function(block) {
   return function() {
     var workspace = block.workspace;
-    var variable = block.getField('VAR').getVariable();
+    var variable = block.getField("VAR").getVariable();
     Blockly.Variables.renameVariable(workspace, variable);
   };
 };
@@ -165,11 +201,13 @@ Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY = function(block) {
 Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY = function(block) {
   return function() {
     var workspace = block.workspace;
-    var variable = block.getField('VAR').getVariable();
+    var variable = block.getField("VAR").getVariable();
     workspace.deleteVariableById(variable.getId());
     workspace.refreshToolboxSelection();
   };
 };
 
-Blockly.Extensions.registerMixin('contextMenu_variableSetterGetter',
-    Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN);
+Blockly.Extensions.registerMixin(
+  "contextMenu_variableSetterGetter",
+  Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN
+);

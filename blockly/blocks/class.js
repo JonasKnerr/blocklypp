@@ -15,7 +15,7 @@ Blockly.Blocks["class_get_instance"] = {
     var nameField = new Blockly.FieldTextInput("InstanzName", Blockly.Class.renameInstance);
     this.appendDummyInput().appendField(nameField, "INSTANCE");
     this.constr;
-    this.arguments = 0;
+    this.args = 0;
     this.argBlocks = [];
     this.setInputsInline(true);
     this.setNextStatement(true);
@@ -34,21 +34,7 @@ Blockly.Blocks["class_get_instance"] = {
   getConstructor: function() {
     return this.constr;
   },
-  // getArgs() {
-  //   console.log(this.getInputTargetBlock("ARGS" + this.arguments));
-  //   var argNames = [];
-  //   console.log(this.arguments);
-  //   var arguments = this.arguments;
-  //   if (arguments > 0) {
-  //     while (arguments > 0) {
-  //       arguments--;
-  //       var block = this.getInputTargetBlock("ARGS" + arguments);
-  //       argNames.push(block);
-  //       console.log(this.workspace.getAllVariables());
-  //       console.log(block.id);
-  //     }
-  //   }
-  // },
+
   /*
    * Upates constructor attributes if control_class gets changed
    */
@@ -56,16 +42,16 @@ Blockly.Blocks["class_get_instance"] = {
     var constr = Blockly.Class.getConstructor(this.workspace, this.getClassName());
     this.constr = constr;
     if (constr) {
-      var arguments = constr.getVars();
-      if (this.arguments != arguments.length) {
-        if (this.arguments > arguments.length) {
-          while (this.arguments > arguments.length) {
-            this.arguments--;
-            this.removeInput("ARG" + this.arguments);
+      var args = constr.getVars();
+      if (this.args != args.length) {
+        if (this.args > ars.length) {
+          while (this.args > args.length) {
+            this.args--;
+            this.removeInput("ARG" + this.args);
           }
         } else {
-          this.appendValueInput("ARG" + this.arguments);
-          this.arguments++;
+          this.appendValueInput("ARG" + this.args);
+          this.args++;
         }
       }
     }
@@ -99,7 +85,7 @@ Blockly.Blocks["class_instance"] = {
     this.appendDummyInput().appendField("Klasse", "CLASS");
     this.appendDummyInput().appendField("", "INSTANCE");
     this.methods = [];
-    this.arguments = 0;
+    this.args = 0;
     this.curMethod;
     //this.appendValueInput("INPUT");
     this.setInputsInline(true);
@@ -212,17 +198,17 @@ Blockly.Blocks["class_instance"] = {
     if (this.getFieldValue("METHODS")) {
       var method = this.getFieldValue("METHODS");
       this.curMethod = method;
-      var arguments = Blockly.Class.getMethodAttributes(this.workspace, method);
+      var args = Blockly.Class.getMethodAttributes(this.workspace, method);
 
-      if (this.arguments != arguments.length) {
-        if (this.arguments > arguments.length) {
-          while (this.arguments > arguments.length) {
-            this.arguments--;
-            this.removeInput("ARG" + this.arguments);
+      if (this.args != args.length) {
+        if (this.args > args.length) {
+          while (this.args > args.length) {
+            this.args--;
+            this.removeInput("ARG" + this.args);
           }
         } else {
-          this.appendValueInput("ARG" + this.arguments);
-          this.arguments++;
+          this.appendValueInput("ARG" + this.args);
+          this.args++;
         }
       }
     }
@@ -253,6 +239,12 @@ Blockly.Blocks["class_class"] = {
     this.setTooltip("");
     this.setHelpUrl("");
   },
+  changeScope: function() {
+    if (this.attributeCount > 0) {
+      console.log(this.getInputTargetBlock("attribute" + 1).getInputTargetBlock());
+      console.log(this.workspace.getAllVariables());
+    }
+  },
   decompose: function(workspace) {
     var topBlock = workspace.newBlock("class_mutator");
     topBlock.initSvg();
@@ -274,6 +266,7 @@ Blockly.Blocks["class_class"] = {
     while (itemBlock) {
       if (itemBlock.type == "class_attribute") {
         this.attributeCount++;
+        console.log("Aattribute: attribute" + this.attributeCount);
         var attributeInput = this.appendValueInput("attribute" + this.attributeCount)
           .setCheck(null)
           .appendField("Attribute");
@@ -313,6 +306,7 @@ Blockly.Blocks["class_class"] = {
   },
   onchange: function() {
     Blockly.Class.mutateCallers(this);
+    this.changeScope();
   },
   callType_: "class"
 };

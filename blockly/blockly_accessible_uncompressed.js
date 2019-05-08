@@ -121,6 +121,7 @@ goog.addDependency("../../../" + dir + "/core/ui_events.js", ['Blockly.Events.Ui
 goog.addDependency("../../../" + dir + "/core/ui_menu_utils.js", ['Blockly.utils.uiMenu'], []);
 goog.addDependency("../../../" + dir + "/core/utils.js", ['Blockly.utils'], ['goog.dom', 'goog.math.Coordinate', 'goog.userAgent']);
 goog.addDependency("../../../" + dir + "/core/variable_events.js", ['Blockly.Events.VarBase', 'Blockly.Events.VarCreate', 'Blockly.Events.VarDelete', 'Blockly.Events.VarRename'], ['Blockly.Events', 'Blockly.Events.Abstract']);
+goog.addDependency("../../../" + dir + "/core/variable_local.js", ['Blockly.VariablesLocal'], []);
 goog.addDependency("../../../" + dir + "/core/variable_map.js", ['Blockly.VariableMap'], ['Blockly.Events.VarDelete', 'Blockly.Events.VarRename', 'Blockly.utils']);
 goog.addDependency("../../../" + dir + "/core/variable_model.js", ['Blockly.VariableModel'], ['Blockly.Events.VarCreate', 'Blockly.utils']);
 goog.addDependency("../../../" + dir + "/core/variables.js", ['Blockly.Variables'], ['Blockly.Blocks', 'Blockly.constants', 'Blockly.VariableModel', 'Blockly.Workspace', 'Blockly.Xml', 'goog.string']);
@@ -1843,6 +1844,7 @@ goog.require('Blockly.VariableMap');
 goog.require('Blockly.VariableModel');
 goog.require('Blockly.Variables');
 goog.require('Blockly.VariablesDynamic');
+goog.require('Blockly.VariablesLocal');
 goog.require('Blockly.VerticalFlyout');
 goog.require('Blockly.Warning');
 goog.require('Blockly.WidgetDiv');

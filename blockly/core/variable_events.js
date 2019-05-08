@@ -22,16 +22,15 @@
  * @fileoverview Classes for all types of variable events.
  * @author fenichel@google.com (Rachel Fenichel)
  */
-'use strict';
+"use strict";
 
-goog.provide('Blockly.Events.VarBase');
-goog.provide('Blockly.Events.VarCreate');
-goog.provide('Blockly.Events.VarDelete');
-goog.provide('Blockly.Events.VarRename');
+goog.provide("Blockly.Events.VarBase");
+goog.provide("Blockly.Events.VarCreate");
+goog.provide("Blockly.Events.VarDelete");
+goog.provide("Blockly.Events.VarRename");
 
-goog.require('Blockly.Events');
-goog.require('Blockly.Events.Abstract');
-
+goog.require("Blockly.Events");
+goog.require("Blockly.Events.Abstract");
 
 /**
  * Abstract class for a variable event.
@@ -58,7 +57,7 @@ goog.inherits(Blockly.Events.VarBase, Blockly.Events.Abstract);
  */
 Blockly.Events.VarBase.prototype.toJson = function() {
   var json = Blockly.Events.VarBase.superClass_.toJson.call(this);
-  json['varId'] = this.varId;
+  json["varId"] = this.varId;
   return json;
 };
 
@@ -68,7 +67,7 @@ Blockly.Events.VarBase.prototype.toJson = function() {
  */
 Blockly.Events.VarBase.prototype.fromJson = function(json) {
   Blockly.Events.VarBase.superClass_.toJson.call(this);
-  this.varId = json['varId'];
+  this.varId = json["varId"];
 };
 
 /**
@@ -80,7 +79,7 @@ Blockly.Events.VarBase.prototype.fromJson = function(json) {
  */
 Blockly.Events.VarCreate = function(variable) {
   if (!variable) {
-    return;  // Blank event to be populated by fromJson.
+    return; // Blank event to be populated by fromJson.
   }
   Blockly.Events.VarCreate.superClass_.constructor.call(this, variable);
   this.varType = variable.type;
@@ -100,8 +99,8 @@ Blockly.Events.VarCreate.prototype.type = Blockly.Events.VAR_CREATE;
  */
 Blockly.Events.VarCreate.prototype.toJson = function() {
   var json = Blockly.Events.VarCreate.superClass_.toJson.call(this);
-  json['varType'] = this.varType;
-  json['varName'] = this.varName;
+  json["varType"] = this.varType;
+  json["varName"] = this.varName;
   return json;
 };
 
@@ -111,8 +110,8 @@ Blockly.Events.VarCreate.prototype.toJson = function() {
  */
 Blockly.Events.VarCreate.prototype.fromJson = function(json) {
   Blockly.Events.VarCreate.superClass_.fromJson.call(this, json);
-  this.varType = json['varType'];
-  this.varName = json['varName'];
+  this.varType = json["varType"];
+  this.varName = json["varName"];
 };
 
 /**
@@ -137,7 +136,7 @@ Blockly.Events.VarCreate.prototype.run = function(forward) {
  */
 Blockly.Events.VarDelete = function(variable) {
   if (!variable) {
-    return;  // Blank event to be populated by fromJson.
+    return; // Blank event to be populated by fromJson.
   }
   Blockly.Events.VarDelete.superClass_.constructor.call(this, variable);
   this.varType = variable.type;
@@ -157,8 +156,8 @@ Blockly.Events.VarDelete.prototype.type = Blockly.Events.VAR_DELETE;
  */
 Blockly.Events.VarDelete.prototype.toJson = function() {
   var json = Blockly.Events.VarDelete.superClass_.toJson.call(this);
-  json['varType'] = this.varType;
-  json['varName'] = this.varName;
+  json["varType"] = this.varType;
+  json["varName"] = this.varName;
   return json;
 };
 
@@ -168,8 +167,8 @@ Blockly.Events.VarDelete.prototype.toJson = function() {
  */
 Blockly.Events.VarDelete.prototype.fromJson = function(json) {
   Blockly.Events.VarDelete.superClass_.fromJson.call(this, json);
-  this.varType = json['varType'];
-  this.varName = json['varName'];
+  this.varType = json["varType"];
+  this.varName = json["varName"];
 };
 
 /**
@@ -195,7 +194,7 @@ Blockly.Events.VarDelete.prototype.run = function(forward) {
  */
 Blockly.Events.VarRename = function(variable, newName) {
   if (!variable) {
-    return;  // Blank event to be populated by fromJson.
+    return; // Blank event to be populated by fromJson.
   }
   Blockly.Events.VarRename.superClass_.constructor.call(this, variable);
   this.oldName = variable.name;
@@ -215,8 +214,8 @@ Blockly.Events.VarRename.prototype.type = Blockly.Events.VAR_RENAME;
  */
 Blockly.Events.VarRename.prototype.toJson = function() {
   var json = Blockly.Events.VarRename.superClass_.toJson.call(this);
-  json['oldName'] = this.oldName;
-  json['newName'] = this.newName;
+  json["oldName"] = this.oldName;
+  json["newName"] = this.newName;
   return json;
 };
 
@@ -226,8 +225,8 @@ Blockly.Events.VarRename.prototype.toJson = function() {
  */
 Blockly.Events.VarRename.prototype.fromJson = function(json) {
   Blockly.Events.VarRename.superClass_.fromJson.call(this, json);
-  this.oldName = json['oldName'];
-  this.newName = json['newName'];
+  this.oldName = json["oldName"];
+  this.newName = json["newName"];
 };
 
 /**

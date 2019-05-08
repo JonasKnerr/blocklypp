@@ -101,10 +101,15 @@ Blockly.WorkspaceSvg = function(options, opt_blockDragSurface, opt_wsDragSurface
    * @type {Blockly.Grid}
    * @private
    */
-  this.grid_ = this.options.gridPattern ? new Blockly.Grid(options.gridPattern, options.gridOptions) : null;
+  this.grid_ = this.options.gridPattern
+    ? new Blockly.Grid(options.gridPattern, options.gridOptions)
+    : null;
 
   if (Blockly.Variables && Blockly.Variables.flyoutCategory) {
-    this.registerToolboxCategoryCallback(Blockly.VARIABLE_CATEGORY_NAME, Blockly.Variables.flyoutCategory);
+    this.registerToolboxCategoryCallback(
+      Blockly.VARIABLE_CATEGORY_NAME,
+      Blockly.Variables.flyoutCategory
+    );
   }
   if (Blockly.VariablesDynamic && Blockly.VariablesDynamic.flyoutCategory) {
     this.registerToolboxCategoryCallback(
@@ -113,10 +118,16 @@ Blockly.WorkspaceSvg = function(options, opt_blockDragSurface, opt_wsDragSurface
     );
   }
   if (Blockly.Procedures && Blockly.Procedures.flyoutCategory) {
-    this.registerToolboxCategoryCallback(Blockly.PROCEDURE_CATEGORY_NAME, Blockly.Procedures.flyoutCategory);
+    this.registerToolboxCategoryCallback(
+      Blockly.PROCEDURE_CATEGORY_NAME,
+      Blockly.Procedures.flyoutCategory
+    );
   }
   if (Blockly.Class && Blockly.Class.flyoutCategory) {
     this.registerToolboxCategoryCallback("CLASS", Blockly.Class.flyoutCategory);
+  }
+  if (Blockly.VariablesLocal && Blockly.VariablesLocal.flyoutCategory) {
+    this.registerToolboxCategoryCallback("VARIABLES_LOCAL", Blockly.VariablesLocal.flyoutCategory);
   }
 };
 goog.inherits(Blockly.WorkspaceSvg, Blockly.Workspace);
@@ -459,9 +470,17 @@ Blockly.WorkspaceSvg.prototype.createDom = function(opt_backgroundClass) {
     }
   }
   /** @type {SVGElement} */
-  this.svgBlockCanvas_ = Blockly.utils.createSvgElement("g", { class: "blocklyBlockCanvas" }, this.svgGroup_);
+  this.svgBlockCanvas_ = Blockly.utils.createSvgElement(
+    "g",
+    { class: "blocklyBlockCanvas" },
+    this.svgGroup_
+  );
   /** @type {SVGElement} */
-  this.svgBubbleCanvas_ = Blockly.utils.createSvgElement("g", { class: "blocklyBubbleCanvas" }, this.svgGroup_);
+  this.svgBubbleCanvas_ = Blockly.utils.createSvgElement(
+    "g",
+    { class: "blocklyBubbleCanvas" },
+    this.svgGroup_
+  );
   var bottom = Blockly.Scrollbar.scrollbarThickness;
   if (this.options.hasTrashcan) {
     bottom = this.addTrashcan_(bottom);
@@ -1000,7 +1019,10 @@ Blockly.WorkspaceSvg.prototype.pasteBlock_ = function(xmlBlock) {
           // Check for blocks in snap range to any of its connections.
           var connections = block.getConnections_(false);
           for (var i = 0, connection; (connection = connections[i]); i++) {
-            var neighbour = connection.closest(Blockly.SNAP_RADIUS, new goog.math.Coordinate(blockX, blockY));
+            var neighbour = connection.closest(
+              Blockly.SNAP_RADIUS,
+              new goog.math.Coordinate(blockX, blockY)
+            );
             if (neighbour.connection) {
               collide = true;
               break;
@@ -1105,8 +1127,15 @@ Blockly.WorkspaceSvg.prototype.deleteVariableById = function(id) {
  * @return {?Blockly.VariableModel} The newly created variable.
  * @package
  */
-Blockly.WorkspaceSvg.prototype.createVariable = function(name, opt_type, opt_id) {
-  var newVar = Blockly.WorkspaceSvg.superClass_.createVariable.call(this, name, opt_type, opt_id);
+Blockly.WorkspaceSvg.prototype.createVariable = function(name, opt_type, opt_id, opt_scope) {
+  console.log(opt_scope);
+  var newVar = Blockly.WorkspaceSvg.superClass_.createVariable.call(
+    this,
+    name,
+    opt_type,
+    opt_id,
+    opt_scope
+  );
   this.refreshToolboxSelection();
   return newVar;
 };
@@ -1278,7 +1307,10 @@ Blockly.WorkspaceSvg.prototype.cleanUp = function() {
     var xy = block.getRelativeToSurfaceXY();
     block.moveBy(-xy.x, cursorY - xy.y);
     block.snapToGrid();
-    cursorY = block.getRelativeToSurfaceXY().y + block.getHeightWidth().height + Blockly.BlockSvg.MIN_BLOCK_Y;
+    cursorY =
+      block.getRelativeToSurfaceXY().y +
+      block.getHeightWidth().height +
+      Blockly.BlockSvg.MIN_BLOCK_Y;
   }
   Blockly.Events.setGroup(false);
   this.setResizesEnabled(true);
@@ -1414,7 +1446,9 @@ Blockly.WorkspaceSvg.prototype.showContextMenu_ = function(e) {
       if (deleteList.length < 2) {
         deleteNext();
       } else {
-        Blockly.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", deleteList.length), function(ok) {
+        Blockly.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", deleteList.length), function(
+          ok
+        ) {
           if (ok) {
             deleteNext();
           }
@@ -1597,8 +1631,14 @@ Blockly.WorkspaceSvg.prototype.zoomToFit = function() {
  * @package
  */
 Blockly.WorkspaceSvg.prototype.beginCanvasTransition = function() {
-  Blockly.utils.addClass(/** @type {!SVGElement} */ (this.svgBlockCanvas_), "blocklyCanvasTransitioning");
-  Blockly.utils.addClass(/** @type {!SVGElement} */ (this.svgBubbleCanvas_), "blocklyCanvasTransitioning");
+  Blockly.utils.addClass(
+    /** @type {!SVGElement} */ (this.svgBlockCanvas_),
+    "blocklyCanvasTransitioning"
+  );
+  Blockly.utils.addClass(
+    /** @type {!SVGElement} */ (this.svgBubbleCanvas_),
+    "blocklyCanvasTransitioning"
+  );
 };
 
 /**
@@ -1606,8 +1646,14 @@ Blockly.WorkspaceSvg.prototype.beginCanvasTransition = function() {
  * @package
  */
 Blockly.WorkspaceSvg.prototype.endCanvasTransition = function() {
-  Blockly.utils.removeClass(/** @type {!SVGElement} */ (this.svgBlockCanvas_), "blocklyCanvasTransitioning");
-  Blockly.utils.removeClass(/** @type {!SVGElement} */ (this.svgBubbleCanvas_), "blocklyCanvasTransitioning");
+  Blockly.utils.removeClass(
+    /** @type {!SVGElement} */ (this.svgBlockCanvas_),
+    "blocklyCanvasTransitioning"
+  );
+  Blockly.utils.removeClass(
+    /** @type {!SVGElement} */ (this.svgBubbleCanvas_),
+    "blocklyCanvasTransitioning"
+  );
 };
 /**
  * Center the workspace.
@@ -1852,9 +1898,15 @@ Blockly.WorkspaceSvg.getTopLevelWorkspaceMetrics_ = function() {
   // svgSize is equivalent to the size of the injectionDiv at this point.
   var svgSize = Blockly.svgSize(this.getParentSvg());
   if (this.toolbox_) {
-    if (this.toolboxPosition == Blockly.TOOLBOX_AT_TOP || this.toolboxPosition == Blockly.TOOLBOX_AT_BOTTOM) {
+    if (
+      this.toolboxPosition == Blockly.TOOLBOX_AT_TOP ||
+      this.toolboxPosition == Blockly.TOOLBOX_AT_BOTTOM
+    ) {
       svgSize.height -= toolboxDimensions.height;
-    } else if (this.toolboxPosition == Blockly.TOOLBOX_AT_LEFT || this.toolboxPosition == Blockly.TOOLBOX_AT_RIGHT) {
+    } else if (
+      this.toolboxPosition == Blockly.TOOLBOX_AT_LEFT ||
+      this.toolboxPosition == Blockly.TOOLBOX_AT_RIGHT
+    ) {
       svgSize.width -= toolboxDimensions.width;
     }
   }

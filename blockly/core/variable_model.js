@@ -22,13 +22,12 @@
  * @fileoverview Components for the variable model.
  * @author marisaleung@google.com (Marisa Leung)
  */
-'use strict';
+"use strict";
 
-goog.provide('Blockly.VariableModel');
+goog.provide("Blockly.VariableModel");
 
-goog.require('Blockly.Events.VarCreate');
-goog.require('Blockly.utils');
-
+goog.require("Blockly.Events.VarCreate");
+goog.require("Blockly.utils");
 
 /**
  * Class for a variable model.
@@ -44,7 +43,7 @@ goog.require('Blockly.utils');
  * @see {Blockly.FieldVariable}
  * @constructor
  */
-Blockly.VariableModel = function(workspace, name, opt_type, opt_id) {
+Blockly.VariableModel = function(workspace, name, opt_type, opt_id, opt_scope) {
   /**
    * The workspace the variable is in.
    * @type {!Blockly.Workspace}
@@ -66,7 +65,7 @@ Blockly.VariableModel = function(workspace, name, opt_type, opt_id) {
    * @see {Blockly.FieldVariable}
    * @type {string}
    */
-  this.type = opt_type || '';
+  this.type = opt_type || "";
 
   /**
    * A unique id for the variable. This should be defined at creation and
@@ -77,6 +76,13 @@ Blockly.VariableModel = function(workspace, name, opt_type, opt_id) {
    */
   this.id_ = opt_id || Blockly.utils.genUid();
 
+  /**
+   * @Jonas Knerr
+   * Sets scope to
+   */
+  console.log(opt_scope);
+  this.scope = opt_scope || "global";
+
   Blockly.Events.fire(new Blockly.Events.VarCreate(this));
 };
 
@@ -86,7 +92,18 @@ Blockly.VariableModel = function(workspace, name, opt_type, opt_id) {
 Blockly.VariableModel.prototype.getId = function() {
   return this.id_;
 };
-
+/*
+ * @Jonas Knerr
+ */
+Blockly.VariableModel.prototype.getScope = function() {
+  return this.scope;
+};
+/*
+ * @Jonas Knerr
+ */
+Blockly.VariableModel.prototype.setScope = function(scope) {
+  this.scope = scope;
+};
 /**
  * A custom compare function for the VariableModel objects.
  * @param {Blockly.VariableModel} var1 First variable to compare.
