@@ -236,14 +236,18 @@ Blockly.Blocks["class_class"] = {
     this.setColour(20);
     this.attributeCount = 0;
     this.methodCount = 0;
+    this.oldName = "";
     this.setTooltip("");
     this.setHelpUrl("");
   },
   changeScope: function() {
-    if (this.attributeCount > 0) {
-      console.log(this.getInputTargetBlock("attribute" + 1).getInputTargetBlock());
-      console.log(this.workspace.getAllVariables());
+    if (this.attributeCount > 0 && this.getInputTargetBlock("attribute" + 1)) {
+      var name = this.getInputTargetBlock("attribute" + 1).inputList[0].fieldRow[0].variable_.name;
+      this.workspace.changeVariableScope(name, this.oldName, this.getClassDef());
     }
+  },
+  setOldName(oldName) {
+    this.oldName = oldName;
   },
   decompose: function(workspace) {
     var topBlock = workspace.newBlock("class_mutator");
@@ -266,7 +270,6 @@ Blockly.Blocks["class_class"] = {
     while (itemBlock) {
       if (itemBlock.type == "class_attribute") {
         this.attributeCount++;
-        console.log("Aattribute: attribute" + this.attributeCount);
         var attributeInput = this.appendValueInput("attribute" + this.attributeCount)
           .setCheck(null)
           .appendField("Attribute");

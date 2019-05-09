@@ -31,7 +31,7 @@ goog.require("Blockly.Msg");
 goog.require("Blockly.utils");
 goog.require("Blockly.VariableModel");
 goog.require("Blockly.Variables");
-
+goog.require("Blockly.Class");
 goog.require("goog.math.Size");
 
 /**
@@ -242,6 +242,12 @@ Blockly.FieldVariable.prototype.getVariableTypes_ = function() {
   return variableTypes;
 };
 
+Blockly.FieldVariable.prototype.getVariableScopes_ = function() {
+  if (this.sourceBlock_) {
+    var workspace = this.sourceBlock_.workspace;
+    return workspace.getVariableScopes();
+  }
+};
 /**
  * Parse the optional arguments representing the allowed variable types and the
  * default variable type.
@@ -296,12 +302,21 @@ Blockly.FieldVariable.dropdownCreate = function() {
   if (this.sourceBlock_) {
     workspace = this.sourceBlock_.workspace;
   }
+  //console.log(this);
+  // if (this.sourceBlock_.parentBlock_.getClassDef()) {
+  //   console.log(this.sourceBlock_.parentBlock_.getClassDef());
+  // }
   var variableModelList = [];
   if (workspace) {
+    var classes = Blockly.Class.allUsedClasses(workspace);
     var variableTypes = this.getVariableTypes_();
+    var variableScopes = this.getVariableScopes_();
+    console.log(classes);
+    console.log(variableScopes);
     // Get a copy of the list, so that adding rename and new variable options
     // doesn't modify the workspace's list.
     for (var i = 0; i < variableTypes.length; i++) {
+      if (classes.includes(variableTypes[0])) continue;
       var variableType = variableTypes[i];
       var variables = workspace.getVariablesOfType(variableType);
       variableModelList = variableModelList.concat(variables);
@@ -318,7 +333,7 @@ Blockly.FieldVariable.dropdownCreate = function() {
   if (Blockly.Msg["DELETE_VARIABLE"]) {
     options.push([Blockly.Msg["DELETE_VARIABLE"].replace("%1", name), Blockly.DELETE_VARIABLE_ID]);
   }
-
+  console.log(options);
   return options;
 };
 

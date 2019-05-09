@@ -3,6 +3,7 @@
  */
 goog.provide("Blockly.Class");
 
+goog.require("Blockly.VariableMap");
 goog.require("Blockly.Blocks");
 goog.require("Blockly.constants");
 goog.require("Blockly.Events.BlockChange");
@@ -184,8 +185,12 @@ Blockly.Class.renameClass = function(name) {
       if (blocks[i].renameClass) {
         blocks[i].renameClass(oldName, legalName);
       }
+      if (blocks[i].setOldName) {
+        blocks[i].setOldName(oldName);
+      }
     }
   }
+  Blockly.Variables.renameScope(this.sourceBlock_.workspace, oldName, legalName);
   return legalName;
 };
 

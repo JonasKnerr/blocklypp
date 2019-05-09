@@ -317,7 +317,6 @@ Blockly.Variables.createVariableButtonHandler = function(
           });
         } else {
           // No conflict
-          console.log(text, type, false, opt_scope);
           workspace.createVariable(text, type, false, opt_scope);
           if (opt_callback) {
             opt_callback(text);
@@ -617,4 +616,14 @@ Blockly.Variables.getAddedVariables = function(workspace, originalVariables) {
     }
   }
   return addedVariables;
+};
+
+/**
+ *@Jonas Knerr
+ */
+Blockly.Variables.changeVariableScope = function(workspace, variable, oldScope, newScope) {
+  workspace.changeVariableScope(variable, oldScope, newScope);
+};
+Blockly.Variables.renameScope = function(workspace, oldScope, newScope) {
+  workspace.renameScope(oldScope, newScope);
 };

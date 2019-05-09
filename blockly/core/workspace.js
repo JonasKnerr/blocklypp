@@ -379,7 +379,6 @@ Blockly.Workspace.prototype.renameVariableById = function(id, newName) {
  * @return {?Blockly.VariableModel} The newly created variable.
  */
 Blockly.Workspace.prototype.createVariable = function(name, opt_type, opt_id, opt_scope) {
-  console.log(name, opt_type, opt_id, opt_scope);
   return this.variableMap_.createVariable(name, opt_type, opt_id, opt_scope);
 };
 
@@ -469,6 +468,26 @@ Blockly.Workspace.prototype.getVariableTypes = function() {
   return this.variableMap_.getVariableTypes();
 };
 
+/**
+ *Return all variable scopes
+ * @Jonas Knerr
+ */
+Blockly.Workspace.prototype.getVariableScopes = function() {
+  return this.variableMap_.getVariableScopes();
+};
+
+/**
+ *@Jonas Knerr
+ */
+Blockly.Workspace.prototype.changeVariableScope = function(name, oldScope, newScope) {
+  return this.variableMap_.changeVariableScope(name, oldScope, newScope);
+};
+/**
+ *@Jonas Knerr
+ */
+Blockly.Workspace.prototype.renameScope = function(oldScope, newScope) {
+  return this.variableMap_.renameScope(oldScope, newScope);
+};
 /**
  * Return all variables of all types.
  * @return {!Array.<Blockly.VariableModel>} List of variable models.

@@ -80,7 +80,7 @@ Blockly.VariableModel = function(workspace, name, opt_type, opt_id, opt_scope) {
    * @Jonas Knerr
    * Sets scope to
    */
-  console.log(opt_scope);
+
   this.scope = opt_scope || "global";
 
   Blockly.Events.fire(new Blockly.Events.VarCreate(this));

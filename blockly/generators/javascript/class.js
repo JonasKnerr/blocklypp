@@ -23,7 +23,6 @@ Blockly.JavaScript["class_class"] = function(block) {
       "null";
   }
 
-  console.log(block.workspace.getAllVariables()[0].getScope())
   var constr = block.getConstructor();
   if (constr) {
     var constructor_vars = constr.getVars();
@@ -54,7 +53,6 @@ Blockly.JavaScript["class_class"] = function(block) {
     code += " " + name + "(" + vars.join(", ") + "){\n" + branch + " }\n\n";
   }
   code += "}\n";
-  console.log(code)
   return code;
 };
 
