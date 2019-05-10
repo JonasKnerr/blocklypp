@@ -30,17 +30,17 @@ Blockly.JavaScript["class_class"] = function(block) {
 
     //generate code for the constructor
     code += " constructor (" + constructor_vars.join(", ") + "){\n";
-    for (var i = 0; i < attributes.length; i++){
+    for (var i = 0; i < attributes.length; i++) {
       code += "this." + attributes[i] + ";\n";
     }
-    code  += branch + " }\n\n";
+    code += branch + " }\n\n";
   } else {
     /*TODO: Was passiert wenn kein Konstruktor existiert???*/
-    code += " /*default Constructor */\n constructor(){\n"
-    for (var i = 0; i < attributes.length; i++){
+    code += " /*default Constructor */\n constructor(){\n";
+    for (var i = 0; i < attributes.length; i++) {
       code += "this." + attributes[i] + ";\n";
     }
-     code += "}\n\n";
+    code += "}\n\n";
   }
 
   //generates code for all methods
@@ -50,7 +50,13 @@ Blockly.JavaScript["class_class"] = function(block) {
     var branch = Blockly.JavaScript.statementToCode(methods[i], "STACK");
     var vars = methods[i].getVars();
 
-    code += " " + name + "(" + vars.join(", ") + "){\n" + branch + " }\n\n";
+    var returnValue =
+      Blockly.JavaScript.valueToCode(methods[i], "RETURN", Blockly.JavaScript.ORDER_NONE) || "";
+    if (returnValue) {
+      returnValue = Blockly.JavaScript.INDENT + "return " + returnValue + ";\n";
+    }
+
+    code += " " + name + "(" + vars.join(", ") + "){\n" + branch + returnValue + "}\n\n";
   }
   code += "}\n";
   return code;
@@ -93,4 +99,29 @@ Blockly.JavaScript["class_instance"] = function(block) {
   }
   var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
   return code;
+};
+
+Blockly.JavaScript["class_instance_output"] = function(block) {
+  var instanceName = Blockly.JavaScript.variableDB_.getName(
+    block.getInstanceName(),
+    Blockly.Procedures.NAME_TYPE
+  );
+  var methodName = block.getCurrentMethod();
+  var blocks = block.workspace.getAllBlocks(false);
+  var methodBlock;
+
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getProcedureDef) {
+      if (blocks[i].getProcedureDef()[0] == methodName) {
+        methodBlock = blocks[i];
+      }
+    }
+  }
+  var args = [];
+  for (var i = 0; i < block.args; i++) {
+    args[i] =
+      Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+  }
+  var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
+  return [code, Blockly.JavaScript.ORDER_NONE];
 };

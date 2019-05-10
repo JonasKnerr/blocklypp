@@ -195,11 +195,12 @@ Blockly.Blocks["class_instance"] = {
     return this.curMethod;
   },
   onchange: function() {
-    if (this.getFieldValue("METHODS")) {
+    if (this.getFieldValue("METHODS") && !this.isInFlyout) {
       var method = this.getFieldValue("METHODS");
       this.curMethod = method;
       var args = Blockly.Class.getMethodAttributes(this.workspace, method);
-
+      console.log("METHODARGS: " + args);
+      console.log("THIS.ARGS: " + this.args);
       if (this.args != args.length) {
         if (this.args > args.length) {
           while (this.args > args.length) {
@@ -208,11 +209,41 @@ Blockly.Blocks["class_instance"] = {
           }
         } else {
           this.appendValueInput("ARG" + this.args);
+          //this.moveInputBefore("attribute" + this.attributeCount, "CONSTRUCTOR");
           this.args++;
         }
       }
     }
   }
+};
+
+/**
+ * Block for instance with output connection
+ */
+
+Blockly.Blocks["class_instance_output"] = {
+  init: function() {
+    this.appendDummyInput().appendField("Klasse", "CLASS");
+    this.appendDummyInput().appendField("", "INSTANCE");
+    this.methods = [];
+    this.args = 0;
+    this.curMethod;
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setColour(20);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+  getInstanceName: Blockly.Blocks["class_instance"].getInstanceName,
+  getClassName: Blockly.Blocks["class_instance"].getClassName,
+  renameClass: Blockly.Blocks["class_instance"].renameClass,
+  renameInstance: Blockly.Blocks["class_instance"].renameInstance,
+  update: Blockly.Blocks["class_instance"].update,
+  mutationToDom: Blockly.Blocks["class_instance"].mutationToDom,
+  domToMutation: Blockly.Blocks["class_instance"].domToMutation,
+  getDropDown: Blockly.Blocks["class_instance"].getDropDown,
+  getCurrentMethod: Blockly.Blocks["class_instance"].getCurrentMethod,
+  onchange: Blockly.Blocks["class_instance"].onchange
 };
 /**
  * Class to create a new Class with instances
