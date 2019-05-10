@@ -54,7 +54,7 @@ Blockly.FieldVariable = function(varname, opt_validator, opt_variableTypes, opt_
   this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
   this.setValidator(opt_validator);
   this.defaultVariableName = varname || "";
-
+  this.options = [];
   this.setTypes_(opt_variableTypes, opt_defaultType);
   this.value_ = null;
 };
@@ -193,11 +193,39 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
       new Blockly.Events.BlockChange(this.sourceBlock_, "field", this.name, oldValue, id)
     );
   }
+  //@Jonas Knerr
+  //check if variable is class variable
+  //check if variable was class variable_
+  // change scope
+  // for (var i = 0; i < this.options; i++) {
+  //   console.log(Blockly.Variables.getVariable(workspace, options[i][1]));
+  //   if (!this.isClassVariable()) {
+  //     var oldScope = variable.getScope();
+  //     variable.setScope("global");
+  //     workspace.changeVariableScope(variable.name, oldScope, "global");
+  //   }
+  // }
   this.variable_ = variable;
   this.value_ = id;
   this.setText(variable.name);
 };
 
+/*
+*@Jonas Knerr
+*/
+Blockly.FieldVariable.prototype.isClassVariable = function() {
+  if (this.sourceBlock_.parentBlock_) {
+    var parentBlock = this.sourceBlock_.parentBlock_;
+    while (parentBlock.parentBlock_) {
+      parentBlock = parentBlock.parentBlock_;
+    }
+    if (parentBlock.getClassDef) {
+      var className = parentBlock.getClassDef();
+      return className;
+    }
+    return false;
+  }
+};
 /**
  * Check whether the given variable type is allowed on this field.
  * @param {string} type The type to check.
@@ -302,38 +330,60 @@ Blockly.FieldVariable.dropdownCreate = function() {
   if (this.sourceBlock_) {
     workspace = this.sourceBlock_.workspace;
   }
-  //console.log(this);
-  // if (this.sourceBlock_.parentBlock_.getClassDef()) {
-  //   console.log(this.sourceBlock_.parentBlock_.getClassDef());
-  // }
+
+  var className = this.isClassVariable();
   var variableModelList = [];
+
   if (workspace) {
-    var classes = Blockly.Class.allUsedClasses(workspace);
-    var variableTypes = this.getVariableTypes_();
-    var variableScopes = this.getVariableScopes_();
-    console.log(classes);
-    console.log(variableScopes);
-    // Get a copy of the list, so that adding rename and new variable options
-    // doesn't modify the workspace's list.
-    for (var i = 0; i < variableTypes.length; i++) {
-      if (classes.includes(variableTypes[0])) continue;
-      var variableType = variableTypes[i];
-      var variables = workspace.getVariablesOfType(variableType);
-      variableModelList = variableModelList.concat(variables);
+    if (className) {
+      var classVarList = workspace.getVariableOfScope(className);
+      console.log(classVarList);
+      for (var i = 0; i < classVarList.length; i++) {
+        options.push([classVarList[i].name, classVarList[i].getId()]);
+      }
+    } else {
+      var globalVarList = workspace.getVariableOfScope("global");
+      console.log(globalVarList);
+      var options = [];
+      for (var i = 0; i < globalVarList.length; i++) {
+        options[i] = [globalVarList[i].name, globalVarList[i].getId()];
+      }
     }
   }
-  variableModelList.sort(Blockly.VariableModel.compareByName);
-
-  var options = [];
-  for (var i = 0; i < variableModelList.length; i++) {
-    // Set the UUID as the internal representation of the variable.
-    options[i] = [variableModelList[i].name, variableModelList[i].getId()];
-  }
+  this.options = options;
   options.push([Blockly.Msg["RENAME_VARIABLE"], Blockly.RENAME_VARIABLE_ID]);
   if (Blockly.Msg["DELETE_VARIABLE"]) {
     options.push([Blockly.Msg["DELETE_VARIABLE"].replace("%1", name), Blockly.DELETE_VARIABLE_ID]);
   }
-  console.log(options);
+
+  //TODO: try to get the types going again
+  // var variableModelList = [];
+  // if (workspace) {
+  //   var classes = Blockly.Class.allUsedClasses(workspace);
+  //   var variableTypes = this.getVariableTypes_();
+  //   var variableScopes = this.getVariableScopes_();
+  //   console.log(classes);
+  //   console.log(variableScopes);
+  //   // Get a copy of the list, so that adding rename and new variable options
+  //   // doesn't modify the workspace's list.
+  //   for (var i = 0; i < variableTypes.length; i++) {
+  //     if (classes.includes(variableTypes[0])) continue;
+  //     var variableType = variableTypes[i];
+  //     var variables = workspace.getVariablesOfType(variableType);
+  //     variableModelList = variableModelList.concat(variables);
+  //   }
+  // }
+  // variableModelList.sort(Blockly.VariableModel.compareByName);
+  //
+  // var options = [];
+  // for (var i = 0; i < variableModelList.length; i++) {
+  //   // Set the UUID as the internal representation of the variable.
+  //   options[i] = [variableModelList[i].name, variableModelList[i].getId()];
+  // }
+  // options.push([Blockly.Msg["RENAME_VARIABLE"], Blockly.RENAME_VARIABLE_ID]);
+  // if (Blockly.Msg["DELETE_VARIABLE"]) {
+  //   options.push([Blockly.Msg["DELETE_VARIABLE"].replace("%1", name), Blockly.DELETE_VARIABLE_ID]);
+  //
   return options;
 };
 

@@ -241,9 +241,15 @@ Blockly.Blocks["class_class"] = {
     this.setHelpUrl("");
   },
   changeScope: function() {
-    if (this.attributeCount > 0 && this.getInputTargetBlock("attribute" + 1)) {
-      var name = this.getInputTargetBlock("attribute" + 1).inputList[0].fieldRow[0].variable_.name;
+    var attributeCount = 1;
+    while (
+      attributeCount <= this.attributeCount &&
+      this.getInputTargetBlock("attribute" + attributeCount)
+    ) {
+      var name = this.getInputTargetBlock("attribute" + attributeCount).inputList[0].fieldRow[0]
+        .variable_.name;
       this.workspace.changeVariableScope(name, this.oldName, this.getClassDef());
+      attributeCount++;
     }
   },
   setOldName(oldName) {

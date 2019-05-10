@@ -50,7 +50,7 @@ Blockly.VariableMap = function(workspace) {
    *@ Jonas Knerr
    *adds another map for local variables
    */
-  this.scopeMap_ = [];
+  this.scopeMap_ = {};
   /**
    * The workspace this map belongs to.
    * @type {!Blockly.Workspace}
@@ -207,12 +207,9 @@ Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, 
     // Else append the variable to the preexisting list.
     this.variableMap_[opt_type].push(variable);
   }
-  if (opt_scope) {
-    if (!this.scopeMap_[opt_scope]) {
-      this.scopeMap_[opt_scope] = [variable];
-    } else {
-      this.scopeMap_[opt_scope].push(variable);
-    }
+
+  if (!opt_scope) {
+    this.addVariableToScope(name, "global");
   }
   return variable;
 };
@@ -224,10 +221,10 @@ Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, 
 
 Blockly.VariableMap.prototype.renameScope = function(oldName, newName) {
   if (this.scopeMap_) {
-    for (var i = 0; i < this.scopeMap_.length; i++) {
-      if (this.scopeMap_[i] == oldName) {
-        this.scopeMap_[i] = newName;
-      }
+    if (this.scopeMap_[oldName]) {
+      var variables = this.scopeMap_[oldName];
+      delete this.scopeMap_[oldName];
+      this.scopeMap_[newName] = variables;
     }
   }
 };
@@ -238,37 +235,67 @@ Blockly.VariableMap.prototype.renameScope = function(oldName, newName) {
  */
 Blockly.VariableMap.prototype.changeVariableScope = function(name, oldScope, newScope) {
   var variable = this.getVariable(name);
+  //
+  // var oldScope = variable.getScope();
+  // if (this.scopeMap_[oldScope]) {
+  //   this.scopeMap_[oldScope].delete(variable);
+  // }
+  this.deleteVariableFromScope(variable, variable.getScope());
   variable.setScope(newScope);
-  this.renameScope(oldScope, newScope);
-  if (this.scopeMap_.length > 0) {
-    for (var i = 0; i < this.scopeMap_.length; i++) {
-      if (this.scopeMap_[i][0] == oldScope) {
-        this.scopeMap_[i][0] = newScope;
-      }
-      if (this.scopeMap_[i][0] == newScope) {
-        if (!this.scopeMap_[i].includes(name)) {
-          if (this.scopeMap_[i].length == 0) {
-            this.scopeMap_[i] = [newScope, name];
-          } else {
-            this.scopeMap_[i].push(name);
-          }
-        }
-      } else {
-        this.scopeMap_.push([newScope, name]);
-      }
-    }
+  // this.renameScope(oldScope, newScope);
+  var variables = new Set();
+  if (this.scopeMap_[oldScope]) {
+    var variables = this.scopeMap_[oldScope];
+    delete this.scopeMap_[oldScope];
+    this.scopeMap_[newScope] = variables;
+  }
+  if (this.scopeMap_[newScope]) {
+    this.scopeMap_[newScope].add(variable);
   } else {
-    this.scopeMap_.push([newScope, name]);
+    variables.add(variable);
+    this.scopeMap_[newScope] = variables;
   }
   console.log(this.scopeMap_);
   return this.scopeMap_;
 };
+/*
+ *@Jonas Knerr
+ */
+Blockly.VariableMap.prototype.deleteVariableFromScope = function(variable, scope) {
+  if (this.scopeMap_[scope]) {
+    this.scopeMap_[scope].delete(variable);
+  }
+};
+
+/**
+ *@Jonas Knerr
+ * add global variables to scope later maybe more
+ */
+Blockly.VariableMap.prototype.addVariableToScope = function(name, scope) {
+  var variable = this.getVariable(name);
+  var variables = new Set();
+
+  if (this.scopeMap_[scope]) {
+    this.scopeMap_[scope].add(variable);
+  } else {
+    variables.add(variable);
+    this.scopeMap_[scope] = variables;
+  }
+};
+
 /** Return all variable getVariableScopes
  * @ Jonas Knerr
  */
 Blockly.VariableMap.prototype.getVariableScopes = function() {
   var scopes = Object.keys(this.scopeMap_);
   return scopes;
+};
+/**
+ *@Jonas Knerr
+ */
+Blockly.VariableMap.prototype.getVariableOfScope = function(scope) {
+  if (this.scopeMap_[scope]) return Array.from(this.scopeMap_[scope]);
+  return [];
 };
 /* Begin functions for variable deletion. */
 

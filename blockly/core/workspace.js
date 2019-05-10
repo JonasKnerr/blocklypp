@@ -468,6 +468,13 @@ Blockly.Workspace.prototype.getVariableTypes = function() {
   return this.variableMap_.getVariableTypes();
 };
 
+/*
+ * @Jonas Knerr
+ * return variable of a scope
+ */
+Blockly.Workspace.prototype.getVariableOfScope = function(scope) {
+  return this.variableMap_.getVariableOfScope(scope);
+};
 /**
  *Return all variable scopes
  * @Jonas Knerr
