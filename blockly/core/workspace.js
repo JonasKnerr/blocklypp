@@ -496,6 +496,20 @@ Blockly.Workspace.prototype.renameScope = function(oldScope, newScope) {
   return this.variableMap_.renameScope(oldScope, newScope);
 };
 /**
+ *@Jonas Knerr
+ */
+Blockly.Workspace.prototype.getAllVariableBlocks = function(name) {
+  var blocks = this.getAllBlocks();
+  var varBlocks = [];
+
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].type == "variables_get") {
+      varBlocks.push(blocks[i]);
+    }
+  }
+  return varBlocks;
+};
+/**
  * Return all variables of all types.
  * @return {!Array.<Blockly.VariableModel>} List of variable models.
  */

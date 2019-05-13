@@ -199,8 +199,6 @@ Blockly.Blocks["class_instance"] = {
       var method = this.getFieldValue("METHODS");
       this.curMethod = method;
       var args = Blockly.Class.getMethodAttributes(this.workspace, method);
-      console.log("METHODARGS: " + args);
-      console.log("THIS.ARGS: " + this.args);
       if (this.args != args.length) {
         if (this.args > args.length) {
           while (this.args > args.length) {

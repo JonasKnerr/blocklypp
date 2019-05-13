@@ -193,23 +193,68 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
       new Blockly.Events.BlockChange(this.sourceBlock_, "field", this.name, oldValue, id)
     );
   }
+
   //@Jonas Knerr
   //check if variable is class variable
   //check if variable was class variable_
   // change scope
-  // for (var i = 0; i < this.options; i++) {
-  //   console.log(Blockly.Variables.getVariable(workspace, options[i][1]));
-  //   if (!this.isClassVariable()) {
-  //     var oldScope = variable.getScope();
-  //     variable.setScope("global");
-  //     workspace.changeVariableScope(variable.name, oldScope, "global");
-  //   }
-  // }
+  if (this.variable_) {
+    if (this.variable_.getScope() != "global") {
+      console.log(variable);
+      workspace.changeVariableScope(this.variable_.name, false, "global");
+      this.variable_.setScope("global");
+      // for (var i = 0; i < this.options.length; i++) {
+      //   this.options.splice(i, 1);
+      // }
+      var blocks = workspace.getAllVariableBlocks(name);
+      for (var i = 0; i < blocks.length; i++) {
+        if (blocks[i].inputList[0].fieldRow[0].text_ == variable.name) {
+          console.log("variable-name: " + variable.name);
+          console.log("blokcsinputlist: " + blocks[i].inputList[0].fieldRow[0].text_);
+          console.log("global[0] " + workspace.getVariableOfScope("global")[0].name);
+          var globalVars = workspace.getVariableOfScope("global");
+          for (var j = 0; j < globalVars.length; j++) {
+            if (globalVars[j].name != variable.name) {
+              blocks[i].inputList[0].fieldRow[0].setValueOnce(
+                workspace.getVariableOfScope("global")[j].id_
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+  console.log("setValue");
+  this.variable_ = variable;
+  this.value_ = id;
+  this.menuGenerator_ = Blockly.FieldVariable.dropdownCreate;
+  this.setText(variable.name);
+};
+/**
+ *@Jonas Knerr
+ */
+Blockly.FieldVariable.prototype.setValueOnce = function(id) {
+  var workspace = this.sourceBlock_.workspace;
+  var variable = Blockly.Variables.getVariable(workspace, id);
+
+  if (!variable) {
+    throw Error("Variable id doesn't point to a real variable!  ID was " + id);
+  }
+  // Type checks!
+  var type = variable.type;
+  if (!this.typeIsAllowed_(type)) {
+    throw Error("Variable type doesn't match this field!  Type was " + type);
+  }
+  if (this.sourceBlock_ && Blockly.Events.isEnabled()) {
+    var oldValue = this.variable_ ? this.variable_.getId() : null;
+    Blockly.Events.fire(
+      new Blockly.Events.BlockChange(this.sourceBlock_, "field", this.name, oldValue, id)
+    );
+  }
   this.variable_ = variable;
   this.value_ = id;
   this.setText(variable.name);
 };
-
 /*
 *@Jonas Knerr
 */
@@ -333,20 +378,17 @@ Blockly.FieldVariable.dropdownCreate = function() {
 
   var className = this.isClassVariable();
   var variableModelList = [];
+  var options = [];
 
   if (workspace) {
+    var globalVarList = workspace.getVariableOfScope("global");
+    for (var i = 0; i < globalVarList.length; i++) {
+      options[i] = [globalVarList[i].name, globalVarList[i].getId()];
+    }
     if (className) {
       var classVarList = workspace.getVariableOfScope(className);
-      console.log(classVarList);
       for (var i = 0; i < classVarList.length; i++) {
         options.push([classVarList[i].name, classVarList[i].getId()]);
-      }
-    } else {
-      var globalVarList = workspace.getVariableOfScope("global");
-      console.log(globalVarList);
-      var options = [];
-      for (var i = 0; i < globalVarList.length; i++) {
-        options[i] = [globalVarList[i].name, globalVarList[i].getId()];
       }
     }
   }
