@@ -44,7 +44,7 @@ Blockly.Blocks["class_get_instance"] = {
     if (constr) {
       var args = constr.getVars();
       if (this.args != args.length) {
-        if (this.args > ars.length) {
+        if (this.args > args.length) {
           while (this.args > args.length) {
             this.args--;
             this.removeInput("ARG" + this.args);

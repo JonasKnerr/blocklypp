@@ -31,7 +31,7 @@ Blockly.JavaScript["class_class"] = function(block) {
     //generate code for the constructor
     code += " constructor (" + constructor_vars.join(", ") + "){\n";
     for (var i = 0; i < attributes.length; i++) {
-      code += "this." + attributes[i] + ";\n";
+      code += attributes[i] + ";\n";
     }
     code += branch + " }\n\n";
   } else {
