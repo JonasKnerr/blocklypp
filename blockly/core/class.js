@@ -73,7 +73,24 @@ Blockly.Class.getMethods = function(workspace, classname) {
   }
   return methods;
 };
-
+/**
+ * Returns all class variables of a class
+ */
+Blockly.Class.getClassVariables = function(workspace, classname) {
+  var variables_ = [];
+  var blocks = workspace.getAllBlocks(false);
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getStatement) {
+      if (classname == blocks[i].getClassDef()) {
+        variables_ = blocks[i].getAttributeInputs();
+      }
+    }
+  }
+  return variables_;
+};
+/**
+ * Returns all calling functions of a class
+ */
 Blockly.Class.getCallers = function(name, workspace) {
   var callers = [];
   var blocks = workspace.getAllBlocks(false);

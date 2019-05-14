@@ -83,11 +83,13 @@ Blockly.Blocks["class_get_instance"] = {
 Blockly.Blocks["class_instance"] = {
   init: function() {
     this.appendDummyInput().appendField("Klasse", "CLASS");
-    this.appendDummyInput().appendField("", "INSTANCE");
+    this.appendDummyInput()
+      .appendField("", "INSTANCE")
+      .appendField(".", "POINT");
     this.methods = [];
+    this.classVariables = [];
     this.args = 0;
     this.curMethod;
-    //this.appendValueInput("INPUT");
     this.setInputsInline(true);
     this.setNextStatement(true);
     this.setPreviousStatement(true);
@@ -113,8 +115,6 @@ Blockly.Blocks["class_instance"] = {
    * Renames the instancename of the instance
    */
   renameInstance: function(oldName, newName) {
-    // console.log(oldName);
-    // console.log(this.getInstanceName());
     if (Blockly.Names.equals(oldName, this.getInstanceName())) {
       this.setFieldValue(newName, "INSTANCE");
     }
@@ -145,7 +145,16 @@ Blockly.Blocks["class_instance"] = {
    */
   getDropDown: function(oldName, newName) {
     var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getClassName());
-    if (this.methods.length != methods.length || oldName) {
+    var classVariables = Blockly.Class.getClassVariables(
+      Blockly.getMainWorkspace(),
+      this.getClassName()
+    );
+
+    if (
+      this.methods.length != methods.length ||
+      oldName ||
+      this.classVariables.length != classVariables.length
+    ) {
       //remove previous Dropdown
       if (this.getInput("Data")) {
         this.removeInput("Data");
@@ -161,14 +170,8 @@ Blockly.Blocks["class_instance"] = {
             this.curMethod = newName;
             setName = true;
           }
-          options.push([this.curMethod, this.curMethod]);
+          options.push([this.curMethod + "()", this.curMethod]);
         }
-        // console.log(oldName);
-        // var methodNames = [];
-        // for (var i = 0; i < this.methods.length; i++) {
-        //   methodNames.push(this.methods[i].getFieldValue("NAME"));
-        // }
-        // console.log(methodNames);
         for (var i = 0; i < this.methods.length; i++) {
           /*if a function gets renamed we ne to adjust the oldName to
            * newName of the function, because we need to update in
@@ -177,14 +180,19 @@ Blockly.Blocks["class_instance"] = {
           if (this.methods[i].getFieldValue("NAME") == this.curMethod) continue;
           if (this.methods[i].getFieldValue("NAME") == oldName) {
             if (setName) continue;
-            options.push([newName, newName]);
+            options.push([newName + "()", newName]);
           } else {
             options.push([
-              this.methods[i].getFieldValue("NAME"),
+              this.methods[i].getFieldValue("NAME") + "()",
               this.methods[i].getFieldValue("NAME")
             ]);
           }
         }
+        console.log(classVariables);
+        for (var i = 0; i < classVariables.length; i++) {
+          options.push([classVariables[i], classVariables[i]]);
+        }
+        this.classVariables = classVariables;
         var dropdown = new Blockly.FieldDropdown(options);
         this.appendDummyInput("Data").appendField(dropdown, "METHODS");
       }
@@ -195,7 +203,8 @@ Blockly.Blocks["class_instance"] = {
     return this.curMethod;
   },
   onchange: function() {
-    if (this.getFieldValue("METHODS") && !this.isInFlyout) {
+    var isVar = this.classVariables.includes(this.getFieldValue("METHODS"));
+    if (this.getFieldValue("METHODS") && !this.isInFlyout && !isVar) {
       var method = this.getFieldValue("METHODS");
       this.curMethod = method;
       var args = Blockly.Class.getMethodAttributes(this.workspace, method);
@@ -206,10 +215,19 @@ Blockly.Blocks["class_instance"] = {
             this.removeInput("ARG" + this.args);
           }
         } else {
-          this.appendValueInput("ARG" + this.args);
-          //this.moveInputBefore("attribute" + this.attributeCount, "CONSTRUCTOR");
-          this.args++;
+          while (this.args < args.length) {
+            this.appendValueInput("ARG" + this.args);
+            //this.moveInputBefore("INSTANCE", "ARG" + this.args);
+            this.args++;
+          }
         }
+      }
+    } else {
+      var variable_ = this.getFieldValue("METHODS");
+      this.curMethod = variable_;
+      while (this.args > 0) {
+        this.args--;
+        this.removeInput("ARG" + this.args);
       }
     }
   }
@@ -222,7 +240,9 @@ Blockly.Blocks["class_instance"] = {
 Blockly.Blocks["class_instance_output"] = {
   init: function() {
     this.appendDummyInput().appendField("Klasse", "CLASS");
-    this.appendDummyInput().appendField("", "INSTANCE");
+    this.appendDummyInput()
+      .appendField("", "INSTANCE")
+      .appendField(".", "POINT");
     this.methods = [];
     this.args = 0;
     this.curMethod;
@@ -265,12 +285,14 @@ Blockly.Blocks["class_class"] = {
     this.setColour(20);
     this.attributeCount = 0;
     this.methodCount = 0;
+    this.attributeInputs = [];
     this.oldName = "";
     this.setTooltip("");
     this.setHelpUrl("");
   },
   changeScope: function() {
     var attributeCount = 1;
+    var attributeInputs = [];
     while (
       attributeCount <= this.attributeCount &&
       this.getInputTargetBlock("attribute" + attributeCount)
@@ -279,7 +301,14 @@ Blockly.Blocks["class_class"] = {
         .variable_.name;
       this.workspace.changeVariableScope(name, this.oldName, this.getClassDef());
       attributeCount++;
+      attributeInputs.push(name);
     }
+    // set variables to global that are not in the class anymore
+    if (this.attributeInputs.length > attributeInputs.length) {
+      var changedInput = this.attributeInputs.filter(x => !attributeInputs.includes(x));
+      this.workspace.changeVariableScope(changedInput[0], this.oldName, "global");
+    }
+    this.attributeInputs = attributeInputs;
   },
   setOldName(oldName) {
     this.oldName = oldName;
@@ -332,6 +361,9 @@ Blockly.Blocks["class_class"] = {
         .setCheck(null)
         .appendField("Attribute");
     }
+  },
+  getAttributeInputs: function() {
+    return this.attributeInputs;
   },
   getClassDef: function() {
     return this.getFieldValue("NAME");

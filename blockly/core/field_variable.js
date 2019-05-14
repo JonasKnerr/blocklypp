@@ -199,8 +199,8 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
   //check if variable was class variable_
   // change scope
   if (this.variable_) {
-    if (this.variable_.getScope() != "global") {
-      console.log(variable);
+    if (this.variable_.getScope() != "global" && this.sourceBlock_.type != "variables_set") {
+      console.log(this);
       workspace.changeVariableScope(this.variable_.name, false, "global");
       this.variable_.setScope("global");
       // for (var i = 0; i < this.options.length; i++) {
@@ -209,9 +209,9 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
       var blocks = workspace.getAllVariableBlocks(name);
       for (var i = 0; i < blocks.length; i++) {
         if (blocks[i].inputList[0].fieldRow[0].text_ == variable.name) {
-          console.log("variable-name: " + variable.name);
-          console.log("blokcsinputlist: " + blocks[i].inputList[0].fieldRow[0].text_);
-          console.log("global[0] " + workspace.getVariableOfScope("global")[0].name);
+          // console.log("variable-name: " + variable.name);
+          // console.log("blokcsinputlist: " + blocks[i].inputList[0].fieldRow[0].text_);
+          // console.log("global[0] " + workspace.getVariableOfScope("global")[0].name);
           var globalVars = workspace.getVariableOfScope("global");
           for (var j = 0; j < globalVars.length; j++) {
             if (globalVars[j].name != variable.name) {
@@ -220,15 +220,20 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
               );
             }
           }
+          blocks[i].setHighlighted(true);
+          window.setTimeout(this.setHighlighted, 3000, [blocks[i]]);
         }
       }
     }
   }
-  console.log("setValue");
+  // console.log("setValue");
   this.variable_ = variable;
   this.value_ = id;
   this.menuGenerator_ = Blockly.FieldVariable.dropdownCreate;
   this.setText(variable.name);
+};
+Blockly.FieldVariable.prototype.setHighlighted = function(block) {
+  block[0].setHighlighted(false);
 };
 /**
  *@Jonas Knerr

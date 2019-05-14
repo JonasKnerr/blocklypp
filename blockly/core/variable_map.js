@@ -255,7 +255,7 @@ Blockly.VariableMap.prototype.changeVariableScope = function(name, oldScope, new
     variables.add(variable);
     this.scopeMap_[newScope] = variables;
   }
-  console.log(this.scopeMap_);
+  // console.log(this.scopeMap_);
   return this.scopeMap_;
 };
 /*
