@@ -89,7 +89,8 @@ Blockly.Blocks["class_instance"] = {
     this.methods = [];
     this.classVariables = [];
     this.args = 0;
-    this.curMethod;
+    this.curValue;
+    this.typeOfValue = "";
     this.setInputsInline(true);
     this.setNextStatement(true);
     this.setPreviousStatement(true);
@@ -126,6 +127,7 @@ Blockly.Blocks["class_instance"] = {
    * Create XML to represent the argumens and names
    */
   mutationToDom: function() {
+    console.log("mutToDom");
     var container = document.createElement("mutation");
     container.setAttribute("name", this.getInstanceName());
     container.setAttribute("class", this.getClassName());
@@ -135,6 +137,7 @@ Blockly.Blocks["class_instance"] = {
    *Parse XML to restore the arguments and names
    */
   domToMutation: function(xmlElement) {
+    console.log(xmlElement);
     var name = xmlElement.getAttribute("name");
     this.renameInstance(this.getInstanceName(), name);
     var className = xmlElement.getAttribute("class");
@@ -165,19 +168,29 @@ Blockly.Blocks["class_instance"] = {
         var options = [];
 
         //pushes the current Method as the first item into the array
-        if (this.curMethod) {
-          if (this.curMethod == oldName) {
-            this.curMethod = newName;
+        if (this.curValue) {
+          if (this.curValue == oldName) {
+            this.curValue = newName;
             setName = true;
           }
-          options.push([this.curMethod + "()", this.curMethod]);
+          if (this.classVariables.includes(this.curValue)) {
+            this.typeOfValue = "attribute";
+            options.push([this.curValue, this.curValue]);
+          } else {
+            this.typeOfValue = "method";
+            options.push([this.curValue + "()", this.curValue]);
+          }
+        }
+        for (var i = 0; i < classVariables.length; i++) {
+          if (classVariables[i] == this.curValue && this.typeOfValue == "attribute") continue;
+          options.push([classVariables[i], classVariables[i]]);
         }
         for (var i = 0; i < this.methods.length; i++) {
           /*if a function gets renamed we ne to adjust the oldName to
            * newName of the function, because we need to update in
-           * Blockly.Procedures.Rename before the return s
+           * Blockly.Procedures.Rename before the return statement
            */
-          if (this.methods[i].getFieldValue("NAME") == this.curMethod) continue;
+          if (this.methods[i].getFieldValue("NAME") == this.curValue) continue;
           if (this.methods[i].getFieldValue("NAME") == oldName) {
             if (setName) continue;
             options.push([newName + "()", newName]);
@@ -188,10 +201,7 @@ Blockly.Blocks["class_instance"] = {
             ]);
           }
         }
-        console.log(classVariables);
-        for (var i = 0; i < classVariables.length; i++) {
-          options.push([classVariables[i], classVariables[i]]);
-        }
+        console.log(this.typeOfValue);
         this.classVariables = classVariables;
         var dropdown = new Blockly.FieldDropdown(options);
         this.appendDummyInput("Data").appendField(dropdown, "METHODS");
@@ -200,13 +210,14 @@ Blockly.Blocks["class_instance"] = {
   },
   //returns the actual method
   getCurrentMethod: function() {
-    return this.curMethod;
+    return this.curValue;
   },
   onchange: function() {
     var isVar = this.classVariables.includes(this.getFieldValue("METHODS"));
     if (this.getFieldValue("METHODS") && !this.isInFlyout && !isVar) {
+      this.typeOfValue = "method";
       var method = this.getFieldValue("METHODS");
-      this.curMethod = method;
+      this.curValue = method;
       var args = Blockly.Class.getMethodAttributes(this.workspace, method);
       if (this.args != args.length) {
         if (this.args > args.length) {
@@ -223,8 +234,9 @@ Blockly.Blocks["class_instance"] = {
         }
       }
     } else {
+      this.typeOfValue = "attribute";
       var variable_ = this.getFieldValue("METHODS");
-      this.curMethod = variable_;
+      this.curValue = variable_;
       while (this.args > 0) {
         this.args--;
         this.removeInput("ARG" + this.args);
@@ -245,7 +257,7 @@ Blockly.Blocks["class_instance_output"] = {
       .appendField(".", "POINT");
     this.methods = [];
     this.args = 0;
-    this.curMethod;
+    this.curValue;
     this.setInputsInline(true);
     this.setOutput(true);
     this.setColour(20);
@@ -326,20 +338,26 @@ Blockly.Blocks["class_class"] = {
     return topBlock;
   },
   compose: function(containerBlock) {
+    var inputBlocks = [];
     for (var i = this.attributeCount; i > 0; i--) {
+      inputBlocks.push(this.getInputTargetBlock("attribute" + i));
       this.removeInput("attribute" + i);
     }
     this.attributeCount = 0;
+    var inputLength = inputBlocks.length;
     var itemBlock = containerBlock.getInputTargetBlock("STACK");
     while (itemBlock) {
       if (itemBlock.type == "class_attribute") {
+        var inputBlock = inputBlocks[inputLength - 1];
+        inputLength--;
         this.attributeCount++;
         var attributeInput = this.appendValueInput("attribute" + this.attributeCount)
           .setCheck(null)
           .appendField("Attribute");
+        if (inputBlock) {
+          attributeInput.connection.connect(inputBlock.outputConnection);
+        }
         this.moveInputBefore("attribute" + this.attributeCount, "CONSTRUCTOR");
-        if (itemBlock.valueConnection_)
-          attributeInput.connection.connect(itemBlock.valueConnection_);
       }
       itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
     }
@@ -534,7 +552,6 @@ Blockly.Blocks["class_mutator"] = {
   init: function() {
     this.appendDummyInput().appendField("class");
     this.appendStatementInput("STACK");
-    //  this.appendStatementInput("STACK");
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");

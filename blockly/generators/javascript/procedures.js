@@ -30,7 +30,6 @@ goog.require("Blockly.JavaScript");
 
 Blockly.JavaScript["procedures_defreturn"] = function(block) {
   // Define a procedure with a return value.
-  console.log(block);
   var funcName = Blockly.JavaScript.variableDB_.getName(
     block.getFieldValue("NAME"),
     Blockly.Procedures.NAME_TYPE

@@ -31,14 +31,14 @@ Blockly.JavaScript["class_class"] = function(block) {
     //generate code for the constructor
     code += " constructor (" + constructor_vars.join(", ") + "){\n";
     for (var i = 0; i < attributes.length; i++) {
-      code += attributes[i] + ";\n";
+      code += "  " + attributes[i] + ";\n";
     }
     code += branch + " }\n\n";
   } else {
     /*TODO: Was passiert wenn kein Konstruktor existiert???*/
     code += " /*default Constructor */\n constructor(){\n";
     for (var i = 0; i < attributes.length; i++) {
-      code += "this." + attributes[i] + ";\n";
+      code += "  " + attributes[i] + ";\n";
     }
     code += "}\n\n";
   }
@@ -59,7 +59,8 @@ Blockly.JavaScript["class_class"] = function(block) {
     code += " " + name + "(" + vars.join(", ") + "){\n" + branch + returnValue + "}\n\n";
   }
   code += "}\n";
-  return code;
+  Blockly.JavaScript.definitions_["%" + name] = code;
+  return null;
 };
 
 Blockly.JavaScript["class_get_instance"] = function(block) {
@@ -92,12 +93,17 @@ Blockly.JavaScript["class_instance"] = function(block) {
       }
     }
   }
-  var args = [];
-  for (var i = 0; i < block.args; i++) {
-    args[i] =
-      Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+  console.log(block.typeOfValue);
+  if (block.typeOfValue == "method") {
+    var args = [];
+    for (var i = 0; i < block.args; i++) {
+      args[i] =
+        Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+    }
+    var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
+  } else {
+    var code = instanceName + "." + methodName + ";\n";
   }
-  var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
   return code;
 };
 
@@ -117,11 +123,16 @@ Blockly.JavaScript["class_instance_output"] = function(block) {
       }
     }
   }
-  var args = [];
-  for (var i = 0; i < block.args; i++) {
-    args[i] =
-      Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+  console.log(block.typeOfValue);
+  if (block.typeOfValue == "method") {
+    var args = [];
+    for (var i = 0; i < block.args; i++) {
+      args[i] =
+        Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+    }
+    var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
+  } else {
+    var code = instanceName + "." + methodName;
   }
-  var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
