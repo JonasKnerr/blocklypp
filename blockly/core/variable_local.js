@@ -16,7 +16,7 @@ Blockly.VariablesLocal.flyoutCategory = function(workspace) {
     Blockly.Variables.createVariableButtonHandler(
       button.getTargetWorkspace(),
       false,
-      false,
+      "local",
       "local"
     );
   });

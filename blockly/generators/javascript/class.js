@@ -68,7 +68,6 @@ Blockly.JavaScript["class_get_instance"] = function(block) {
   var className = block.getInstanceDef()[0];
   var args = [];
   for (var i = 0; i < block.args; i++) {
-    console.log(Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA));
     args[i] =
       Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
   }
@@ -93,7 +92,6 @@ Blockly.JavaScript["class_instance"] = function(block) {
       }
     }
   }
-  console.log(block.typeOfValue);
   if (block.typeOfValue == "method") {
     var args = [];
     for (var i = 0; i < block.args; i++) {
@@ -123,7 +121,6 @@ Blockly.JavaScript["class_instance_output"] = function(block) {
       }
     }
   }
-  console.log(block.typeOfValue);
   if (block.typeOfValue == "method") {
     var args = [];
     for (var i = 0; i < block.args; i++) {

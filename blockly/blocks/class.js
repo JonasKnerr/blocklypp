@@ -127,7 +127,6 @@ Blockly.Blocks["class_instance"] = {
    * Create XML to represent the argumens and names
    */
   mutationToDom: function() {
-    console.log("mutToDom");
     var container = document.createElement("mutation");
     container.setAttribute("name", this.getInstanceName());
     container.setAttribute("class", this.getClassName());
@@ -137,7 +136,6 @@ Blockly.Blocks["class_instance"] = {
    *Parse XML to restore the arguments and names
    */
   domToMutation: function(xmlElement) {
-    console.log(xmlElement);
     var name = xmlElement.getAttribute("name");
     this.renameInstance(this.getInstanceName(), name);
     var className = xmlElement.getAttribute("class");
@@ -213,7 +211,10 @@ Blockly.Blocks["class_instance"] = {
     return this.curValue;
   },
   onchange: function() {
-    var isVar = this.classVariables.includes(this.getFieldValue("METHODS"));
+    var isVar;
+    if (this.classVariables) {
+      isVar = this.classVariables.includes(this.getFieldValue("METHODS"));
+    }
     if (this.getFieldValue("METHODS") && !this.isInFlyout && !isVar) {
       this.typeOfValue = "method";
       var method = this.getFieldValue("METHODS");

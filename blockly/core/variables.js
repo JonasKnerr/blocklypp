@@ -162,6 +162,7 @@ Blockly.Variables.flyoutCategory = function(workspace) {
   xmlList.push(button);
 
   var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
+  //blockList.slice(0, 3);
   xmlList = xmlList.concat(blockList);
   return xmlList;
 };
