@@ -94,6 +94,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
       }
       hash["arg_" + this.arguments_[i].toLowerCase()] = true;
     }
+    //console.log(hash);
     if (badArg) {
       this.setWarningText(Blockly.Msg["PROCEDURES_DEF_DUPLICATE_WARNING"]);
     } else {
@@ -148,6 +149,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
    * @this Blockly.Block
    */
   domToMutation: function(xmlElement) {
+    console.log("domToMutation");
     this.arguments_ = [];
     this.argumentVarModels_ = [];
     for (var i = 0, childNode; (childNode = xmlElement.childNodes[i]); i++) {
@@ -213,12 +215,20 @@ Blockly.Blocks["procedures_defnoreturn"] = {
    */
   compose: function(containerBlock) {
     // Parameter list.
+
     this.arguments_ = [];
     this.paramIds_ = [];
     this.argumentVarModels_ = [];
     var paramBlock = containerBlock.getInputTargetBlock("STACK");
     while (paramBlock) {
       var varName = paramBlock.getFieldValue("NAME");
+      var i = 1;
+      // console.log(this.arguments_);
+      // while (this.arguments_.includes(varName)) {
+      //   varName = varName + i;
+      //   i++;
+      // }
+      // console.log(varName);
       this.arguments_.push(varName);
       var variable = this.workspace.getVariable(varName, "");
       if (variable != null) {
@@ -476,6 +486,7 @@ Blockly.Blocks["procedures_mutatorcontainer"] = {
     this.setColour(Blockly.Msg["PROCEDURES_HUE"]);
     this.setTooltip(Blockly.Msg["PROCEDURES_MUTATORCONTAINER_TOOLTIP"]);
     this.contextMenu = false;
+    this.varNames = [];
   }
 };
 
@@ -494,7 +505,6 @@ Blockly.Blocks["procedures_mutatorarg"] = {
       this.oldShowEditorFn_();
     };
     field.showEditor_ = newShowEditorFn;
-
     this.appendDummyInput()
       .appendField(Blockly.Msg["PROCEDURES_MUTATORARG_TITLE"])
       .appendField(field, "NAME");
@@ -540,6 +550,21 @@ Blockly.Blocks["procedures_mutatorarg"] = {
       }
     }
     return varName;
+  },
+  onchange: function() {
+    console.log(this);
+    if (this.parentBlock_) {
+      var varName = this.getFieldValue("NAME");
+      //this.setFieldValue("ululu", "NAME");
+      var containerBlock = this.parentBlock_;
+      var i = 1;
+      if (containerBlock.varNames.includes(varName)) {
+        varName = varName + i;
+      }
+      this.setFieldValue(varName, "NAME");
+      containerBlock.varNames.push(varName);
+      console.log(containerBlock.varNames);
+    }
   },
   /**
    * Called when focusing away from the text field.

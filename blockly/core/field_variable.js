@@ -220,16 +220,17 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
         }
       }
     }
-  } else if (variable) {
-    if (
-      variable.getScope() != "global" &&
-      !this.isClassVariable() &&
-      !this.sourceBlock_.isInFlyout
-    ) {
-      id_ = workspace.getVariableOfScope("global")[0].id_;
-      variable = Blockly.Variables.getVariable(workspace, id_);
-    }
   }
+  // } else if (variable) {
+  //   if (
+  //     variable.getScope() != "global" &&
+  //     !this.isClassVariable() &&
+  //     !this.sourceBlock_.isInFlyout
+  //   ) {
+  //     id_ = workspace.getVariableOfScope("global")[0].id_;
+  //     variable = Blockly.Variables.getVariable(workspace, id_);
+  //   }
+  // }
   this.variable_ = variable;
   // console.log(globalVars);
   // if (this.variable_) {

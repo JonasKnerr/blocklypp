@@ -90,7 +90,7 @@ Blockly.Blocks["class_instance"] = {
     this.classVariables = [];
     this.args = 0;
     this.curValue;
-    this.typeOfValue = "";
+    //    this.typeOfValue = "";
     this.setInputsInline(true);
     this.setNextStatement(true);
     this.setPreviousStatement(true);
@@ -145,65 +145,75 @@ Blockly.Blocks["class_instance"] = {
    * Intialize a dropdown with all methods for a class
    */
   getDropDown: function(oldName, newName) {
-    var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getClassName());
-    var classVariables = Blockly.Class.getClassVariables(
-      Blockly.getMainWorkspace(),
-      this.getClassName()
-    );
+    if (!this.isInFlyout) {
+      var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getClassName());
+      var classVariables = Blockly.Class.getClassVariables(
+        Blockly.getMainWorkspace(),
+        this.getClassName()
+      );
 
-    console.log("this.classVaribales:   " + this.classVariables);
-    console.log("ClassVariables:        " + classVariables);
-    if (
-      this.methods.length != methods.length ||
-      oldName ||
-      this.classVariables.length != classVariables.length
-    ) {
-      //remove previous Dropdown
-      if (this.getInput("Data")) {
-        this.removeInput("Data");
-      }
-      this.methods = methods;
-      this.classVariables = classVariables;
-      var setName = false;
-      if (this.methods.length != 0 || this.classVariables.length != 0) {
-        var options = [];
+      if (
+        this.methods.length != methods.length ||
+        oldName ||
+        this.classVariables.length != classVariables.length
+      ) {
+        //remove previous Dropdown
+        if (this.getInput("Data")) {
+          this.removeInput("Data");
+        }
+        this.methods = methods;
+        this.classVariables = classVariables;
 
-        //pushes the current Method as the first item into the array
-        if (this.curValue) {
+        if (this.methods.length != 0 || this.classVariables.length != 0) {
+          var options = [];
+          // console.log("oldName:    " + oldName);
+          // console.log("newName       " + newName);
+          // console.log("this.curValue:   " + this.curValue);
+
+          //make array of method names, if a mehtod gets renamed we need to
+          // store the new Value newName
+          var methodNames = methods.map(method => {
+            if (method.getFieldValue("NAME") == oldName) return newName;
+            return method.getFieldValue("NAME");
+          });
           if (this.curValue == oldName) {
             this.curValue = newName;
-            setName = true;
           }
-          if (this.classVariables.includes(this.curValue)) {
-            this.typeOfValue = "attribute";
-            options.push([this.curValue, this.curValue]);
-          } else {
-            this.typeOfValue = "method";
-            options.push([this.curValue + "()", this.curValue]);
+
+          //remove current value if block is not in the class anymore
+          if (
+            !methodNames.includes(this.curValue) &&
+            !this.classVariables.includes(this.curValue)
+          ) {
+            // console.log("this.methods:    " + this.methods);
+            // console.log("this.Vars:       " + this.classVariables);
+            // console.log("this.curValue:   " + this.curValue);
+            this.curValue = "";
+            this.typeOfValue = "";
           }
-        }
-        for (var i = 0; i < classVariables.length; i++) {
-          if (classVariables[i] == this.curValue && this.typeOfValue == "attribute") continue;
-          options.push([classVariables[i], classVariables[i]]);
-        }
-        for (var i = 0; i < this.methods.length; i++) {
-          /*if a function gets renamed we ne to adjust the oldName to
-           * newName of the function, because we need to update in
-           * Blockly.Procedures.Rename before the return statement
-           */
-          if (this.methods[i].getFieldValue("NAME") == this.curValue) continue;
-          if (this.methods[i].getFieldValue("NAME") == oldName) {
-            if (setName) continue;
-            options.push([newName + "()", newName]);
-          } else {
+          if (this.curValue) {
+            if (this.classVariables.includes(this.curValue)) {
+              this.typeOfValue = "attribute";
+              options.push([this.curValue, this.curValue]);
+            } else {
+              this.typeOfValue = "method";
+              options.push([this.curValue + "()", this.curValue]);
+            }
+          }
+          for (var i = 0; i < this.classVariables.length; i++) {
+            if (classVariables[i] == this.curValue && this.typeOfValue == "attribute") continue;
+            options.push([classVariables[i], classVariables[i]]);
+          }
+          for (var i = 0; i < methodNames.length; i++) {
+            if (methodNames[i] == this.curValue && this.typeOfValue == "method") continue;
             options.push([
               this.methods[i].getFieldValue("NAME") + "()",
               this.methods[i].getFieldValue("NAME")
             ]);
           }
+          var dropdown = new Blockly.FieldDropdown(options);
+          this.appendDummyInput("Data").appendField(dropdown, "METHODS");
         }
-        var dropdown = new Blockly.FieldDropdown(options);
-        this.appendDummyInput("Data").appendField(dropdown, "METHODS");
       }
     }
   },
@@ -305,17 +315,16 @@ Blockly.Blocks["class_class"] = {
     this.setHelpUrl("");
   },
   changeScope: function() {
-    var attributeCount = 1;
+    var attributeCount = 0;
     var attributeInputs = [];
-    while (
-      attributeCount <= this.attributeCount &&
-      this.getInputTargetBlock("attribute" + attributeCount)
-    ) {
-      var name = this.getInputTargetBlock("attribute" + attributeCount).inputList[0].fieldRow[0]
-        .variable_.name;
-      this.workspace.changeVariableScope(name, this.oldName, this.getClassDef());
+    while (attributeCount <= this.attributeCount) {
       attributeCount++;
-      attributeInputs.push(name);
+      if (this.getInputTargetBlock("attribute" + attributeCount)) {
+        var name = this.getInputTargetBlock("attribute" + attributeCount).inputList[0].fieldRow[0]
+          .variable_.name;
+        this.workspace.changeVariableScope(name, this.oldName, this.getClassDef());
+        attributeInputs.push(name);
+      }
     }
     // set variables to global that are not in the class anymore
     if (this.attributeInputs.length > attributeInputs.length) {
