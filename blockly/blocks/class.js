@@ -151,6 +151,8 @@ Blockly.Blocks["class_instance"] = {
       this.getClassName()
     );
 
+    console.log("this.classVaribales:   " + this.classVariables);
+    console.log("ClassVariables:        " + classVariables);
     if (
       this.methods.length != methods.length ||
       oldName ||
@@ -161,8 +163,9 @@ Blockly.Blocks["class_instance"] = {
         this.removeInput("Data");
       }
       this.methods = methods;
+      this.classVariables = classVariables;
       var setName = false;
-      if (!(this.methods.length == 0)) {
+      if (this.methods.length != 0 || this.classVariables.length != 0) {
         var options = [];
 
         //pushes the current Method as the first item into the array
@@ -199,8 +202,6 @@ Blockly.Blocks["class_instance"] = {
             ]);
           }
         }
-        console.log(this.typeOfValue);
-        this.classVariables = classVariables;
         var dropdown = new Blockly.FieldDropdown(options);
         this.appendDummyInput("Data").appendField(dropdown, "METHODS");
       }

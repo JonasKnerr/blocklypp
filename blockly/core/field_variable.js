@@ -176,7 +176,6 @@ Blockly.FieldVariable.prototype.getVariable = function() {
  *     variable.
  */
 Blockly.FieldVariable.prototype.setValue = function(id) {
-  console.log("setValue");
   var id_ = id;
   var workspace = this.sourceBlock_.workspace;
   var variable = Blockly.Variables.getVariable(workspace, id_);
@@ -200,17 +199,15 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
   //check if variable is class variable
   //check if variable was class variable_
   // change scope
+  var globalVars = workspace.getVariableOfScope("global");
 
-  console.log(variable);
   if (this.variable_) {
     if (this.variable_.getScope() != "global" && this.sourceBlock_.type != "variables_set") {
-      console.log(this);
       workspace.changeVariableScope(this.variable_.name, false, "global");
       this.variable_.setScope("global");
       var blocks = workspace.getAllVariableBlocks(name);
       for (var i = 0; i < blocks.length; i++) {
         if (blocks[i].inputList[0].fieldRow[0].text_ == variable.name) {
-          var globalVars = workspace.getVariableOfScope("global");
           for (var j = 0; j < globalVars.length; j++) {
             if (globalVars[j].name != variable.name) {
               blocks[i].inputList[0].fieldRow[0].setValueOnce(
@@ -233,10 +230,18 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
       variable = Blockly.Variables.getVariable(workspace, id_);
     }
   }
+  this.variable_ = variable;
+  // console.log(globalVars);
+  // if (this.variable_) {
+  //   console.log(this.variable_);
+  //   if (this.variable_.getScope() != "global") {
+  //     console.log("local");
+  //     this.sourceBlock_.setColour(90);
+  //   } else {
+  //     console.log("global");
+  //     this.sourceBlock_.setColour("%{BKY_VARIABLES_HUE}");
   //   }
   // }
-
-  this.variable_ = variable;
   this.value_ = id_;
   this.menuGenerator_ = Blockly.FieldVariable.dropdownCreate;
   this.setText(variable.name);

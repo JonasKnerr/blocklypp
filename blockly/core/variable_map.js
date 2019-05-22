@@ -178,6 +178,7 @@ Blockly.VariableMap.prototype.renameVariableWithConflict_ = function(
  */
 Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, opt_scope) {
   var variable = this.getVariable(name, opt_type);
+  var scope = opt_scope || "global";
   if (variable) {
     if (opt_id && variable.getId() != opt_id) {
       throw Error(
@@ -199,7 +200,7 @@ Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, 
   }
   opt_id = opt_id || Blockly.utils.genUid();
   opt_type = opt_type || "";
-  variable = new Blockly.VariableModel(this.workspace, name, opt_type, opt_id, opt_scope);
+  variable = new Blockly.VariableModel(this.workspace, name, opt_type, opt_id, scope);
   // If opt_type is not a key, create a new list.
   if (!this.variableMap_[opt_type]) {
     this.variableMap_[opt_type] = [variable];
