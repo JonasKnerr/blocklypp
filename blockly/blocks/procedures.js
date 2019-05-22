@@ -506,7 +506,6 @@ Blockly.Blocks["procedures_mutatorcontainer"] = {
       this.varNames.push(varName);
       varBlock = varBlock.nextConnection && varBlock.nextConnection.targetBlock();
     }
-    console.log(this.varNames);
   }
 };
 
