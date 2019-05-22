@@ -487,6 +487,26 @@ Blockly.Blocks["procedures_mutatorcontainer"] = {
     this.setTooltip(Blockly.Msg["PROCEDURES_MUTATORCONTAINER_TOOLTIP"]);
     this.contextMenu = false;
     this.varNames = [];
+    this.varLength = 0;
+  },
+  onchange: function() {
+    this.varNames = [];
+    var varBlock = this.getInputTargetBlock("STACK");
+    while (varBlock) {
+      var varName = varBlock.getFieldValue("NAME");
+      while (this.varNames.includes(varName)) {
+        var r = varName.match(/^(.*?)(\d+)$/);
+        if (!r) {
+          varName += "2";
+        } else {
+          varName = r[1] + (parseInt(r[2], 10) + 1);
+        }
+      }
+      varBlock.setFieldValue(varName, "NAME");
+      this.varNames.push(varName);
+      varBlock = varBlock.nextConnection && varBlock.nextConnection.targetBlock();
+    }
+    console.log(this.varNames);
   }
 };
 
@@ -513,7 +533,6 @@ Blockly.Blocks["procedures_mutatorarg"] = {
     this.setColour(Blockly.Msg["PROCEDURES_HUE"]);
     this.setTooltip(Blockly.Msg["PROCEDURES_MUTATORARG_TOOLTIP"]);
     this.contextMenu = false;
-
     // Create the default variable when we drag the block in from the flyout.
     // Have to do this after installing the field on the block.
     field.onFinishEditing_ = this.deleteIntermediateVars_;
@@ -552,19 +571,10 @@ Blockly.Blocks["procedures_mutatorarg"] = {
     return varName;
   },
   onchange: function() {
-    console.log(this);
-    if (this.parentBlock_) {
-      var varName = this.getFieldValue("NAME");
-      //this.setFieldValue("ululu", "NAME");
-      var containerBlock = this.parentBlock_;
-      var i = 1;
-      if (containerBlock.varNames.includes(varName)) {
-        varName = varName + i;
-      }
-      this.setFieldValue(varName, "NAME");
-      containerBlock.varNames.push(varName);
-      console.log(containerBlock.varNames);
-    }
+    // console.log(this.parentBlock_);
+    // if (this.parentBlock_) {
+    //   this.parentBlock = this.parentBlock_;
+    // }
   },
   /**
    * Called when focusing away from the text field.
