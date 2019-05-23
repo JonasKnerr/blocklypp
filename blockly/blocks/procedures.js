@@ -183,7 +183,7 @@ Blockly.Blocks["procedures_defnoreturn"] = {
    * @this Blockly.Block
    */
   decompose: function(workspace) {
-    var containerBlock = workspace.newBlock("procedures_mutatorcontainer");
+    var containerBlock = workspace.newBlock("procedures_mutatorcontainer", false, this);
     containerBlock.initSvg();
 
     // Check/uncheck the allow statement box.
@@ -487,10 +487,30 @@ Blockly.Blocks["procedures_mutatorcontainer"] = {
     this.setTooltip(Blockly.Msg["PROCEDURES_MUTATORCONTAINER_TOOLTIP"]);
     this.contextMenu = false;
     this.varNames = [];
-    this.varLength = 0;
   },
+  //@Jonas Knerr
+  // Check if there are duplicated parametes, or if one parameter has the names
+  // of a classVariable
   onchange: function() {
     this.varNames = [];
+    if (
+      this.mutatorParentBlock.type == "class_function_return" ||
+      this.mutatorParentBlock.type == "class_function_noreturn"
+    ) {
+      var currentBlock = this.mutatorParentBlock.parentBlock_;
+      while (currentBlock.type != "class_class") {
+        if (currentBlock.parentBlock_) {
+          currentBlock = currentBlock.parentBlock_;
+        } else {
+          break;
+        }
+      }
+      var className = currentBlock.getClassDef();
+      var classVariables = currentBlock.workspace.getVariableOfScope(className);
+      var varNames = [];
+      if (classVariables) varNames = classVariables.map(x => x.name);
+      this.varNames = varNames;
+    }
     var varBlock = this.getInputTargetBlock("STACK");
     while (varBlock) {
       var varName = varBlock.getFieldValue("NAME");

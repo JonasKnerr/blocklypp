@@ -236,14 +236,9 @@ Blockly.VariableMap.prototype.renameScope = function(oldName, newName) {
  */
 Blockly.VariableMap.prototype.changeVariableScope = function(name, oldScope, newScope) {
   var variable = this.getVariable(name);
-  //
-  // var oldScope = variable.getScope();
-  // if (this.scopeMap_[oldScope]) {
-  //   this.scopeMap_[oldScope].delete(variable);
-  // }
+
   this.deleteVariableFromScope(variable, variable.getScope());
   variable.setScope(newScope);
-  // this.renameScope(oldScope, newScope);
   var variables = new Set();
   if (this.scopeMap_[oldScope]) {
     var variables = this.scopeMap_[oldScope];
@@ -256,7 +251,6 @@ Blockly.VariableMap.prototype.changeVariableScope = function(name, oldScope, new
     variables.add(variable);
     this.scopeMap_[newScope] = variables;
   }
-  // console.log(this.scopeMap_);
   return this.scopeMap_;
 };
 /*
