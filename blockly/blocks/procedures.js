@@ -495,7 +495,8 @@ Blockly.Blocks["procedures_mutatorcontainer"] = {
     this.varNames = [];
     if (
       this.mutatorParentBlock.type == "class_function_return" ||
-      this.mutatorParentBlock.type == "class_function_noreturn"
+      this.mutatorParentBlock.type == "class_function_noreturn" ||
+      this.mutatorParentBlock.type == "class_constructor"
     ) {
       var currentBlock = this.mutatorParentBlock.parentBlock_;
       while (currentBlock.type != "class_class") {
