@@ -240,7 +240,8 @@ Blockly.Blocks["class_instance"] = {
         } else {
           while (this.args < args.length) {
             this.appendValueInput("ARG" + this.args);
-            //this.moveInputBefore("INSTANCE", "ARG" + this.args);
+            //appned Inpute at the end of the Block
+            this.moveInputBefore("ARG" + this.args, null);
             this.args++;
           }
         }
