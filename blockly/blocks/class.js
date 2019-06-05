@@ -90,10 +90,7 @@ Blockly.Blocks["class_instance"] = {
     this.classVariables = [];
     this.args = 0;
     this.curValue;
-    //    this.typeOfValue = "";
     this.setInputsInline(true);
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
@@ -147,11 +144,8 @@ Blockly.Blocks["class_instance"] = {
   getDropDown: function(oldName, newName) {
     if (!this.isInFlyout) {
       var methods = Blockly.Class.getMethods(Blockly.getMainWorkspace(), this.getClassName());
-      var classVariables = Blockly.Class.getClassVariables(
-        Blockly.getMainWorkspace(),
-        this.getClassName()
-      );
-
+      var classVariables =
+        Blockly.Class.getClassVariables(Blockly.getMainWorkspace(), this.getClassName()) || [];
       if (
         this.methods.length != methods.length ||
         oldName ||
@@ -185,9 +179,6 @@ Blockly.Blocks["class_instance"] = {
             !methodNames.includes(this.curValue) &&
             !this.classVariables.includes(this.curValue)
           ) {
-            // console.log("this.methods:    " + this.methods);
-            // console.log("this.Vars:       " + this.classVariables);
-            // console.log("this.curValue:   " + this.curValue);
             this.curValue = "";
             this.typeOfValue = "";
           }
@@ -221,6 +212,28 @@ Blockly.Blocks["class_instance"] = {
   getCurrentMethod: function() {
     return this.curValue;
   },
+  setType: function(isReturn) {
+    if (isReturn) {
+      //remove Previous and Next Connections before removing the Statement
+      if (this.nextConnection) {
+        if (this.nextConnection.isConnected()) {
+          this.nextConnection.disconnect();
+        }
+      }
+      if (this.previousConnection) {
+        if (this.previousConnection.isConnected()) {
+          this.previousConnection.disconnect();
+        }
+      }
+      this.setNextStatement(false);
+      this.setPreviousStatement(false);
+      this.setOutput(true);
+    } else {
+      this.setOutput(false);
+      this.setNextStatement(true);
+      this.setPreviousStatement(true);
+    }
+  },
   onchange: function() {
     var isVar;
     if (this.classVariables) {
@@ -229,6 +242,24 @@ Blockly.Blocks["class_instance"] = {
     if (this.getFieldValue("METHODS") && !this.isInFlyout && !isVar) {
       this.typeOfValue = "method";
       var method = this.getFieldValue("METHODS");
+      //check if Method has return value and adjust block
+      var blocks = this.workspace.getAllBlocks();
+      for (var i = 0; i < blocks.length; i++) {
+        if (blocks[i].getProcedureDef) {
+          if (blocks[i].getProcedureDef()[0] == method) {
+            var methodBlock = blocks[i];
+          }
+        }
+      }
+      var isReturn;
+      if (methodBlock) {
+        if (methodBlock.type == "class_function_return") {
+          isReturn = true;
+        } else if (methodBlock.type == "class_function_noreturn") {
+          isReturn = false;
+        }
+        this.setType(isReturn);
+      }
       this.curValue = method;
       var args = Blockly.Class.getMethodAttributes(this.workspace, method);
       if (this.args != args.length) {
@@ -248,6 +279,8 @@ Blockly.Blocks["class_instance"] = {
       }
     } else {
       this.typeOfValue = "attribute";
+      this.setType(true);
+
       var variable_ = this.getFieldValue("METHODS");
       this.curValue = variable_;
       while (this.args > 0) {
@@ -262,32 +295,32 @@ Blockly.Blocks["class_instance"] = {
  * Block for instance with output connection
  */
 
-Blockly.Blocks["class_instance_output"] = {
-  init: function() {
-    this.appendDummyInput().appendField("Klasse", "CLASS");
-    this.appendDummyInput()
-      .appendField("", "INSTANCE")
-      .appendField(".", "POINT");
-    this.methods = [];
-    this.args = 0;
-    this.curValue;
-    this.setInputsInline(true);
-    this.setOutput(true);
-    this.setColour(20);
-    this.setTooltip("");
-    this.setHelpUrl("");
-  },
-  getInstanceName: Blockly.Blocks["class_instance"].getInstanceName,
-  getClassName: Blockly.Blocks["class_instance"].getClassName,
-  renameClass: Blockly.Blocks["class_instance"].renameClass,
-  renameInstance: Blockly.Blocks["class_instance"].renameInstance,
-  update: Blockly.Blocks["class_instance"].update,
-  mutationToDom: Blockly.Blocks["class_instance"].mutationToDom,
-  domToMutation: Blockly.Blocks["class_instance"].domToMutation,
-  getDropDown: Blockly.Blocks["class_instance"].getDropDown,
-  getCurrentMethod: Blockly.Blocks["class_instance"].getCurrentMethod,
-  onchange: Blockly.Blocks["class_instance"].onchange
-};
+// Blockly.Blocks["class_instance_output"] = {
+//   init: function() {
+//     this.appendDummyInput().appendField("Klasse", "CLASS");
+//     this.appendDummyInput()
+//       .appendField("", "INSTANCE")
+//       .appendField(".", "POINT");
+//     this.methods = [];
+//     this.args = 0;
+//     this.curValue;
+//     this.setInputsInline(true);
+//     this.setOutput(true);
+//     this.setColour(20);
+//     this.setTooltip("");
+//     this.setHelpUrl("");
+//   },
+//   getInstanceName: Blockly.Blocks["class_instance"].getInstanceName,
+//   getClassName: Blockly.Blocks["class_instance"].getClassName,
+//   renameClass: Blockly.Blocks["class_instance"].renameClass,
+//   renameInstance: Blockly.Blocks["class_instance"].renameInstance,
+//   update: Blockly.Blocks["class_instance"].update,
+//   mutationToDom: Blockly.Blocks["class_instance"].mutationToDom,
+//   domToMutation: Blockly.Blocks["class_instance"].domToMutation,
+//   getDropDown: Blockly.Blocks["class_instance"].getDropDown,
+//   getCurrentMethod: Blockly.Blocks["class_instance"].getCurrentMethod,
+//   onchange: Blockly.Blocks["class_instance"].onchange
+// };
 /**
  * Class to create a new Class with instances
  * add atrributes with decompose and compose functions

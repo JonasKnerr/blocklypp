@@ -328,16 +328,16 @@ Blockly.Class.flyoutCategory = function(workspace) {
       block.appendChild(mutation);
       xmlList.push(block);
       //Block for output instances
-      var outName = instanceList[i][1];
-      var outClassName = instanceList[i][0];
-      var outBlock = Blockly.Xml.utils.createElement("block");
-      outBlock.setAttribute("type", "class_instance_output");
-      outBlock.setAttribute("gap", 16);
-      var outMutation = Blockly.Xml.utils.createElement("mutation");
-      outMutation.setAttribute("name", outName);
-      outMutation.setAttribute("class", outClassName);
-      outBlock.appendChild(outMutation);
-      xmlList.push(outBlock);
+      // var outName = instanceList[i][1];
+      // var outClassName = instanceList[i][0];
+      // var outBlock = Blockly.Xml.utils.createElement("block");
+      // outBlock.setAttribute("type", "class_instance_output");
+      // outBlock.setAttribute("gap", 16);
+      // var outMutation = Blockly.Xml.utils.createElement("mutation");
+      // outMutation.setAttribute("name", outName);
+      // outMutation.setAttribute("class", outClassName);
+      // outBlock.appendChild(outMutation);
+      // xmlList.push(outBlock);
     }
   }
 
