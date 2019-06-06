@@ -334,17 +334,17 @@ Blockly.Blocks["class_class"] = {
       .appendField("Klasse")
       .appendField(nameField, "NAME");
     this.setMutator(new Blockly.Mutator(["class_attribute"]));
-    this.appendStatementInput("CONSTRUCTOR")
-      .setCheck(["class_constructor"])
-      .appendField("Konstruktoren");
     this.appendStatementInput("METHODS")
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
     this.setColour(20);
+    this.setConstructor(true);
     this.attributeCount = 0;
     this.methodCount = 0;
     this.attributeInputs = [];
     this.oldName = "";
+    this.hasConstr = true;
+    this.statementConnection_ = null;
     this.setTooltip("");
     this.setHelpUrl("");
   },
@@ -373,6 +373,10 @@ Blockly.Blocks["class_class"] = {
   decompose: function(workspace) {
     var topBlock = workspace.newBlock("class_mutator");
     topBlock.initSvg();
+
+    //set field according to constructor
+    topBlock.setFieldValue(this.hasConstr_ ? "TRUE" : "FALSE", "CONSTR");
+
     var connection = topBlock.getInput("STACK").connection;
     for (var j = 1; j <= this.attributeCount; j++) {
       var attributeBlock = workspace.newBlock("class_attribute");
@@ -406,6 +410,44 @@ Blockly.Blocks["class_class"] = {
       }
       itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
     }
+    var hasConstr = containerBlock.getFieldValue("CONSTR");
+
+    if (hasConstr !== null) {
+      hasConstr = hasConstr == "TRUE";
+      if (this.Constr != hasConstr) {
+        if (hasConstr) {
+          this.setConstructor(true);
+          // Restore the stack, if one was saved.
+          Blockly.Mutator.reconnect(this.statementConnection_, this, "STACK");
+          this.statementConnection_ = null;
+        } else {
+          //Save the stack, then disconnect it.
+          var stackConnection = this.getInput("CONSTRUCTOR").connection;
+          this.statementConnection_ = stackConnection.targetConnection;
+          if (this.statementConnection_) {
+            var stackBlock = stackConnection.targetBlock();
+            stackBlock.unplug();
+            stackBlock.bumpNeighbours_();
+          }
+          this.setConstructor(false);
+        }
+      }
+    }
+  },
+  setConstructor: function(hasConstr) {
+    if (this.Constr === hasConstr) {
+      return;
+    }
+    console.log(hasConstr);
+    if (hasConstr) {
+      this.appendStatementInput("CONSTRUCTOR")
+        .appendField("Konstruktor")
+        .setCheck(["class_constructor"]);
+      this.moveInputBefore("CONSTRUCTOR", "METHODS");
+    } else {
+      this.removeInput("CONSTRUCTOR", true);
+    }
+    this.hasConstr = hasConstr;
   },
   mutationToDom: function() {
     if (!this.atrributeCount && !this.methodCount) {
@@ -597,6 +639,9 @@ Blockly.Blocks["class_mutator"] = {
   init: function() {
     this.appendDummyInput().appendField("class");
     this.appendStatementInput("STACK");
+    this.appendDummyInput("CONSTR_INPUT")
+      .appendField("Konstruktor")
+      .appendField(new Blockly.FieldCheckbox("TRUE"), "CONSTR");
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
