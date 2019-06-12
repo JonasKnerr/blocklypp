@@ -18,13 +18,17 @@ Blockly.Blocks["class_get_instance"] = {
     this.args = 0;
     this.argBlocks = [];
     this.setInputsInline(true);
-    this.setNextStatement(true);
-    this.setPreviousStatement(true);
+    // this.setNextStatement(true);
+    // this.setPreviousStatement(true);
+    this.setOutput(true, this.getFieldValue("INSTANCE"));
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");
   },
-  getClassName() {
+  changeOutput: function(newName) {
+    this.setOutput(true, newName);
+  },
+  getClassName: function() {
     return this.getFieldValue("NAME");
   },
 
@@ -292,36 +296,6 @@ Blockly.Blocks["class_instance"] = {
 };
 
 /**
- * Block for instance with output connection
- */
-
-// Blockly.Blocks["class_instance_output"] = {
-//   init: function() {
-//     this.appendDummyInput().appendField("Klasse", "CLASS");
-//     this.appendDummyInput()
-//       .appendField("", "INSTANCE")
-//       .appendField(".", "POINT");
-//     this.methods = [];
-//     this.args = 0;
-//     this.curValue;
-//     this.setInputsInline(true);
-//     this.setOutput(true);
-//     this.setColour(20);
-//     this.setTooltip("");
-//     this.setHelpUrl("");
-//   },
-//   getInstanceName: Blockly.Blocks["class_instance"].getInstanceName,
-//   getClassName: Blockly.Blocks["class_instance"].getClassName,
-//   renameClass: Blockly.Blocks["class_instance"].renameClass,
-//   renameInstance: Blockly.Blocks["class_instance"].renameInstance,
-//   update: Blockly.Blocks["class_instance"].update,
-//   mutationToDom: Blockly.Blocks["class_instance"].mutationToDom,
-//   domToMutation: Blockly.Blocks["class_instance"].domToMutation,
-//   getDropDown: Blockly.Blocks["class_instance"].getDropDown,
-//   getCurrentMethod: Blockly.Blocks["class_instance"].getCurrentMethod,
-//   onchange: Blockly.Blocks["class_instance"].onchange
-// };
-/**
  * Class to create a new Class with instances
  * add atrributes with decompose and compose functions
  */
@@ -333,12 +307,12 @@ Blockly.Blocks["class_class"] = {
     this.appendDummyInput()
       .appendField("Klasse")
       .appendField(nameField, "NAME");
-    this.setMutator(new Blockly.Mutator(["class_attribute"]));
     this.appendStatementInput("METHODS")
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
     this.setColour(20);
     this.setConstructor(true);
+    this.setMutator(new Blockly.Mutator(["class_attribute"]));
     this.attributeCount = 0;
     this.methodCount = 0;
     this.attributeInputs = [];
@@ -375,7 +349,8 @@ Blockly.Blocks["class_class"] = {
     topBlock.initSvg();
 
     //set field according to constructor
-    topBlock.setFieldValue(this.hasConstr_ ? "TRUE" : "FALSE", "CONSTR");
+    console.log(topBlock);
+    topBlock.setFieldValue(this.hasConstr ? "TRUE" : "FALSE", "CONSTR");
 
     var connection = topBlock.getInput("STACK").connection;
     for (var j = 1; j <= this.attributeCount; j++) {
@@ -414,11 +389,13 @@ Blockly.Blocks["class_class"] = {
 
     if (hasConstr !== null) {
       hasConstr = hasConstr == "TRUE";
-      if (this.Constr != hasConstr) {
+
+      if (this.hasConstr != hasConstr) {
         if (hasConstr) {
           this.setConstructor(true);
+
           // Restore the stack, if one was saved.
-          Blockly.Mutator.reconnect(this.statementConnection_, this, "STACK");
+          Blockly.Mutator.reconnect(this.statementConnection_, this, "CONSTRUCTOR");
           this.statementConnection_ = null;
         } else {
           //Save the stack, then disconnect it.
@@ -430,24 +407,21 @@ Blockly.Blocks["class_class"] = {
             stackBlock.bumpNeighbours_();
           }
           this.setConstructor(false);
+          //this.removeInput("CONSTRUCTOR");
         }
+        this.hasConstr = hasConstr;
       }
     }
   },
-  setConstructor: function(hasConstr) {
-    if (this.Constr === hasConstr) {
-      return;
-    }
-    console.log(hasConstr);
-    if (hasConstr) {
+  setConstructor: function(hasCons) {
+    if (hasCons) {
       this.appendStatementInput("CONSTRUCTOR")
         .appendField("Konstruktor")
         .setCheck(["class_constructor"]);
       this.moveInputBefore("CONSTRUCTOR", "METHODS");
     } else {
-      this.removeInput("CONSTRUCTOR", true);
+      this.removeInput("CONSTRUCTOR");
     }
-    this.hasConstr = hasConstr;
   },
   mutationToDom: function() {
     if (!this.atrributeCount && !this.methodCount) {
@@ -641,7 +615,7 @@ Blockly.Blocks["class_mutator"] = {
     this.appendStatementInput("STACK");
     this.appendDummyInput("CONSTR_INPUT")
       .appendField("Konstruktor")
-      .appendField(new Blockly.FieldCheckbox("TRUE"), "CONSTR");
+      .appendField(new Blockly.FieldCheckbox("FALSE"), "CONSTR");
     this.setColour(20);
     this.setTooltip("");
     this.setHelpUrl("");

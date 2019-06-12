@@ -49,7 +49,7 @@ Blockly.VariableModel = function(workspace, name, opt_type, opt_id, opt_scope) {
    * @type {!Blockly.Workspace}
    */
   this.workspace = workspace;
-
+  console.log(opt_type);
   /**
    * The name of the variable, typically defined by the user. It must be
    * unique across all names used for procedures and variables. It may be

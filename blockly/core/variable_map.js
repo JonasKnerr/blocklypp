@@ -177,6 +177,7 @@ Blockly.VariableMap.prototype.renameVariableWithConflict_ = function(
  * @return {Blockly.VariableModel} The newly created variable.
  */
 Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, opt_scope) {
+  console.log(opt_type);
   var variable = this.getVariable(name, opt_type);
   var scope = opt_scope || "global";
   if (variable) {

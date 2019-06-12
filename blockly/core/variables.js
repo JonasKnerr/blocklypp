@@ -151,6 +151,12 @@ Blockly.Variables.allDeveloperVariables = function(workspace) {
  * @return {!Array.<!Element>} Array of XML elements.
  */
 Blockly.Variables.flyoutCategory = function(workspace) {
+  var blocks = workspace.getAllBlocks();
+  var classList = [];
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getClassDef) classList.push(blocks[i].getClassDef());
+  }
+  console.log(classList);
   var xmlList = [];
   var button = document.createElement("button");
   button.setAttribute("text", "%{BKY_NEW_VARIABLE}");
@@ -160,6 +166,20 @@ Blockly.Variables.flyoutCategory = function(workspace) {
     Blockly.Variables.createVariableButtonHandler(button.getTargetWorkspace());
   });
   xmlList.push(button);
+
+  var objectButton = document.createElement("button");
+  objectButton.setAttribute("text", "create Object Variable");
+  objectButton.setAttribute("callbackKey", "CREATE_OBJECT_VARIABLE");
+
+  workspace.registerButtonCallback("CREATE_OBJECT_VARIABLE", function(objectButton) {
+    Blockly.Variables.createVariableButtonHandler(
+      objectButton.getTargetWorkspace(),
+      false,
+      classList[0]
+    );
+  });
+
+  xmlList.push(objectButton);
 
   var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
   //blockList.slice(0, 3);
@@ -175,6 +195,7 @@ Blockly.Variables.flyoutCategory = function(workspace) {
 Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
   var variableModelList = workspace.getVariablesOfType("");
   variableModelList.sort(Blockly.VariableModel.compareByName);
+  var varTypes = workspace.getVariableTypes();
 
   var xmlList = [];
   if (variableModelList.length > 0) {
@@ -224,6 +245,31 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
       }
     }
   }
+
+  for (var i = 0, varType; (varType = varTypes[i]); i++) {
+    console.log("varType:  " + varType);
+    if (varType == "") continue;
+    var variableList = workspace.getVariablesOfType(varType);
+    console.log(variableList);
+    if (variableList.length > 0) {
+      var label = "<label text = varType ></label>";
+      xmlList.push(label);
+      for (var j = 0, variable; (variable = variableList[j]); j++) {
+        console.log(variable);
+        if (Blockly.Blocks["variables_get"]) {
+          var blockText =
+            "<xml>" +
+            '<block type="variables_get" gap="8">' +
+            Blockly.Variables.generateVariableFieldXmlString(variable) +
+            "</block>" +
+            "</xml>";
+          var block = Blockly.Xml.textToDom(blockText).firstChild;
+          xmlList.push(block);
+        }
+      }
+    }
+  }
+
   return xmlList;
 };
 
@@ -300,6 +346,7 @@ Blockly.Variables.createVariableButtonHandler = function(
   opt_scope
 ) {
   var type = opt_type || "";
+  console.log(type);
   // This function needs to be named so it can be called recursively.
   var promptAndCheckWithAlert = function(defaultName) {
     Blockly.Variables.promptName(Blockly.Msg["NEW_VARIABLE_TITLE"], defaultName, function(text) {
@@ -318,6 +365,7 @@ Blockly.Variables.createVariableButtonHandler = function(
           });
         } else {
           // No conflict
+          console.log("workspace create var");
           workspace.createVariable(text, type, false, opt_scope);
           if (opt_callback) {
             opt_callback(text);

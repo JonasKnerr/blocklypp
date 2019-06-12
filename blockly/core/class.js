@@ -219,8 +219,10 @@ Blockly.Class.renameInstance = function(name) {
     var blocks = this.sourceBlock_.workspace.getAllBlocks(false);
     for (var i = 0; i < blocks.length; i++) {
       if (blocks[i].renameInstance) {
-        console.log("rename");
         blocks[i].renameInstance(oldName, legalName);
+      }
+      if (blocks[i].changeOutput) {
+        blocks[i].changeOutput(legalName);
       }
     }
   }
