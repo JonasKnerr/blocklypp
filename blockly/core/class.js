@@ -14,6 +14,31 @@ goog.require("Blockly.Xml");
 goog.require("Blockly.Xml.utils");
 
 /*
+  * Set another Colour for each class
+  */
+var colour = 0;
+
+Blockly.Class.colour = function() {
+  colour += 10;
+  if (colour > 360) {
+    colour -= 360;
+  }
+  console.log(colour);
+  return colour;
+};
+/*
+ * Return a class with a specific name
+ */
+Blockly.Class.getClassByName = function(workspace, className) {
+  var blocks = workspace.getAllBlocks(false);
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getClassDef) {
+      if (blocks[i].getClassDef() == className) return blocks[i];
+    }
+  }
+  return false;
+};
+/*
  * Find all user created classes in a workspace
  *@param workspace root workspace
  *@return classes a list of all classes
@@ -233,8 +258,10 @@ Blockly.Class.getConstructor = function(workspace, className) {
   var blocks = workspace.getAllBlocks(false);
   for (var i = 0; i < blocks.length; i++) {
     if (blocks[i].getConstructor) {
-      if (blocks[i].getClassDef() == className) {
-        return blocks[i].getConstructor();
+      if (blocks[i].getClassDef) {
+        if (blocks[i].getClassDef() == className) {
+          return blocks[i].getConstructor();
+        }
       }
     }
   }

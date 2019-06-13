@@ -2,7 +2,7 @@ goog.provide("Blockly.Constants.Class");
 
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
-
+goog.require("Blockly.Class");
 /**
  *Block to create instances for each class
  * @Jonas Knerr
@@ -10,20 +10,23 @@ goog.require("Blockly");
 
 Blockly.Blocks["class_get_instance"] = {
   init: function() {
-    this.appendDummyInput().appendField("new");
-    this.appendDummyInput().appendField(this.id, "NAME");
-    var nameField = new Blockly.FieldTextInput("InstanzName", Blockly.Class.renameInstance);
-    this.appendDummyInput().appendField(nameField, "INSTANCE");
+    this.appendDummyInput()
+      .appendField("new")
+      .appendField(this.id, "NAME");
     this.constr;
     this.args = 0;
     this.argBlocks = [];
-    this.setInputsInline(true);
-    // this.setNextStatement(true);
-    // this.setPreviousStatement(true);
-    this.setOutput(true, this.getFieldValue("INSTANCE"));
-    this.setColour(20);
+    this.setOutput(true, this.getFieldValue("NAME"));
     this.setTooltip("");
     this.setHelpUrl("");
+  },
+  initColour: function() {
+    if (!this.isInFlyout) {
+      var classBlock = Blockly.Class.getClassByName(this.workspace, this.getFieldValue("NAME"));
+      console.log(this.getFieldValue("NAME"));
+      console.log(classBlock);
+      this.setColour(classBlock.getColour());
+    }
   },
   changeOutput: function(newName) {
     this.setOutput(true, newName);
@@ -38,7 +41,9 @@ Blockly.Blocks["class_get_instance"] = {
   getConstructor: function() {
     return this.constr;
   },
-
+  onchange: function() {
+    this.changeOutput(this.getFieldValue("NAME"));
+  },
   /*
    * Upates constructor attributes if control_class gets changed
    */
@@ -77,6 +82,7 @@ Blockly.Blocks["class_get_instance"] = {
   domToMutation: function(xmlElement) {
     var name = xmlElement.getAttribute("name");
     this.renameClass(this.getClassName(), name);
+    this.initColour();
   },
   defType_: "class"
 };
@@ -310,7 +316,7 @@ Blockly.Blocks["class_class"] = {
     this.appendStatementInput("METHODS")
       .setCheck(["class_function_noreturn", "class_function_return"])
       .appendField("Methoden");
-    this.setColour(20);
+    this.setColour(Blockly.Class.colour());
     this.setConstructor(true);
     this.setMutator(new Blockly.Mutator(["class_attribute"]));
     this.attributeCount = 0;

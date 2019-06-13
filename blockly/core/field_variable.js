@@ -399,19 +399,22 @@ Blockly.FieldVariable.dropdownCreate = function() {
   var className = this.isClassVariable();
   var variableModelList = [];
   var options = [];
-
+  var type = this.variable_.type;
   if (workspace) {
     var globalVarList = workspace.getVariableOfScope("global");
     for (var i = 0; i < globalVarList.length; i++) {
-      options[i] = [globalVarList[i].name, globalVarList[i].getId()];
+      if (globalVarList[i].type == type)
+        options.push([globalVarList[i].name, globalVarList[i].getId()]);
     }
     if (className) {
       var classVarList = workspace.getVariableOfScope(className);
       for (var i = 0; i < classVarList.length; i++) {
-        options.push([classVarList[i].name, classVarList[i].getId()]);
+        if (classVarList[i].type == type)
+          options.push([classVarList[i].name, classVarList[i].getId()]);
       }
     }
   }
+  console.log(options);
   this.options = options;
   options.push([Blockly.Msg["RENAME_VARIABLE"], Blockly.RENAME_VARIABLE_ID]);
   if (Blockly.Msg["DELETE_VARIABLE"]) {

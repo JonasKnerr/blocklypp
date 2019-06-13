@@ -177,7 +177,6 @@ Blockly.VariableMap.prototype.renameVariableWithConflict_ = function(
  * @return {Blockly.VariableModel} The newly created variable.
  */
 Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, opt_scope) {
-  console.log(opt_type);
   var variable = this.getVariable(name, opt_type);
   var scope = opt_scope || "global";
   if (variable) {
@@ -202,6 +201,7 @@ Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, 
   opt_id = opt_id || Blockly.utils.genUid();
   opt_type = opt_type || "";
   variable = new Blockly.VariableModel(this.workspace, name, opt_type, opt_id, scope);
+
   // If opt_type is not a key, create a new list.
   if (!this.variableMap_[opt_type]) {
     this.variableMap_[opt_type] = [variable];
@@ -211,7 +211,9 @@ Blockly.VariableMap.prototype.createVariable = function(name, opt_type, opt_id, 
   }
 
   if (!opt_scope) {
-    this.addVariableToScope(name, "global");
+    this.addVariableToScope(name, "global", opt_type);
+  } else {
+    this.addVariableToScope(name, scope, opt_type);
   }
   return variable;
 };
@@ -267,15 +269,16 @@ Blockly.VariableMap.prototype.deleteVariableFromScope = function(variable, scope
  *@Jonas Knerr
  * add global variables to scope later maybe more
  */
-Blockly.VariableMap.prototype.addVariableToScope = function(name, scope) {
-  var variable = this.getVariable(name);
+Blockly.VariableMap.prototype.addVariableToScope = function(name, scope, opt_type) {
+  var variable = this.getVariable(name, opt_type);
   var variables = new Set();
-
-  if (this.scopeMap_[scope]) {
-    this.scopeMap_[scope].add(variable);
-  } else {
-    variables.add(variable);
-    this.scopeMap_[scope] = variables;
+  if (variable) {
+    if (this.scopeMap_[scope]) {
+      this.scopeMap_[scope].add(variable);
+    } else {
+      variables.add(variable);
+      this.scopeMap_[scope] = variables;
+    }
   }
 };
 
