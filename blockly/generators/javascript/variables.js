@@ -48,13 +48,14 @@ Blockly.JavaScript["variables_get"] = function(block) {
 
 Blockly.JavaScript["variables_set"] = function(block) {
   // Variable setter.#  var code = "";
-
+  var opt_type = block.varType || "";
   var name = Blockly.JavaScript.variableDB_.getName(
     block.getFieldValue("VAR"),
     Blockly.Variables.NAME_TYPE
   );
-  var varBlock = block.workspace.getVariable(name);
+  var varBlock = block.workspace.getVariable(name, opt_type);
 
+  console.log(varBlock);
   var argument0 =
     Blockly.JavaScript.valueToCode(block, "VALUE", Blockly.JavaScript.ORDER_ASSIGNMENT) || "0";
 

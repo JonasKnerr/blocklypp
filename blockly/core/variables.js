@@ -35,6 +35,7 @@ goog.require("Blockly.constants");
 goog.require("Blockly.VariableModel");
 goog.require("Blockly.Workspace");
 goog.require("Blockly.Xml");
+//goog.require("Blockly.Constants");
 
 goog.require("goog.string");
 
@@ -247,9 +248,7 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
       }
     }
   }
-  console.log(varTypes);
   for (var i = 0; i < varTypes.length; i++) {
-    console.log(varTypes[i]);
     if (varTypes[i] == "") continue;
     var variableList = workspace.getVariablesOfType(varTypes[i]);
     if (variableList.length > 0) {
@@ -271,8 +270,6 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
       }
 
       for (var j = 0, variable; (variable = variableList[j]); j++) {
-        console.log(variable);
-
         if (Blockly.Blocks["variables_get"]) {
           var blockText =
             "<xml>" +
@@ -283,10 +280,21 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
           var block = Blockly.Xml.textToDom(blockText).firstChild;
           xmlList.push(block);
         }
+
+        if (Blockly.Blocks["object_variables_get"]) {
+          console.log("getDynamic");
+          var blockText =
+            "<xml>" +
+            '<block type="object_variables_get" gap="8">' +
+            Blockly.Variables.generateVariableFieldXmlString(variable) +
+            "</block>" +
+            "</xml>";
+          var block = Blockly.Xml.textToDom(blockText).firstChild;
+          xmlList.push(block);
+        }
       }
     }
   }
-  console.log(xmlList);
   return xmlList;
 };
 
@@ -476,7 +484,6 @@ Blockly.Variables.promptName = function(promptText, defaultText, opt_obj, callba
   Blockly.prompt(promptText, defaultText, opt_obj, function(newVar) {
     // Merge runs of whitespace.  Strip leading and trailing whitespace.
     // Beyond this, all names are legal.
-    console.log(newVar);
     if (newVar[0]) {
       newVar[0] = newVar[0].replace(/[\s\xa0]+/g, " ").replace(/^ | $/g, "");
       if (newVar[0] == Blockly.Msg["RENAME_VARIABLE"] || newVar[0] == Blockly.Msg["NEW_VARIABLE"]) {

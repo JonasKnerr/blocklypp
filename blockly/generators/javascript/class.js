@@ -64,72 +64,82 @@ Blockly.JavaScript["class_class"] = function(block) {
 };
 
 Blockly.JavaScript["class_get_instance"] = function(block) {
-  var instanceName = block.getInstanceDef()[1];
   var className = block.getInstanceDef()[0];
   var args = [];
   for (var i = 0; i < block.args; i++) {
     args[i] =
       Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
   }
-  var code = "var " + instanceName + " = new " + className + "(" + args.join(", ") + "); \n";
-  return code;
+  var code = "new " + className + "(" + args.join(", ") + ")";
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
+// Blockly.JavaScript["class_get_instance"] = function(block) {
+//   var instanceName = block.getInstanceDef()[1];
+//   var className = block.getInstanceDef()[0];
+//   var args = [];
+//   for (var i = 0; i < block.args; i++) {
+//     args[i] =
+//       Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+//   }
+//   var code = "var " + instanceName + " = new " + className + "(" + args.join(", ") + "); \n";
+//   return code;
+// };
 
-Blockly.JavaScript["class_instance"] = function(block) {
-  console.log(Blockly.Xml.workspaceToDom(block.workspace));
-  var instanceName = Blockly.JavaScript.variableDB_.getName(
-    block.getInstanceName(),
-    Blockly.Procedures.NAME_TYPE
-  );
-  var methodName = block.getCurrentMethod();
-  var blocks = block.workspace.getAllBlocks(false);
-  var methodBlock;
-
-  for (var i = 0; i < blocks.length; i++) {
-    if (blocks[i].getProcedureDef) {
-      if (blocks[i].getProcedureDef()[0] == methodName) {
-        methodBlock = blocks[i];
-      }
-    }
-  }
-  if (block.typeOfValue == "method") {
-    var args = [];
-    for (var i = 0; i < block.args; i++) {
-      args[i] =
-        Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
-    }
-    var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
-  } else {
-    var code = instanceName + "." + methodName + ";\n";
-  }
-  return code;
-};
-
-Blockly.JavaScript["class_instance_output"] = function(block) {
-  var instanceName = Blockly.JavaScript.variableDB_.getName(
-    block.getInstanceName(),
-    Blockly.Procedures.NAME_TYPE
-  );
-  var methodName = block.getCurrentMethod();
-  var blocks = block.workspace.getAllBlocks(false);
-  var methodBlock;
-
-  for (var i = 0; i < blocks.length; i++) {
-    if (blocks[i].getProcedureDef) {
-      if (blocks[i].getProcedureDef()[0] == methodName) {
-        methodBlock = blocks[i];
-      }
-    }
-  }
-  if (block.typeOfValue == "method") {
-    var args = [];
-    for (var i = 0; i < block.args; i++) {
-      args[i] =
-        Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
-    }
-    var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
-  } else {
-    var code = instanceName + "." + methodName;
-  }
-  return [code, Blockly.JavaScript.ORDER_NONE];
-};
+// Blockly.JavaScript["class_instance"] = function(block) {
+//   console.log(Blockly.Xml.workspaceToDom(block.workspace));
+//   var instanceName = Blockly.JavaScript.variableDB_.getName(
+//     block.getInstanceName(),
+//     Blockly.Procedures.NAME_TYPE
+//   );
+//   var methodName = block.getCurrentMethod();
+//   var blocks = block.workspace.getAllBlocks(false);
+//   var methodBlock;
+//
+//   for (var i = 0; i < blocks.length; i++) {
+//     if (blocks[i].getProcedureDef) {
+//       if (blocks[i].getProcedureDef()[0] == methodName) {
+//         methodBlock = blocks[i];
+//       }
+//     }
+//   }
+//   if (block.typeOfValue == "method") {
+//     var args = [];
+//     for (var i = 0; i < block.args; i++) {
+//       args[i] =
+//         Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+//     }
+//     var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
+//   } else {
+//     var code = instanceName + "." + methodName + ";\n";
+//   }
+//   return code;
+// };
+//
+// Blockly.JavaScript["class_instance_output"] = function(block) {
+//   var instanceName = Blockly.JavaScript.variableDB_.getName(
+//     block.getInstanceName(),
+//     Blockly.Procedures.NAME_TYPE
+//   );
+//   var methodName = block.getCurrentMethod();
+//   var blocks = block.workspace.getAllBlocks(false);
+//   var methodBlock;
+//
+//   for (var i = 0; i < blocks.length; i++) {
+//     if (blocks[i].getProcedureDef) {
+//       if (blocks[i].getProcedureDef()[0] == methodName) {
+//         methodBlock = blocks[i];
+//       }
+//     }
+//   }
+//   if (block.typeOfValue == "method") {
+//     var args = [];
+//     for (var i = 0; i < block.args; i++) {
+//       args[i] =
+//         Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+//     }
+//     var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
+//   } else {
+//     var code = instanceName + "." + methodName;
+//   }
+//   return [code, Blockly.JavaScript.ORDER_NONE];
+// };

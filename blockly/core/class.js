@@ -23,7 +23,6 @@ Blockly.Class.colour = function() {
   if (colour > 360) {
     colour -= 360;
   }
-  console.log(colour);
   return colour;
 };
 /*

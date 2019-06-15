@@ -109,8 +109,12 @@ Blockly.Blocks["variables_set"] = {
     }
   }
 };
-
 Blockly.Blocks["variables_get"] = {
+  init: function() {
+    this.jsonInit(variable_get_json);
+  }
+};
+Blockly.Blocks["object_variables_get"] = {
   init: function() {
     this.jsonInit(variable_get_json);
     this.varType = "";
@@ -128,7 +132,9 @@ Blockly.Blocks["variables_get"] = {
         var varType = variableModel.type;
         this.varType = varType;
         var classBlock = Blockly.Class.getClassByName(this.workspace, varType);
-        this.setColour(classBlock.getColour());
+        if (classBlock) {
+          this.setColour(classBlock.getColour());
+        }
         if (variableModel.typeSet) this.varTypeIsSet = true;
         console.log(varType);
       }
