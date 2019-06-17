@@ -282,7 +282,6 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
         }
 
         if (Blockly.Blocks["object_variables_get"]) {
-          console.log("getDynamic");
           var blockText =
             "<xml>" +
             '<block type="object_variables_get" gap="8">' +

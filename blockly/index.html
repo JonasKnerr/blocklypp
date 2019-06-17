@@ -56,38 +56,46 @@
   <block type="text_print"></block> -->
 </xml>
 <xml id = "startBlocks">
-  <!-- <block type="class_class" id="NGBirxP*~|DE2H4x_Xk#" x="400" y="12">
+  <!-- <variables>
+    <variable type="Klasse" id="udxZ?1-$Y3WlsI1`FkmQ">
+      x
+    </variable>
+    <variable type="Klasse" id="-/fzcN}bA`Ax+s8C-UeK">
+      y
+    </variable>
+  </variables>
+  <block type="class_class" id="ZVg{GQ?y_tlA!!|XIP|g" x="297" y="58">
     <field name="NAME">Klasse</field>
     <statement name="METHODS">
-      <block type="class_function_return" id="aBhRg`(~fKV_`k0CE#tA">
-        <mutation statements="false" />
+      <block type="class_function_noreturn" id=")q,)^iOGKQBDCo,O9gNO">
         <field name="NAME">Funktion</field>
         <comment pinned="false" h="80" w="160">
           Describe this function...
         </comment>
-        <value name="RETURN">
-          <block type="text" id="Y@pe-NMD_*z_gx5!swi/">
-            <field name="TEXT">Hallo</field>
-          </block>
-        </value>
       </block>
     </statement>
   </block>
-  <block type="class_get_instance" id="W)t#=s,%g}jhypIc3#JV" x="436" y="239">
-    <mutation name="Klasse" />
-    <field name="INSTANCE">InstanzName</field>
-  </block>
-  <block type="class_instance" id="R;QT0iY^3QPp%9K@p25Z" x="467" y="299">
-    <mutation name="InstanzName" class="Klasse" />
-    <field name="METHODS">Funktion</field>
-  </block>
-  <block type="text_print" id="Q[%MwjEr/r$}M9@xdM5-" x="371" y="353">
-    <value name="TEXT">
-      <block type="class_instance_output" id="2x{3+]o=]vADVa:Zb14l">
-        <mutation name="InstanzName" class="Klasse" />
-        <field name="METHODS">Funktion</field>
+  <block type="variables_set" id="(U6]_4d1xs+@h[g8ZSOv" x="359" y="267">
+    <field name="VAR" id="udxZ?1-$Y3WlsI1`FkmQ" variabletype="Klasse">
+      x
+    </field>
+    <value name="VALUE">
+      <block type="class_get_instance" id="}qCypmJLduOppaf2.+Qj">
+        <mutation name="Klasse" />
       </block>
     </value>
+    <next>
+      <block type="variables_set" id="2#K_-Z:2i5p`m9pI653A">
+        <field name="VAR" id="-/fzcN}bA`Ax+s8C-UeK" variabletype="Klasse">
+          y
+        </field>
+        <value name="VALUE">
+          <block type="class_get_instance" id="n^e2gMvw]w^mPB1fnoU5">
+            <mutation name="Klasse" />
+          </block>
+        </value>
+      </block>
+    </next>
   </block> -->
 </xml>;
 

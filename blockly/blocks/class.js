@@ -2,7 +2,7 @@ goog.provide("Blockly.Constants.Class");
 
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
-goog.require("Blockly.Class");
+//goog.require("Blockly.Class");
 /**
  *Block to create instances for each class
  * @Jonas Knerr

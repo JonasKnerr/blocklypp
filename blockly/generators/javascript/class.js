@@ -11,6 +11,7 @@ Blockly.JavaScript["class_function_noreturn"] = function(block) {
 };
 /* Generates code for a class */
 Blockly.JavaScript["class_class"] = function(block) {
+  console.log(Blockly.Xml.workspaceToDom(block.workspace));
   var className = Blockly.JavaScript.variableDB_.getName(
     block.getClassDef(),
     Blockly.Procedures.NAME_TYPE

@@ -65,3 +65,35 @@ Blockly.JavaScript["variables_set"] = function(block) {
     return name + " = " + argument0 + ";\n";
   }
 };
+
+//@Jonas Knerr
+
+Blockly.JavaScript["object_variables_get"] = function(block) {
+  var opt_type = block.varType || "";
+  var instanceName = Blockly.JavaScript.variableDB_.getName(
+    block.getFieldValue("VAR"),
+    Blockly.Variables.NAME_TYPE
+  );
+  var methodName = block.getCurrentMethod();
+  var blocks = block.workspace.getAllBlocks(false);
+  var methodBlock;
+
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i].getProcedureDef) {
+      if (blocks[i].getProcedureDef()[0] == methodName) {
+        methodBlock = blocks[i];
+      }
+    }
+  }
+  if (block.typeOfValue == "method") {
+    var args = [];
+    for (var i = 0; i < block.args; i++) {
+      args[i] =
+        Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
+    }
+    var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
+  } else {
+    var code = instanceName + "." + methodName + ";\n";
+  }
+  return code;
+};

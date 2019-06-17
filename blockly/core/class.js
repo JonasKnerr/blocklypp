@@ -342,36 +342,23 @@ Blockly.Class.flyoutCategory = function(workspace) {
     }
   }
 
-  function populateInstances(instanceList) {
-    for (var i = 0; i < instanceList.length; i++) {
-      //block for next and prev instances
-      var name = instanceList[i][1];
-      var className = instanceList[i][0];
-      var block = Blockly.Xml.utils.createElement("block");
-      block.setAttribute("type", "class_instance");
-      block.setAttribute("gap", 16);
-      var mutation = Blockly.Xml.utils.createElement("mutation");
-      mutation.setAttribute("name", name);
-      mutation.setAttribute("class", className);
-      block.appendChild(mutation);
-      xmlList.push(block);
-      //Block for output instances
-      // var outName = instanceList[i][1];
-      // var outClassName = instanceList[i][0];
-      // var outBlock = Blockly.Xml.utils.createElement("block");
-      // outBlock.setAttribute("type", "class_instance_output");
-      // outBlock.setAttribute("gap", 16);
-      // var outMutation = Blockly.Xml.utils.createElement("mutation");
-      // outMutation.setAttribute("name", outName);
-      // outMutation.setAttribute("class", outClassName);
-      // outBlock.appendChild(outMutation);
-      // xmlList.push(outBlock);
-    }
-  }
+  // function populateInstances(instanceList) {
+  //   for (var i = 0; i < instanceList.length; i++) {
+  //     //block for next and prev instances
+  //     var name = instanceList[i][1];
+  //     var className = instanceList[i][0];
+  //     var block = Blockly.Xml.utils.createElement("block");
+  //     block.setAttribute("type", "class_instance");
+  //     block.setAttribute("gap", 16);
+  //     var mutation = Blockly.Xml.utils.createElement("mutation");
+  //     mutation.setAttribute("name", name);
+  //     mutation.setAttribute("class", className);
+  //     block.appendChild(mutation);
+  //     xmlList.push(block);
+  //   }
+  //}
 
-  var instances = Blockly.Class.getInstances(workspace);
   var classes = Blockly.Class.allUsedClasses(workspace);
-  populateInstances(instances);
   populateClasses(classes);
 
   return xmlList;

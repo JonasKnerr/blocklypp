@@ -32,10 +32,10 @@
 goog.provide("Blockly.Blocks.variables"); // Deprecated.
 goog.provide("Blockly.Constants.Variables");
 
-goog.require("Blockly.Variables");
+//goog.require("Blockly.Variables");
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
-goog.require("Blockly.Class");
+//goog.require("Blockly.Class");
 /**
  * Unused constant for the common HSV hue for all blocks in this category.
  * @deprecated Use Blockly.Msg['VARIABLES_HUE']. (2018 April 5)
@@ -94,13 +94,14 @@ Blockly.Blocks["variables_set"] = {
         var varType = variableModel.type;
         this.varType = varType;
         if (varType != "") {
-          console.log(this);
           if (this.getInput("VALUE")) {
             this.getInput("VALUE").setCheck(varType);
           }
         }
         var classBlock = Blockly.Class.getClassByName(this.workspace, varType);
-        this.setColour(classBlock.getColour());
+        if (classBlock) {
+          this.setColour(classBlock.getColour());
+        }
         this.setInit = true;
       }
       if (this.getInputTargetBlock("VALUE")) {
@@ -136,7 +137,6 @@ Blockly.Blocks["object_variables_get"] = {
           this.setColour(classBlock.getColour());
         }
         if (variableModel.typeSet) this.varTypeIsSet = true;
-        console.log(varType);
       }
     }
     if (this.varType != "" && this.varTypeIsSet) {
@@ -312,6 +312,7 @@ Blockly.Blocks["object_variables_get"] = {
         }
       }
     }
+    console.log("end get dropdown");
   }
 };
 
