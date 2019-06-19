@@ -396,6 +396,7 @@ Blockly.confirm = function(message, callback) {
  */
 Blockly.prompt = function(message, defaultValue, opt_obj, callback) {
   var varName = window.prompt(message, defaultValue);
+
   var className;
   if (opt_obj) {
     className = window.prompt("Enter Classname", "Klassen Name");

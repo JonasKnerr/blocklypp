@@ -22,10 +22,9 @@
  * @fileoverview Blockly constants.
  * @author fenichel@google.com (Rachel Fenichel)
  */
-'use strict';
+"use strict";
 
-goog.provide('Blockly.constants');
-
+goog.provide("Blockly.constants");
 
 /**
  * Number of pixels the mouse must move before a drag starts.
@@ -61,7 +60,7 @@ Blockly.CURRENT_CONNECTION_PREFERENCE = 8;
  * The main colour of insertion markers, in hex.  The block is rendered a
  * transparent grey by changing the fill opacity in CSS.
  */
-Blockly.INSERTION_MARKER_COLOUR = '#000000';
+Blockly.INSERTION_MARKER_COLOUR = "#000000";
 
 /**
  * Delay in ms between trigger and bumping unconnected block out of alignment.
@@ -113,7 +112,7 @@ Blockly.HSV_VALUE = 0.65;
 Blockly.SPRITE = {
   width: 96,
   height: 124,
-  url: 'sprites.png'
+  url: "sprites.png"
 };
 
 // Constants below this point are not intended to be changed.
@@ -122,13 +121,13 @@ Blockly.SPRITE = {
  * Required name space for SVG elements.
  * @const
  */
-Blockly.SVG_NS = 'http://www.w3.org/2000/svg';
+Blockly.SVG_NS = "http://www.w3.org/2000/svg";
 
 /**
  * Required name space for HTML elements.
  * @const
  */
-Blockly.HTML_NS = 'http://www.w3.org/1999/xhtml';
+Blockly.HTML_NS = "http://www.w3.org/1999/xhtml";
 
 /**
  * ENUM for a right-facing value input.  E.g. 'set item to' or 'return'.
@@ -213,7 +212,6 @@ Blockly.OPPOSITE_TYPE[Blockly.OUTPUT_VALUE] = Blockly.INPUT_VALUE;
 Blockly.OPPOSITE_TYPE[Blockly.NEXT_STATEMENT] = Blockly.PREVIOUS_STATEMENT;
 Blockly.OPPOSITE_TYPE[Blockly.PREVIOUS_STATEMENT] = Blockly.NEXT_STATEMENT;
 
-
 /**
  * ENUM for toolbox and flyout at top of screen.
  * @const
@@ -264,14 +262,14 @@ Blockly.DELETE_AREA_TOOLBOX = 2;
  * variable blocks.
  * @const {string}
  */
-Blockly.VARIABLE_CATEGORY_NAME = 'VARIABLE';
+Blockly.VARIABLE_CATEGORY_NAME = "VARIABLE";
 /**
  * String for use in the "custom" attribute of a category in toolbox xml.
  * This string indicates that the category should be dynamically populated with
  * variable blocks.
  * @const {string}
  */
-Blockly.VARIABLE_DYNAMIC_CATEGORY_NAME = 'VARIABLE_DYNAMIC';
+Blockly.VARIABLE_DYNAMIC_CATEGORY_NAME = "VARIABLE_DYNAMIC";
 
 /**
  * String for use in the "custom" attribute of a category in toolbox xml.
@@ -279,7 +277,15 @@ Blockly.VARIABLE_DYNAMIC_CATEGORY_NAME = 'VARIABLE_DYNAMIC';
  * procedure blocks.
  * @const {string}
  */
-Blockly.PROCEDURE_CATEGORY_NAME = 'PROCEDURE';
+Blockly.PROCEDURE_CATEGORY_NAME = "PROCEDURE";
+
+/**
+ * String for use in the dropdown created in field_variable.
+ * This string indicates that this option in the dropdown is 'Rename
+ * class...' and if selected, should trigger the prompt to rename a variable class.
+ * @const {string}
+ */
+Blockly.RENAME_CLASS_ID = "RENAME_CLASS_ID";
 
 /**
  * String for use in the dropdown created in field_variable.
@@ -287,7 +293,7 @@ Blockly.PROCEDURE_CATEGORY_NAME = 'PROCEDURE';
  * variable...' and if selected, should trigger the prompt to rename a variable.
  * @const {string}
  */
-Blockly.RENAME_VARIABLE_ID = 'RENAME_VARIABLE_ID';
+Blockly.RENAME_VARIABLE_ID = "RENAME_VARIABLE_ID";
 
 /**
  * String for use in the dropdown created in field_variable.
@@ -295,4 +301,4 @@ Blockly.RENAME_VARIABLE_ID = 'RENAME_VARIABLE_ID';
  * variable' and if selected, should trigger the prompt to delete a variable.
  * @const {string}
  */
-Blockly.DELETE_VARIABLE_ID = 'DELETE_VARIABLE_ID';
+Blockly.DELETE_VARIABLE_ID = "DELETE_VARIABLE_ID";

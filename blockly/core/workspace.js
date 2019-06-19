@@ -364,6 +364,7 @@ Blockly.Workspace.prototype.clear = function() {
  * @param {string} newName New variable name.
  */
 Blockly.Workspace.prototype.renameVariableById = function(id, newName) {
+  console.log("rename");
   this.variableMap_.renameVariableById(id, newName);
 };
 

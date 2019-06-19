@@ -441,24 +441,34 @@ goog.exportSymbol("Blockly.Variables.createVariable", Blockly.Variables.createVa
  *     be passed an acceptable new variable name, or null if change is to be
  *     aborted (cancel button), or undefined if an existing variable was chosen.
  */
-Blockly.Variables.renameVariable = function(workspace, variable, opt_callback) {
+Blockly.Variables.renameVariable = function(
+  workspace,
+  variable,
+  opt_class,
+  opt_change,
+  opt_callback
+) {
   // This function needs to be named so it can be called recursively.
   var promptAndCheckWithAlert = function(defaultName) {
     var promptText = Blockly.Msg["RENAME_VARIABLE_TITLE"].replace("%1", variable.name);
-    Blockly.Variables.promptName(promptText, defaultName, function(newName) {
-      if (newName) {
-        var existing = Blockly.Variables.nameUsedWithOtherType_(newName, variable.type, workspace);
+    Blockly.Variables.promptName(promptText, defaultName, opt_class, function(newName) {
+      if (newName.varName) {
+        var existing = Blockly.Variables.nameUsedWithOtherType_(
+          newName.varName,
+          variable.type,
+          workspace
+        );
         if (existing) {
           var msg = Blockly.Msg["VARIABLE_ALREADY_EXISTS_FOR_ANOTHER_TYPE"]
-            .replace("%1", newName.toLowerCase())
+            .replace("%1", newName.varName.toLowerCase())
             .replace("%2", existing.type);
           Blockly.alert(msg, function() {
-            promptAndCheckWithAlert(newName); // Recurse
+            promptAndCheckWithAlert(newName.varName); // Recurse
           });
         } else {
-          workspace.renameVariableById(variable.getId(), newName);
+          workspace.renameVariableById(variable.getId(), newName.varName);
           if (opt_callback) {
-            opt_callback(newName);
+            opt_callback(newName.varName);
           }
         }
       } else {

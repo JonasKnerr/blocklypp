@@ -179,7 +179,7 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
   var id_ = id;
   var workspace = this.sourceBlock_.workspace;
   var variable = Blockly.Variables.getVariable(workspace, id_);
-
+  console.log(variable);
   if (!variable) {
     throw Error("Variable id doesn't point to a real variable!  ID was " + id);
   }
@@ -416,6 +416,9 @@ Blockly.FieldVariable.dropdownCreate = function() {
   }
   console.log(options);
   this.options = options;
+  if (type != "") {
+    options.push(["Change Class", Blockly.RENAME_CLASS_ID]);
+  }
   options.push([Blockly.Msg["RENAME_VARIABLE"], Blockly.RENAME_VARIABLE_ID]);
   if (Blockly.Msg["DELETE_VARIABLE"]) {
     options.push([Blockly.Msg["DELETE_VARIABLE"].replace("%1", name), Blockly.DELETE_VARIABLE_ID]);
@@ -470,6 +473,9 @@ Blockly.FieldVariable.prototype.onItemSelected = function(menu, menuItem) {
     } else if (id == Blockly.DELETE_VARIABLE_ID) {
       // Delete variable.
       workspace.deleteVariableById(this.variable_.getId());
+      return;
+    } else if (id == Blockly.RENAME_CLASS_ID) {
+      Blockly.Variables.renameVariable(workspace, this.variable_, true, true);
       return;
     }
 

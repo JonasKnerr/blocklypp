@@ -58,6 +58,22 @@ var variable_get_json = {
   tooltip: "%{BKY_VARIABLES_GET_TOOLTIP}",
   extensions: ["contextMenu_variableSetterGetter"]
 };
+var object_variable_get_json = {
+  message0: "%1",
+  args0: [
+    {
+      type: "field_variable",
+      name: "VAR",
+      variable: "%{BKY_VARIABLES_DEFAULT_NAME}"
+    }
+  ],
+  output: null,
+  variable_scope: "global",
+  colour: "%{BKY_VARIABLES_HUE}",
+  helpUrl: "%{BKY_VARIABLES_GET_HELPURL}",
+  tooltip: "%{BKY_VARIABLES_GET_TOOLTIP}",
+  extensions: ["contextMenu_variableSetterGetter"]
+};
 var variable_set_json = {
   message0: "%{BKY_VARIABLES_SET}",
   args0: [
@@ -117,7 +133,7 @@ Blockly.Blocks["variables_get"] = {
 };
 Blockly.Blocks["object_variables_get"] = {
   init: function() {
-    this.jsonInit(variable_get_json);
+    this.jsonInit(object_variable_get_json);
     this.varType = "";
     this.varTypeIsSet = false;
     this.methods = [];
@@ -220,29 +236,29 @@ Blockly.Blocks["object_variables_get"] = {
     }
   },
   getInstanceName: function() {
-    if (this.varType != "" && this.varTypeIsSet) {
+    if (this.varTypeIsSet) {
       return this.name;
     }
   },
   getClassName: function() {
-    if (this.varType != "" && this.varTypeIsSet) {
+    if (this.varTypeIsSet) {
       return this.varType;
     }
   },
   getCurrentMethod: function() {
-    if (this.varType != "" && this.varTypeIsSet) {
+    if (this.varTypeIsSet) {
       return this.curValue;
     }
   },
   renameClass: function(oldName, newName) {
-    if (this.varType != "" && this.varTypeIsSet) {
+    if (this.varTypeIsSet) {
       if (Blockly.Names.equals(oldName, this.varType)) {
         this.varType = newName;
       }
     }
   },
   update: function(oldName, legalName) {
-    if (this.varType != "" && this.varTypeIsSet) {
+    if (this.varTypeIsSet) {
       this.getDropDown(oldName, legalName);
     }
   },
@@ -265,9 +281,6 @@ Blockly.Blocks["object_variables_get"] = {
 
         if (this.methods.length != 0 || this.classVariables.length != 0) {
           var options = [];
-          // console.log("oldName:    " + oldName);
-          // console.log("newName       " + newName);
-          // console.log("this.curValue:   " + this.curValue);
 
           //make array of method names, if a mehtod gets renamed we need to
           // store the new Value newName
@@ -312,7 +325,6 @@ Blockly.Blocks["object_variables_get"] = {
         }
       }
     }
-    console.log("end get dropdown");
   }
 };
 
