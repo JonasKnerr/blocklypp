@@ -35,6 +35,7 @@ goog.require("Blockly.constants");
 goog.require("Blockly.VariableModel");
 goog.require("Blockly.Workspace");
 goog.require("Blockly.Xml");
+goog.require("Blockly.Class");
 //goog.require("Blockly.Constants");
 
 goog.require("goog.string");
@@ -158,6 +159,8 @@ Blockly.Variables.flyoutCategory = function(workspace) {
     if (blocks[i].getClassDef) classList.push(blocks[i].getClassDef());
   }
 
+  var classes = Blockly.Class.allUsedClasses(workspace);
+
   var xmlList = [];
   var button = document.createElement("button");
   button.setAttribute("text", "%{BKY_NEW_VARIABLE}");
@@ -168,22 +171,24 @@ Blockly.Variables.flyoutCategory = function(workspace) {
   });
   xmlList.push(button);
 
-  var objectButton = document.createElement("button");
-  objectButton.setAttribute("text", "create Object Variable");
-  objectButton.setAttribute("callbackKey", "CREATE_OBJECT_VARIABLE");
+  for (var i = 0; i < classes.length; i++) {
+    var objectButton = document.createElement("button");
+    var buttonString = "create " + classes[i] + " Variable ...";
+    objectButton.setAttribute("text", buttonString);
+    objectButton.setAttribute("callbackKey", classes[i]);
+    var className = classes[i];
+    workspace.registerButtonCallback(classes[i], function(objectButton) {
+      Blockly.Variables.createVariableButtonHandler(
+        objectButton.getTargetWorkspace(),
+        false,
+        false,
+        false,
+        className
+      );
+    });
 
-  workspace.registerButtonCallback("CREATE_OBJECT_VARIABLE", function(objectButton) {
-    Blockly.Variables.createVariableButtonHandler(
-      objectButton.getTargetWorkspace(),
-      false,
-      false,
-      false,
-      true
-    );
-  });
-
-  xmlList.push(objectButton);
-
+    xmlList.push(objectButton);
+  }
   var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
   //blockList.slice(0, 3);
   xmlList = xmlList.concat(blockList);
@@ -250,6 +255,7 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
   }
   for (var i = 0; i < varTypes.length; i++) {
     if (varTypes[i] == "") continue;
+    var colour = Blockly.Class.getClassByName(workspace, varTypes[i]).getColour();
     var variableList = workspace.getVariablesOfType(varTypes[i]);
     if (variableList.length > 0) {
       //TODO: Add label or something between different blocks

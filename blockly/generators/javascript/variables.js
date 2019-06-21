@@ -37,7 +37,8 @@ Blockly.JavaScript["variables_get"] = function(block) {
     block.getFieldValue("VAR"),
     Blockly.Variables.NAME_TYPE
   );
-  var varBlock = block.workspace.getVariable(name);
+  var opt_type = block.varType || "";
+  var varBlock = block.workspace.getVariable(name, opt_type);
   if (varBlock.getScope() != "global") {
     code = "this." + name;
   } else {
@@ -91,9 +92,9 @@ Blockly.JavaScript["object_variables_get"] = function(block) {
       args[i] =
         Blockly.JavaScript.valueToCode(block, "ARG" + i, Blockly.JavaScript.ORDER_COMMA) || "null";
     }
-    var code = instanceName + "." + methodName + "(" + args.join(", ") + ");\n";
+    var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
   } else {
-    var code = instanceName + "." + methodName + ";\n";
+    var code = instanceName + "." + methodName;
   }
   return code;
 };

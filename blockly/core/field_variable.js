@@ -179,7 +179,6 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
   var id_ = id;
   var workspace = this.sourceBlock_.workspace;
   var variable = Blockly.Variables.getVariable(workspace, id_);
-  console.log(variable);
   if (!variable) {
     throw Error("Variable id doesn't point to a real variable!  ID was " + id);
   }

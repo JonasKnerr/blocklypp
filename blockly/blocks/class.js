@@ -387,7 +387,11 @@ Blockly.Blocks["class_class"] = {
         if (inputBlock) {
           attributeInput.connection.connect(inputBlock.outputConnection);
         }
-        this.moveInputBefore("attribute" + this.attributeCount, "CONSTRUCTOR");
+        if (this.hasConstr) {
+          this.moveInputBefore("attribute" + this.attributeCount, "CONSTRUCTOR");
+        } else {
+          this.moveInputBefore("attribute" + this.attributeCount, "METHODS");
+        }
       }
       itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
     }
