@@ -12,10 +12,7 @@ Blockly.JavaScript["class_function_noreturn"] = function(block) {
 /* Generates code for a class */
 Blockly.JavaScript["class_class"] = function(block) {
   console.log(Blockly.Xml.workspaceToDom(block.workspace));
-  var className = Blockly.JavaScript.variableDB_.getName(
-    block.getClassDef(),
-    Blockly.Procedures.NAME_TYPE
-  );
+  var className = block.getClassDef();
   var code = "class " + className + "{\n";
   var attributes = [];
   for (var i = 1; i < block.attributeCount + 1; i++) {
@@ -60,8 +57,8 @@ Blockly.JavaScript["class_class"] = function(block) {
     code += " " + name + "(" + vars.join(", ") + "){\n" + branch + returnValue + "}\n\n";
   }
   code += "}\n";
-  Blockly.JavaScript.definitions_["%" + name] = code;
-  return null;
+  //Blockly.JavaScript.definitions_["%" + name] = code;
+  return code;
 };
 
 Blockly.JavaScript["class_get_instance"] = function(block) {

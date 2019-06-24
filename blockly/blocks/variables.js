@@ -128,6 +128,21 @@ Blockly.Blocks["variables_set"] = {
 Blockly.Blocks["variables_get"] = {
   init: function() {
     this.jsonInit(variable_get_json);
+    this.varType = "";
+    this.varTypeIsSet = false;
+  },
+  onchange: function() {
+    if (!this.isInFlyout && !this.varTypeIsSet) {
+      var id = this.getFieldValue("VAR");
+      var variableModel = this.workspace.getVariableById(id);
+      var varType = variableModel.type;
+      this.varType = varType;
+      var classBlock = Blockly.Class.getClassByName(this.workspace, varType);
+      if (classBlock) {
+        this.setColour(classBlock.getColour());
+      }
+      if (variableModel.typeSet) this.varTypeIsSet = true;
+    }
   }
 };
 Blockly.Blocks["object_variables_get"] = {
@@ -178,6 +193,7 @@ Blockly.Blocks["object_variables_get"] = {
           } else if (methodBlock.type == "class_function_noreturn") {
             isReturn = false;
           }
+          this.isReturn = isReturn;
           this.setType(isReturn);
         }
         this.curValue = method;

@@ -395,7 +395,21 @@ Blockly.confirm = function(message, callback) {
  * @param {!function(string)} callback The callback for handling user response.
  */
 Blockly.prompt = function(message, defaultValue, opt_obj, callback) {
-  var varName = window.prompt(message, defaultValue);
+  var varName;
+  while (!varName) {
+    varName = window.prompt(message, defaultValue);
+    if (typeof varName == "object") break;
+    var blocks = this.mainWorkspace.getAllBlocks(true);
+    for (var i = 0; i < blocks.length; i++) {
+      if (blocks[i].getClassDef) {
+        var procName = blocks[i].getClassDef();
+        if (Blockly.Names.equals(procName, varName)) {
+          varName = null;
+          window.alert("Try a new Variable Name");
+        }
+      }
+    }
+  }
   var className;
   if (opt_obj) {
     className = opt_obj;

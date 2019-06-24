@@ -1,0 +1,271 @@
+<xml>
+  <variables>
+    <variable type="Point" id="flcjvp}rnwA[fSf3z_EQ">
+      Punkt1
+    </variable>
+    <variable type="" id="0r)MJ:v-4Mk7u+!PO}~o">
+      y2
+    </variable>
+    <variable type="" id="+A8?Au.A~tS4|dxq5:^l">
+      x2
+    </variable>
+    <variable type="Point" id="t2FEgqRvVC?URBI=~e{5">
+      Punkt2
+    </variable>
+    <variable type="" id="c]SgaU23jpiW7~HaH^}q">
+      x
+    </variable>
+    <variable type="" id="X.SaCb(B5E:{3)@H0YjD">
+      Punkt
+    </variable>
+    <variable type="" id="?4(~(~N2q:Q`ZTnnv7}J">
+      q
+    </variable>
+    <variable type="Point" id="lO)Qnz,kvwK;{uE=;%O%">
+      Punkt3
+    </variable>
+    <variable type="Stack" id="DKPJD+~@LU/Ug^E6$i^u">
+      stapel
+    </variable>
+  </variables>
+  <block type="class_class" id="L_kl)YPSg@;?`AjC|]x2" x="762" y="-137">
+    <field name="NAME">Point</field>
+    <statement name="CONSTRUCTOR">
+      <block type="class_constructor" id="LF~q+$4Y6cI8+P2v~j-8">
+        <mutation>
+          <arg name="y2" varid="0r)MJ:v-4Mk7u+!PO}~o" />
+          <arg name="x2" varid="+A8?Au.A~tS4|dxq5:^l" />
+        </mutation>
+        <comment pinned="false" h="80" w="160">
+          Describe this function...
+        </comment>
+        <statement name="STACK">
+          <block type="variables_set" id="|~l@vBZETt_o{i_vWX$+">
+            <field name="VAR" id="?4(~(~N2q:Q`ZTnnv7}J" variabletype="">
+              q
+            </field>
+            <value name="VALUE">
+              <block type="variables_get" id="U5@H=0}Qrez8`NLobf}0">
+                <field name="VAR" id="0r)MJ:v-4Mk7u+!PO}~o" variabletype="">
+                  y2
+                </field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="x{g4wG)7)]ZM*Tzv:Md=">
+                <field name="VAR" id="?4(~(~N2q:Q`ZTnnv7}J" variabletype="">
+                  q
+                </field>
+                <value name="VALUE">
+                  <block type="variables_get" id="qNjp.aP4vh.)7P]{(/j?">
+                    <field name="VAR" id="+A8?Au.A~tS4|dxq5:^l" variabletype="">
+                      x2
+                    </field>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="variables_set" id="^LQexIht%}tp|twhW9*," x="46" y="-71">
+    <field name="VAR" id="flcjvp}rnwA[fSf3z_EQ" variabletype="Point">
+      Punkt1
+    </field>
+    <value name="VALUE">
+      <block type="class_get_instance" id="+JhwcG+/)FeTk:7}XZmH">
+        <mutation name="Point" />
+        <value name="ARG0">
+          <block type="math_number" id="]afG4OaP#*iT^)=96On`">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="math_number" id="SsBZLOJOVH`3*ER=qhYf">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set" id="ywU|#__?-$8Sfma#858i">
+        <field name="VAR" id="t2FEgqRvVC?URBI=~e{5" variabletype="Point">
+          Punkt2
+        </field>
+        <value name="VALUE">
+          <block type="class_get_instance" id="Y=lWcNT2MVkT:{MN,wJy">
+            <mutation name="Point" />
+            <value name="ARG0">
+              <block type="math_number" id="-vo~x!N~r{N7{[[:y5@u">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+            <value name="ARG1">
+              <block type="math_number" id="E-g|J%e6pp!e?MH9!q.6">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set" id="RjdLr{K^qGx9+q5)S@E,">
+            <field name="VAR" id="lO)Qnz,kvwK;{uE=;%O%" variabletype="Point">
+              Punkt3
+            </field>
+            <value name="VALUE">
+              <block type="class_get_instance" id="C(:RkKNmz;`xFA93H!$@">
+                <mutation name="Point" />
+                <value name="ARG0">
+                  <block type="math_number" id="~MPx,J*0NI7my0dKgeb5">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+                <value name="ARG1">
+                  <block type="math_number" id="7WfHq%Ts#UWC!eC^p/}O">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="1s3gmd4+$a+]nn%gCEEz">
+                <field name="VAR" id="DKPJD+~@LU/Ug^E6$i^u" variabletype="Stack">
+                  stapel
+                </field>
+                <value name="VALUE">
+                  <block type="class_get_instance" id="^2h*@5w$!U,m2P`%4kVy">
+                    <mutation name="Stack" />
+                  </block>
+                </value>
+                <next>
+                  <block type="object_variables_get" id="_Fjv0A;A2es0K*Fdg}.^">
+                    <field name="VAR" id="DKPJD+~@LU/Ug^E6$i^u" variabletype="Stack">
+                      stapel
+                    </field>
+                    <field name="METHODS">Push</field>
+                    <value name="ARG0">
+                      <block type="variables_get" id="~v}+)sxl)xcPCR+(-FX/">
+                        <field name="VAR" id="flcjvp}rnwA[fSf3z_EQ" variabletype="Point">
+                          Punkt1
+                        </field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="object_variables_get" id="PezfA_b$Ej-DT1]N]qaZ">
+                        <field name="VAR" id="DKPJD+~@LU/Ug^E6$i^u" variabletype="Stack">
+                          stapel
+                        </field>
+                        <field name="METHODS">Push</field>
+                        <value name="ARG0">
+                          <block type="variables_get" id="qT|;[2^g7EIw%+;5(2MT">
+                            <field name="VAR" id="t2FEgqRvVC?URBI=~e{5" variabletype="Point">
+                              Punkt2
+                            </field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="object_variables_get" id="j.FokWeWZk,^Sar!llGJ">
+                            <field name="VAR" id="DKPJD+~@LU/Ug^E6$i^u" variabletype="Stack">
+                              stapel
+                            </field>
+                            <field name="METHODS">Push</field>
+                            <value name="ARG0">
+                              <block type="variables_get" id="GG`kdAO,4N);L529pLAA">
+                                <field name="VAR" id="lO)Qnz,kvwK;{uE=;%O%" variabletype="Point">
+                                  Punkt3
+                                </field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="class_class" id="`_EH.a,OV}q1*[%;9Ehw" x="726" y="22">
+    <field name="NAME">Stack</field>
+    <statement name="CONSTRUCTOR">
+      <block type="class_constructor" id="JU{(m7fDX|B]:xJ2w!Ly">
+        <comment pinned="false" h="80" w="160">
+          Describe this function...
+        </comment>
+        <statement name="STACK">
+          <block type="variables_set" id="/2f6W4fn*_NFe:p:vboS">
+            <field name="VAR" id="c]SgaU23jpiW7~HaH^}q" variabletype="">
+              x
+            </field>
+            <value name="VALUE">
+              <block type="lists_create_with" id="{]SVsmgPXp{y*E]hV*]f">
+                <mutation items="0" />
+              </block>
+            </value>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <statement name="METHODS">
+      <block type="class_function_return" id="d379$]=2ynIHnzByAPcW">
+        <mutation statements="false" />
+        <field name="NAME">Pop</field>
+        <comment pinned="false" h="80" w="160">
+          Describe this function...
+        </comment>
+        <value name="RETURN">
+          <block type="lists_getIndex" id="_S9whL=oX?4Ns9Ct`:/(">
+            <mutation statement="false" at="false" />
+            <field name="MODE">GET_REMOVE</field>
+            <field name="WHERE">LAST</field>
+            <value name="VALUE">
+              <block type="variables_get" id="GcSX6/P=[gz1Mml9:ZPe">
+                <field name="VAR" id="c]SgaU23jpiW7~HaH^}q" variabletype="">
+                  x
+                </field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="class_function_noreturn" id="SflNCn:6SZBh`rc-|*2r">
+            <mutation>
+              <arg name="Punkt" varid="X.SaCb(B5E:{3)@H0YjD" />
+            </mutation>
+            <field name="NAME">Push</field>
+            <comment pinned="false" h="80" w="160">
+              Describe this function...
+            </comment>
+            <statement name="STACK">
+              <block type="lists_setIndex" id="o+o`71qVW6i^_/:(vtEy">
+                <mutation at="false" />
+                <field name="MODE">SET</field>
+                <field name="WHERE">LAST</field>
+                <value name="LIST">
+                  <block type="variables_get" id="sso!{?ay1(*yl*lf;}lj">
+                    <field name="VAR" id="c]SgaU23jpiW7~HaH^}q" variabletype="">
+                      x
+                    </field>
+                  </block>
+                </value>
+                <value name="TO">
+                  <block type="variables_get" id="?12?[(VRn?E6cSShRr!M">
+                    <field name="VAR" id="X.SaCb(B5E:{3)@H0YjD" variabletype="">
+                      Punkt
+                    </field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>;

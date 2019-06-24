@@ -172,12 +172,14 @@ Blockly.Variables.flyoutCategory = function(workspace) {
   xmlList.push(button);
 
   for (var i = 0; i < classes.length; i++) {
+    let className = classes[i];
+
+    console.log(className);
     var objectButton = document.createElement("button");
-    var buttonString = "create " + classes[i] + " Variable ...";
+    var buttonString = "create " + className + " variable...";
     objectButton.setAttribute("text", buttonString);
-    objectButton.setAttribute("callbackKey", classes[i]);
-    var className = classes[i];
-    workspace.registerButtonCallback(classes[i], function(objectButton) {
+    objectButton.setAttribute("callbackKey", className);
+    workspace.registerButtonCallback(className, function(objectButton) {
       Blockly.Variables.createVariableButtonHandler(
         objectButton.getTargetWorkspace(),
         false,
@@ -186,7 +188,7 @@ Blockly.Variables.flyoutCategory = function(workspace) {
         className
       );
     });
-
+    console.log(objectButton);
     xmlList.push(objectButton);
   }
   var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
@@ -377,6 +379,7 @@ Blockly.Variables.createVariableButtonHandler = function(
   opt_obj
 ) {
   var type = opt_type || "";
+  console.log(opt_obj);
   if (!opt_obj) {
     var opt_obj = false;
   }
@@ -497,6 +500,7 @@ Blockly.Variables.renameVariable = function(
  */
 Blockly.Variables.promptName = function(promptText, defaultText, opt_obj, callback) {
   Blockly.prompt(promptText, defaultText, opt_obj, function(newVar) {
+    console.log(opt_obj);
     // Merge runs of whitespace.  Strip leading and trailing whitespace.
     // Beyond this, all names are legal.
     if (newVar[0]) {

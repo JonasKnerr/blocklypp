@@ -2049,6 +2049,7 @@ Blockly.WorkspaceSvg.prototype.registerToolboxCategoryCallback = function(key, f
   if (typeof func != "function") {
     throw TypeError("Toolbox category callbacks must be functions.");
   }
+
   this.toolboxCategoryCallbacks_[key] = func;
 };
 
