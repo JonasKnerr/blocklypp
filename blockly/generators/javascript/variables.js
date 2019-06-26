@@ -100,6 +100,7 @@ Blockly.JavaScript["object_variables_get"] = function(block) {
     var code = instanceName + "." + methodName + "(" + args.join(", ") + ")";
   } else {
     var code = instanceName + "." + methodName;
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
   }
   if (block.isReturn) {
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
