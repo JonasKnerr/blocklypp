@@ -176,7 +176,7 @@ Blockly.Variables.flyoutCategory = function(workspace) {
 
     console.log(className);
     var objectButton = document.createElement("button");
-    var buttonString = "create " + className + " variable...";
+    var buttonString = "Create " + className + " variable...";
     objectButton.setAttribute("text", buttonString);
     objectButton.setAttribute("callbackKey", className);
     workspace.registerButtonCallback(className, function(objectButton) {
@@ -292,11 +292,12 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
         if (Blockly.Blocks["object_variables_get"]) {
           var blockText =
             "<xml>" +
-            '<block type="object_variables_get" gap="8">' +
+            '<block type="object_variables_get" gap="20">' +
             Blockly.Variables.generateVariableFieldXmlString(variable) +
             "</block>" +
             "</xml>";
           var block = Blockly.Xml.textToDom(blockText).firstChild;
+          console.log(block);
           xmlList.push(block);
         }
       }

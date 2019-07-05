@@ -86,7 +86,10 @@ Blockly.Blocks["variables_get_dynamic"] = {
     this.methods = [];
     this.classVariables = [];
     this.args = 0;
-    this.curValue;
+    this.start();
+  },
+  start: function() {
+    console.log(this);
   },
   onchange: function() {
     console.log("variable_get_dynamic");

@@ -2,18 +2,12 @@ goog.provide("Blockly.Constants.Class");
 
 goog.require("Blockly.Blocks");
 goog.require("Blockly");
-//goog.require("Blockly.Class");
-/**
- *Block to create instances for each class
- * @Jonas Knerr
- */
 
 Blockly.Blocks["class_get_instance"] = {
   init: function() {
     this.appendDummyInput()
       .appendField("new")
       .appendField(this.id, "NAME");
-    this.constr;
     this.args = 0;
     this.argBlocks = [];
     this.setOutput(true, this.getFieldValue("NAME"));
@@ -99,7 +93,6 @@ Blockly.Blocks["class_instance"] = {
     this.methods = [];
     this.classVariables = [];
     this.args = 0;
-    this.curValue;
     this.setInputsInline(true);
     this.setColour(20);
     this.setTooltip("");
@@ -170,10 +163,6 @@ Blockly.Blocks["class_instance"] = {
 
         if (this.methods.length != 0 || this.classVariables.length != 0) {
           var options = [];
-          // console.log("oldName:    " + oldName);
-          // console.log("newName       " + newName);
-          // console.log("this.curValue:   " + this.curValue);
-
           //make array of method names, if a mehtod gets renamed we need to
           // store the new Value newName
           var methodNames = methods.map(method => {
@@ -318,7 +307,7 @@ Blockly.Blocks["class_class"] = {
       .appendField("Methoden");
     this.setColour(Blockly.Class.colour());
     this.setConstructor(true);
-    this.setMutator(new Blockly.Mutator(["class_attribute"]));
+    this.setMutator(new Blockly.Mutator(["class_attribute"], this));
     this.attributeCount = 0;
     this.methodCount = 0;
     this.attributeInputs = [];
@@ -351,7 +340,7 @@ Blockly.Blocks["class_class"] = {
     this.oldName = oldName;
   },
   decompose: function(workspace) {
-    var topBlock = workspace.newBlock("class_mutator");
+    var topBlock = workspace.newBlock("class_mutator", false, this);
     topBlock.initSvg();
 
     //set field according to constructor
@@ -360,7 +349,7 @@ Blockly.Blocks["class_class"] = {
 
     var connection = topBlock.getInput("STACK").connection;
     for (var j = 1; j <= this.attributeCount; j++) {
-      var attributeBlock = workspace.newBlock("class_attribute");
+      var attributeBlock = workspace.newBlock("class_attribute", false, this);
       attributeBlock.initSvg();
       connection.connect(attributeBlock.previousConnection);
       connection = attributeBlock.nextConnection;
@@ -383,7 +372,7 @@ Blockly.Blocks["class_class"] = {
         this.attributeCount++;
         var attributeInput = this.appendValueInput("attribute" + this.attributeCount)
           .setCheck(null)
-          .appendField("Attribute");
+          .appendField("Attribut");
         if (inputBlock) {
           attributeInput.connection.connect(inputBlock.outputConnection);
         }
@@ -486,8 +475,8 @@ Blockly.Blocks["class_constructor"] = {
     ) {
       this.setCommentText(Blockly.Msg["PROCEDURES_DEFNORETURN_COMMENT"]);
     }
-    this.setNextStatement(true, ["class_constructor"]);
-    this.setPreviousStatement(true, ["class_constructor"]);
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
     this.setColour(Blockly.Msg["PROCEDURES_HUE"]);
     this.setTooltip(Blockly.Msg["PROCEDURES_DEFNORETURN_TOOLTIP"]);
     this.setHelpUrl(Blockly.Msg["PROCEDURES_DEFNORETURN_HELPURL"]);
@@ -613,10 +602,21 @@ Blockly.Blocks["class_attribute"] = {
       .appendField("attribute");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(20);
+    this.initColour();
     this.setTooltip("");
     this.setHelpUrl("");
     this.contextMenu = false;
+  },
+  initColour: function() {
+    console.log(this);
+    if (this.mutatorParentBlock) {
+      var currentBlock = this.mutatorParentBlock;
+      var className = currentBlock.getClassDef();
+      var classBlock = Blockly.Class.getClassByName(currentBlock.workspace, className);
+      this.setColour(classBlock.getColour());
+    } else {
+      this.setColour(20);
+    }
   }
 };
 Blockly.Blocks["class_mutator"] = {
@@ -626,9 +626,16 @@ Blockly.Blocks["class_mutator"] = {
     this.appendDummyInput("CONSTR_INPUT")
       .appendField("Konstruktor")
       .appendField(new Blockly.FieldCheckbox("FALSE"), "CONSTR");
-    this.setColour(20);
+    this.initColour();
     this.setTooltip("");
     this.setHelpUrl("");
     this.contextMenu = false;
+  },
+  initColour: function() {
+    console.log(this);
+    var currentBlock = this.mutatorParentBlock;
+    var className = currentBlock.getClassDef();
+    var classBlock = Blockly.Class.getClassByName(currentBlock.workspace, className);
+    this.setColour(classBlock.getColour());
   }
 };

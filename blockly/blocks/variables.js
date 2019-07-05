@@ -153,7 +153,16 @@ Blockly.Blocks["object_variables_get"] = {
     this.methods = [];
     this.classVariables = [];
     this.args = 0;
-    this.curValue;
+    this.start();
+  },
+  start: function() {
+    var id = this.getFieldValue("VAR");
+    var variableModel = Blockly.getMainWorkspace().getVariableById(id);
+    console.log(Blockly.getMainWorkspace().getAllVariables());
+    console.log(this.workspace.getAllVariables());
+    console.log(id);
+    console.log(this);
+    this.setColour(20);
   },
   onchange: function() {
     if (!this.isInFlyout) {

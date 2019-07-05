@@ -37,12 +37,10 @@ Blockly.JavaScript["variables_get"] = function(block) {
     block.getFieldValue("VAR"),
     Blockly.Variables.NAME_TYPE
   );
-  console.log(block.varType);
+
   var opt_type = block.varType || "";
   var varBlock = block.workspace.getVariable(name, opt_type);
-  console.log(block);
-  console.log(name);
-  console.log(varBlock);
+
   if (varBlock.getScope() != "global") {
     code = "this." + name;
   } else {
@@ -90,7 +88,6 @@ Blockly.JavaScript["object_variables_get"] = function(block) {
       }
     }
   }
-  console.log(block);
   if (block.typeOfValue == "method") {
     var args = [];
     for (var i = 0; i < block.args; i++) {

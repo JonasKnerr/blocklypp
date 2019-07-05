@@ -57,8 +57,10 @@ Blockly.JavaScript["class_class"] = function(block) {
     code += " " + name + "(" + vars.join(", ") + "){\n" + branch + returnValue + "}\n\n";
   }
   code += "}\n";
-  //Blockly.JavaScript.definitions_["%" + name] = code;
-  return code;
+  code = Blockly.JavaScript.scrub_(block, code);
+
+  Blockly.JavaScript.definitions_["%" + name] = code;
+  return null;
 };
 
 Blockly.JavaScript["class_get_instance"] = function(block) {
