@@ -6,8 +6,8 @@ Zum ausführen muss neben dem Blockly Repository auch die Google Closure Library
 https://github.com/google/closure-library
 Der Ordner der Closure Library muss im selben Ordner wie die Blockly Library liegen:
 -BlocklyOrdner <br/>
-  -blockly <br/>
-  -closure-library <br/>
+ &nbsp;&nbsp; -blockly <br/>
+ &nbsp;&nbsp; -closure-library <br/>
 
 Zum Benutzen muss zu erst ein Klassenblöcke erstellt werden. Dieser kann über den Mutator um beliebig viele Attribute erweitert werden. Methoden befinden sich unter der Rubrik "Klasse", diese können in belibiger Anzahl zur Klasse hinzugefügt werden.
 
